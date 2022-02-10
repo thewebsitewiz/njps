@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@projectgreen/products": ["libs/products/src/index.ts"],
+      "@projectgreen/orders": ["libs/orders/src/index.ts"],
+      "@projectgreen/users": ["libs/users/src/index.ts"],
+      "@projectgreen/ui": ["libs/ui/src/index.ts"],
+      "@env/*": ["environments/*"],
+      "rxjs": [
+        "node_modules/rxjs"
+      ],
+      "rxjs/*": [
+        "node_modules/rxjs/*"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
