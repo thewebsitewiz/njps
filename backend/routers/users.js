@@ -164,18 +164,21 @@ router.delete('/:id', (req, res) => {
     })
 })
 
-router.get(`/get/count`, async (req, res) => {
-    const userCount = await User.countDocuments((count) => count)
 
-    if (!userCount) {
+router.get('/get/count', async (req, res) => {
+    try {
+        const userCount = await User.countDocuments();
+        console.log('userCount: ', userCount)
+        res.send({
+            userCount: userCount
+        });
+    } catch (err) {
+        console.log('userCount Error: ', err)
         res.status(500).json({
             success: false
-        })
+        });
     }
-    res.send({
-        userCount: userCount
-    });
-})
+});
 
 
 module.exports = router;
