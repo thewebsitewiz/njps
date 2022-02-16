@@ -4,6 +4,8 @@ import { CategoriesService, Category } from '@projectgreen/products';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { environment } from '@env/environment';
+
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'admin-categories-list',
@@ -24,6 +26,7 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._getCategories();
   }
+
   ngOnDestroy() {
     this.endsubs$.next(null);
     this.endsubs$.complete();
@@ -67,8 +70,11 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
     this.categoriesService
       .getCategories()
       .pipe(takeUntil(this.endsubs$))
-      .subscribe((cats) => {
-        this.categories = cats;
+      .subscribe((results) => {
+        results.forEach((category: any) => {
+          category.image = `${environment.imageUrl}${category.image}`;
+          this.categories.push(category)
+        })
       });
   }
 }

@@ -1,8 +1,11 @@
 header {
-  margin-bottom: 25px;
+  margin-left: 20px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+
   .logo {
     img {
-      width: 160px;
+      width: 125px;
     }
   }
 
@@ -11,7 +14,9 @@ header {
   }
 
   .navigation {
-    padding-top: 25px;
+    padding-top: 15px;
+    padding-right: 15px;
+    text-align: right;
   }
 
   .tools {
@@ -21,4 +26,50 @@ header {
       margin-right: 10px;
     }
   }
+
+  .icon {
+    height: 28px;
+    width: 28px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    &.product-icon {
+      background-image: url('../../../../apps/ngshop/src/assets/images/icons/products-icon.png');
+    }
+
+    &.specials-icon {
+      background-image: url('../../../../apps/ngshop/src/assets/images/icons/specials-icon.png');
+    }
+
+    &.faq-icon {
+      background-image: url('../../../../apps/ngshop/src/assets/images/icons/faq-icon.png');
+    }
+
+    &.contact-icon {
+      background-image: url('../../../../apps/ngshop/src/assets/images/icons/contact-icon.png');
+    }
+  }
+}
+
+.p-button-icon-only {
+  width: 65px !important;
+  padding: 21px 0 !important;
+
+  & .pi-bars {
+    font-size: 28px;
+  }
+}
+
+.p-button-icon.pi.pi-bars {
+  font-size: 24px !important;
+}
+
+.p-menuitem-link {
+  padding: 20px !important;
+}
+
+.p-menuitem-text {
+  font-size: 21px !important;
+  font-weight: 600 !important;
 }

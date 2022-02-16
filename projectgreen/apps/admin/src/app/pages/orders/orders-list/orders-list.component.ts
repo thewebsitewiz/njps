@@ -35,6 +35,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
       .getOrders()
       .pipe(takeUntil(this.endsubs$))
       .subscribe((orders) => {
+        console.log('orders: ', orders)
         this.orders = orders;
       });
   }

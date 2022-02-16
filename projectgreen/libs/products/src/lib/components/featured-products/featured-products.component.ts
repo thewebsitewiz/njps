@@ -30,6 +30,7 @@ export class FeaturedProductsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.endSubs$))
       .subscribe((products) => {
         this.featuredProducts = products;
+        console.log('file: featured-products.component.ts ~ line 33 ~ FeaturedProductsComponent ~ .subscribe ~ this.featuredProducts', this.featuredProducts);
       });
   }
 }

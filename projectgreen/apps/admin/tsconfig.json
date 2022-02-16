@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "files": [],
   "include": [],
-  "references": [
-    {
+  "references": [{
       "path": "./tsconfig.app.json"
     },
     {
@@ -24,6 +23,7 @@
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "strictDomEventTypes": false,
   }
 }

@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductsService } from '@projectgreen/products';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Table } from 'primeng/table';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'admin-products-list',
@@ -11,8 +13,14 @@ import { takeUntil } from 'rxjs/operators';
   styles: []
 })
 export class ProductsListComponent implements OnInit, OnDestroy {
-  products = [];
+  products: any = [];
   endsubs$: Subject<any> = new Subject();
+  protocol: string = '';
+  host: string = '';
+  first: number = 0;
+  totalRecords!: number;
+
+  @ViewChild('dt') dt: Table | undefined;
 
   constructor(
     private productsService: ProductsService,
@@ -35,8 +43,20 @@ export class ProductsListComponent implements OnInit, OnDestroy {
       .getProducts()
       .pipe(takeUntil(this.endsubs$))
       .subscribe((products: any) => {
-        this.products = products;
+        products.forEach((product: any) => {
+          product.image = `${environment.imageUrl}${product.image}`;
+          this.products.push(product)
+        })
+        this.totalRecords = this.products.length;
+        console.log(this.products)
       });
+  }
+
+  reset() {
+    this.first = 0;
+  }
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   updateProduct(productid: string) {

@@ -3,7 +3,8 @@ const {
 } = require('../models/user');
 const express = require('express');
 const router = express.Router();
-require('dotenv/config');
+//require('dotenv/config');
+require('dotenv').config()
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -30,10 +31,16 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const saltRounds = parseInt(process.env.PG_SALT, 10);
+    console.log('saltRounds: ', saltRounds);
+    const salt = bcrypt.genSaltSync(saltRounds);
+    console.log('salt: ', salt);
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+    console.log('hashedPassword: ', hashedPassword);
     let user = new User({
         name: req.body.name,
         email: req.body.email,
-        passwordHash: bcrypt.hashSync(req.body.password, process.env.PG_SALT),
+        passwordHash: hashedPassword,
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         street: req.body.street,

@@ -10,7 +10,7 @@ import { environment } from '@env/environment';
 export class CategoriesService {
   apiURLCategories = environment.apiUrl + 'categories';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiURLCategories);
@@ -20,12 +20,13 @@ export class CategoriesService {
     return this.http.get<Category>(`${this.apiURLCategories}/${categoryId}`);
   }
 
-  createCategory(category: Category): Observable<Category> {
+  createCategory(category: FormData): Observable<Category> {
     return this.http.post<Category>(this.apiURLCategories, category);
   }
 
-  updateCategory(category: Category): Observable<Category> {
-    return this.http.put<Category>(`${this.apiURLCategories}/${category.id}`, category);
+  updateCategory(category: FormData, categoryid: string): Observable<Category> {
+    console.log('file: categories.service.ts ~ line 28 ~ CategoriesService ~ updateCategory ~ category', category);
+    return this.http.put<Category>(`${this.apiURLCategories}/${categoryid}`, category);
   }
 
   deleteCategory(categoryId: string): Observable<any> {

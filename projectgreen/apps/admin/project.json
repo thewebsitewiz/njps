@@ -15,8 +15,14 @@
         "tsConfig": "apps/admin/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": ["apps/admin/src/favicon.ico", "apps/admin/src/assets"],
-        "styles": ["styles/admin.scss"],
-        "scripts": []
+        "styles": ["styles/admin.scss",
+          "node_modules/quill/dist/quill.core.css",
+          "node_modules/quill/dist/quill.snow.css"
+        ],
+        "scripts": [
+          "node_modules/quill/dist/quill.js"
+        ]
+
       },
       "configurations": {
         "production": {

@@ -5,59 +5,114 @@
       <div class="col-12">
         <p-toolbar>
           <div class="p-toolbar-group-left">
-            <p-button
-              styleClass="p-button-success"
-              label="New"
-              icon="pi pi-plus"
-              routerLink="form"
-            ></p-button>
+            <p-button styleClass="p-button-success" label="New" icon="pi pi-plus" routerLink="form"></p-button>
           </div>
         </p-toolbar>
       </div>
     </div>
     <div class="grid">
       <div class="col-12">
-        <p-table
-          [paginator]="true"
-          [rows]="10"
-          [value]="products"
-          styleClass="p-datatable-gridlines"
-          [globalFilterFields]="['name']"
-        >
+        <p-table [paginator]="true" [totalRecords]="totalRecords" [(first)]="first" [rows]="10" [value]="products"
+          styleClass="p-datatable-gridlines" [globalFilterFields]="['name','category.name','isFeatured','countInStock']"
+          paginatorPosition="bottom">
+          <ng-template pTemplate="caption">
+            <div class="flex">
+              <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
+                  placeholder="Search keyword" />
+              </span>
+            </div>
+          </ng-template>
           <ng-template pTemplate="header">
             <tr>
-              <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-              <th>Image</th>
-              <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
-              <th pSortableColumn="stock">Stock <p-sortIcon field="stock"></p-sortIcon></th>
-              <th pSortableColumn="category">
-                Category <p-sortIcon field="category"></p-sortIcon>
+              <th [pSortableColumn]="'name'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Name <p-sortIcon field="name"></p-sortIcon>
+                  <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+                </div>
               </th>
-              <th pSortableColumn="created">
-                Created at <p-sortIcon field="created"></p-sortIcon>
+              <th>Image</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th [pSortableColumn]="'category.name'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Category <p-sortIcon field="category.nam"></p-sortIcon>
+                  <p-columnFilter type="text" field="category.name" display="menu"></p-columnFilter>
+                </div>
+              </th>
+              <th [pSortableColumn]="'isFeatured'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Featured <p-sortIcon field="category.nam"></p-sortIcon>
+                  <p-columnFilter type="text" field="isFeatured" display="menu"></p-columnFilter>
+                </div>
+              </th>
+              <th [pSortableColumn]="'dateCreated'">
+                Created on <p-sortIcon field="dateCreated"></p-sortIcon>
+              </th>
+              <!--             <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Agent
+                <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false"
+                  [showOperator]="false" [showAddButton]="false">
+                  <ng-template pTemplate="header">
+                    <div class="p-px-3 p-pt-3 p-pb-0">
+                      <span class="p-text-bold">Agent Picker</span>
+                    </div>
+                  </ng-template>
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-multiSelect [ngModel]="value" [options]="representatives" placeholder="Any"
+                      (onChange)="filter($event.value)" optionLabel="name">
+                      <ng-template let-option pTemplate="item">
+                        <div class="p-multiselect-representative-option">
+                          <span class="p-ml-1">{{option.name}}</span>
+                        </div>
+                      </ng-template>
+                    </p-multiSelect>
+                  </ng-template>
+                </p-columnFilter>
+              </div>
+            </th> -->
+            </tr>
+          </ng-template>
+
+
+
+          <!--           <ng-template pTemplate="header">
+            <tr>
+              <th [pSortableColumn]="'name'">Name <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th>Image</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th [pSortableColumn]="'category.name'">
+                Category <p-sortIcon field="category.name"></p-sortIcon>
+              </th>
+              <th [pSortableColumn]="'isFeatured'">
+                Featured <p-sortIcon field="isFeatured"></p-sortIcon>
+              </th>
+              <th [pSortableColumn]="'dateCreated'">
+                Created on <p-sortIcon field="dateCreated"></p-sortIcon>
               </th>
               <th></th>
             </tr>
-          </ng-template>
+          </ng-template> -->
+
+
           <ng-template pTemplate="body" let-product>
             <tr>
               <td>{{ product.name }}</td>
-              <td><img [src]="product.image" style="width: 100%" alt="" /></td>
+              <td><img [src]="product.image" style="max-width: 75px" alt="" /></td>
               <td>{{ product.price }}</td>
               <td>{{ product.countInStock }}</td>
               <td>{{ product.category.name }}</td>
+              <td>{{ product.isFeatured }}</td>
               <td>{{ product.dateCreated | date: 'short' }}</td>
               <td>
-                <p-button
-                  (click)="deleteProduct(product.id)"
-                  styleClass="p-button-danger p-mr-2"
-                  icon="pi pi-trash"
-                ></p-button>
-                <p-button
-                  (click)="updateProduct(product.id)"
-                  styleClass="p-button-success"
-                  icon="pi pi-pencil"
-                ></p-button>
+                <p-button (click)="deleteProduct(product.id)" styleClass="p-button-danger p-mr-2" icon="pi pi-trash">
+                </p-button>
+                <p-button (click)="updateProduct(product.id)" styleClass="p-button-success" icon="pi pi-pencil">
+                </p-button>
               </td>
             </tr>
           </ng-template>
@@ -66,8 +121,5 @@
     </div>
   </p-card>
 </div>
-<p-confirmDialog
-  [style]="{ width: '50vw' }"
-  [baseZIndex]="10000"
-  rejectButtonStyleClass="p-button-text"
-></p-confirmDialog>
+<p-confirmDialog [style]="{ width: '50vw' }" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
+</p-confirmDialog>

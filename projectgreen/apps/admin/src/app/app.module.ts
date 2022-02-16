@@ -38,6 +38,12 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { AppRoutingModule } from './app-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { CalendarModule } from 'primeng/calendar';
+import { SliderModule } from 'primeng/slider';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 const UX_MODULE = [
   CardModule,
@@ -55,7 +61,14 @@ const UX_MODULE = [
   EditorModule,
   TagModule,
   InputMaskModule,
-  FieldsetModule
+  FieldsetModule,
+  CalendarModule,
+  SliderModule,
+  ContextMenuModule,
+  MultiSelectModule,
+  DialogModule,
+  ProgressBarModule
+
 ];
 
 @NgModule({
@@ -72,6 +85,8 @@ const UX_MODULE = [
     UsersFormComponent,
     OrdersListComponent,
     OrdersDetailComponent
+
+
   ],
   imports: [
     BrowserModule,

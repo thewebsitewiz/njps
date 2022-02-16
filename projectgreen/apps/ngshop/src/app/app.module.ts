@@ -15,22 +15,18 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { OrdersModule } from '@projectgreen/orders';
 import { ToastModule } from 'primeng/toast';
 import { MessagesComponent } from './shared/messages/messages.component';
-import { MessageService } from 'primeng/api';
+import { MessageService, MenuItem } from 'primeng/api';
 import { JwtInterceptor, UsersModule } from '@projectgreen/users';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+
 const routes: Routes = [{ path: '', component: HomePageComponent }];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomePageComponent,
-    HeaderComponent,
-    FooterComponent,
-    NavComponent,
-    MessagesComponent
-  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
@@ -43,7 +39,18 @@ const routes: Routes = [{ path: '', component: HomePageComponent }];
     UiModule,
     OrdersModule,
     ToastModule,
-    UsersModule
+    UsersModule,
+    MenuModule,
+    ButtonModule,
+    RippleModule
+  ],
+  declarations: [
+    AppComponent,
+    HomePageComponent,
+    HeaderComponent,
+    FooterComponent,
+    NavComponent,
+    MessagesComponent
   ],
   providers: [
     MessageService,

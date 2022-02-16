@@ -23,14 +23,13 @@
               <input formControlName="name" id="name" type="text" pInputText />
               <small *ngIf="categoryForm['name'].invalid && isSubmitted" class="p-error">Name is required</small>
             </div>
-            <div class="p-field col">
-              <label for="icon">Icon</label>
-              <input formControlName="icon" id="icon" type="text" pInputText />
-              <small *ngIf="categoryForm['icon'].invalid && isSubmitted" class="p-error">Icon is required</small>
-            </div>
-            <div class="p-field col">
-              <label for="color">Color</label><br />
-              <colorPicker formControlName="color"></colorPicker>
+            <div class="p-field col-12">
+              <label for="image">Main Image</label>
+              <input id="image" type="file" class="p-inputtext" accept="image/*" (change)="onImageUpload($event)" />
+              <small *ngIf="categoryForm['image'].invalid && isSubmitted" class="p-error">Image is required</small>
+              <div class="col-2 p-mt-2 p-pl-0">
+                <img style="width: 100%" [src]="imageDisplay" alt="" />
+              </div>
             </div>
           </div>
         </form>

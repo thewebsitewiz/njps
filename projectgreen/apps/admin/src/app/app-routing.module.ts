@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: '',
     component: ShellComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       {
         path: '',

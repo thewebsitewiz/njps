@@ -11,7 +11,7 @@ import { Product } from '../models/product';
 export class ProductsService {
   apiURLProducts = environment.apiUrl + 'products';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getProducts(categoriesFilter?: string[]): Observable<Product[]> {
     let params = new HttpParams();
@@ -30,6 +30,8 @@ export class ProductsService {
   }
 
   updateProduct(productData: FormData, productid: string): Observable<Product> {
+    console.log('file: products.service.ts ~ line 33 ~ ProductsService ~ updateProduct ~ productData', productData);
+
     return this.http.put<Product>(`${this.apiURLProducts}/${productid}`, productData);
   }
 
