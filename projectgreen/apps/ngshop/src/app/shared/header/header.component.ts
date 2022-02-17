@@ -8,7 +8,7 @@ import { MenuItem, PrimeNGConfig } from 'primeng/api';
 export class HeaderComponent {
 
   items!: MenuItem[];
-
+  cartCount: number = 8;
   constructor(private primengConfig: PrimeNGConfig) { }
 
   ngOnInit() {

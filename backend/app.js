@@ -8,14 +8,26 @@ require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
 
-app.use(cors());
-app.options('*', cors())
+const ip = '105.168.1.155'
+
+const allowedOrigins = ['http://localhost:3000',
+    'http://108.41.249.98', 'http://192.168.1.217:4200'
+];
+
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+app.options('*', cors());
+
 
 //middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(authJwt());
-app.use('/', express.static(__dirname + '/public'));
+// app.use('/', express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(errorHandler);
 
 //Routes

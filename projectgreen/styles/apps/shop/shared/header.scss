@@ -15,8 +15,9 @@ header {
 
   .navigation {
     padding-top: 15px;
-    padding-right: 15px;
+    padding-right: 23px;
     text-align: right;
+    max-width: 90px !important;
   }
 
   .tools {
@@ -66,10 +67,39 @@ header {
 }
 
 .p-menuitem-link {
-  padding: 10px !important;
+  padding: 5px !important;
 }
 
 .p-menuitem-text {
   font-size: 21px !important;
   font-weight: 600 !important;
+}
+
+.p-menu.p-component {
+  width: 250px;
+}
+
+.cart-symbol {
+
+
+  text-align: right;
+  //height: 370px;
+  // width: 28px;
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-position-y: 10px;
+  background-size: 80px auto;
+  background-image: url('../../../../apps/ngshop/src/assets/images/icons/cart-icon.png');
+}
+
+.cart-count {
+  text-align: center;
+  width: 30px;
+  display: inline-block;
+  position: relative;
+  font-weight: 700;
+  color: white;
+  font-size: 20px;
+  top: 21px;
+  right: 11px;
 }

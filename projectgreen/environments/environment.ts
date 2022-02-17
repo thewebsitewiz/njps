@@ -5,7 +5,7 @@
 
 
 const protocol = 'http://';
-const host = 'localhost:3000/';
+const host = '192.168.1.155:3000/';
 const apiPath = 'api/v1/';
 
 export const environment = {

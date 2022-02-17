@@ -7,9 +7,12 @@
     a {
       color: var(--surface-500);
       cursor: pointer;
+
       &:hover {
         color: $primary-color;
       }
     }
   }
+
+
 }
