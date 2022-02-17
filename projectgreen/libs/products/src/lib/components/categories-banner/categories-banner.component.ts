@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Category } from '../../models/category';
 import { CategoriesService } from '../../services/categories.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'products-categories-banner',
@@ -19,8 +20,11 @@ export class CategoriesBannerComponent implements OnInit, OnDestroy {
     this.categoriesService
       .getCategories()
       .pipe(takeUntil(this.endSubs$))
-      .subscribe((categories) => {
-        this.categories = categories;
+      .subscribe((results) => {
+        results.forEach((category: any) => {
+          category.image = `${environment.imageUrl}${category.image}`;
+          this.categories.push(category)
+        })
       });
   }
 

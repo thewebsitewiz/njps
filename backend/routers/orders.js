@@ -130,23 +130,24 @@ router.get('/get/totalsales', async (req, res) => {
         res.send({
             totalsales: 0
         })
-    }
-    try {
-        const totalsales = await Order.aggregate([{
-            $group: {
-                _id: null,
-                total: {
-                    $sum: '$totalPrice'
+    } else {
+        try {
+            const totalsales = await Order.aggregate([{
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: '$totalPrice'
+                    }
                 }
-            }
-        }]);
-        console.log('totalsales: ', totalsales[0].total);
+            }]);
+            console.log('totalsales: ', totalsales[0].total);
 
-        res.send({
-            totalsales: totalsales[0].total
-        })
-    } catch (err) {
-        return res.status(400).send(`The order sales cannot be generated: ${err}`)
+            res.send({
+                totalsales: totalsales[0].total
+            })
+        } catch (err) {
+            return res.status(400).send(`The order sales cannot be generated: ${err}`)
+        }
     }
 });
 

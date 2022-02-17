@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product';
 import { ProductsService } from '../../services/products.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'products-featured-products',
@@ -28,9 +29,11 @@ export class FeaturedProductsComponent implements OnInit, OnDestroy {
     this.prodService
       .getFeaturedProducts(4)
       .pipe(takeUntil(this.endSubs$))
-      .subscribe((products) => {
-        this.featuredProducts = products;
-        console.log('file: featured-products.component.ts ~ line 33 ~ FeaturedProductsComponent ~ .subscribe ~ this.featuredProducts', this.featuredProducts);
+      .subscribe((results) => {
+        results.forEach((product: any) => {
+          product.image = `${environment.imageUrl}${product.image}`;
+          this.featuredProducts.push(product)
+        })
       });
   }
 }

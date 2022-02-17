@@ -39,17 +39,18 @@ const uploadOptions = multer({
 
 
 
-router.get(`/`, (req, res) => {
-    Category.find({}, (err, categoryList) => {
-        if (!err) {
-            res.status(200).send(categoryList);
-        } else {
-            res.status(500).json({
-                success: false
-            })
-        };
-    })
+router.get(`/`, async (req, res) => {
+    try {
+        const categoryList = await Category.find({});
+
+        res.status(200).send(categoryList);
+    } catch (err) {
+        res.status(500).json({
+            success: false
+        })
+    }
 });
+
 
 router.get('/:id', async (req, res) => {
     const category = await Category.findById(req.params.id);

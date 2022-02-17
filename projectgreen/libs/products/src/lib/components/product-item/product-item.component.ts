@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { CartService, CartItem } from '@projectgreen/orders';
 import { Product } from '../../models/product';
 
@@ -10,7 +11,7 @@ import { Product } from '../../models/product';
 export class ProductItemComponent implements OnInit {
   @Input() product!: Product;
 
-  constructor(private cartService: CartService) { }
+  constructor(private cartService: CartService, private router: Router) { }
 
   ngOnInit(): void { }
 
@@ -20,5 +21,10 @@ export class ProductItemComponent implements OnInit {
       quantity: 1
     };
     this.cartService.setCartItem(cartItem);
+  }
+
+
+  productDetail(id: string) {
+    this.router.navigateByUrl(`products/${id}`);
   }
 }

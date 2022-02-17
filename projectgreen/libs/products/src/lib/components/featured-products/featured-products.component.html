@@ -1,8 +1,8 @@
 <div class="featured-products p-mt-5">
-  <h3 class="p-mb-1">Feautured Products</h3>
-  <div class="grid">
-    <div class="col-3" *ngFor="let product of featuredProducts">
-      <products-product-item [product]="product"></products-product-item>
+  <h2 class="mb-0 centered">Featured Products</h2>
+  <div class="product-container">
+    <div class="product" *ngFor="let product of featuredProducts">
+      <products-product-item class="product" [product]="product"></products-product-item>
     </div>
   </div>
 </div>

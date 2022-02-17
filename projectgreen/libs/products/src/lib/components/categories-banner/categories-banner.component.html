@@ -1,13 +1,16 @@
 <div class="categories-banner">
-  <h3>Categories</h3>
-  <div class="grid">
-    <div class="col-2" *ngFor="let category of categories">
-      <div class="category" [routerLink]="'/category/' + category.id" [ngStyle]="{ backgroundColor: category.color }">
-        <div class="category-icon">
-          <i class="pi pi-{{ category.image }}"></i>
-        </div>
-        <div class="category-name">{{ category.name }}</div>
-      </div>
+  <div class="categories-container">
+    <div class="category-container" *ngFor="let category of categories">
+      <img class="product-image" [src]="category.image" [alt]="category.name">
+      <h3 class="category-name">{{category.name}}</h3>
+      <!-- <p class="text-muted mb-0" *ngIf="type.description !== undefined && type.description !== ''">
+            {{type.description}}</p> -->
     </div>
   </div>
 </div>
+
+
+
+
+
+<!-- (click)="pageNav({ route: '/products', section: 'top', parameters: {productType:type.name,pageType: 'listing'}})" -->
