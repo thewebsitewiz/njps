@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from '../../models/category';
+import { Categories } from '../../models/categories';
 import { Product } from '../../models/product';
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'products-list',
@@ -12,9 +14,9 @@ import { ProductsService } from '../../services/products.service';
 })
 export class ProductsListComponent implements OnInit {
   products: Product[] = [];
-  categories: Category[] = [];
-  isCategoryPage!: boolean;
-  binaryValue: boolean = true;
+  categoryId!: string;
+  categories: Categories = {};
+  categoryName!: string | undefined;
 
   constructor(
     private prodService: ProductsService,
@@ -23,30 +25,42 @@ export class ProductsListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.route.params.subscribe((params) => {
-      params['categoryid'] ? this._getProducts([params['categoryid']]) : this._getProducts();
-      params['categoryid'] ? (this.isCategoryPage = true) : (this.isCategoryPage = false);
+      this.categoryId = params['categoryid'];
+      this.categoryId ? this._getProducts([this.categoryId]) : this._getProducts();
+      this._getCategory(this.categoryId);
     });
-    this._getCategories();
+
   }
 
   private _getProducts(categoriesFilter?: string[]) {
-    this.prodService.getProducts(categoriesFilter).subscribe((resProducts) => {
-      this.products = resProducts;
+    this.prodService.getProducts(categoriesFilter).subscribe((results) => {
+      this.products = [];
+      results.forEach((product: any) => {
+        product.image = `${environment.imageUrl}${product.image}`;
+        this.products.push(product);
+      })
+
+
     });
   }
 
-  private _getCategories() {
-    this.catService.getCategories().subscribe((resCats) => {
-      this.categories = resCats;
+  private _getCategory(categoryId: string) {
+    this.catService.getCategories().subscribe((results) => {
+      results.forEach((cat: Category) => {
+        this.categories[cat.id] = cat;
+      });
+      this.categoryName = this.categories[this.categoryId].name;
+      console.log(this.categories[this.categoryId])
     });
   }
 
-  categoryFilter() {
+  /* categoryFilter() {
     const selectedCategories = this.categories
       .filter((category) => category.checked)
       .map((category) => category.id ?? '');
 
     this._getProducts(selectedCategories);
-  }
+  } */
 }

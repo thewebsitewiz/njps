@@ -1,8 +1,8 @@
 <div class="product-item mt-3 mb-2" *ngIf="product">
   <img [routerLink]="'/products/' + product.id" [src]="product.image" class="featured-product-image" alt="" />
-  <h2 class="product-name mt-1 mb-0">{{ product.name }}</h2>
+  <h3 class="product-name mt-1 mb-0">{{ product.name }}</h3>
   <!-- <h5 class="product-price">{{ product.price | currency }}</h5> -->
-  <p-button styleClass="mt-1 add-to-cart" label="See more" (click)="productDetail(product.id);"></p-button>
+  <p-button styleClass="mt-1 see-more" label="See more" (click)="productDetail(product.id);"></p-button>
 </div>
 
 

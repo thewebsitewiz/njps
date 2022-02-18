@@ -2,6 +2,7 @@
 @import '~normalize.css/normalize.css';
 @import './base/colors.scss';
 @import './base/fonts.scss';
+@import './base/utilities.scss';
 @import './base/mixins.scss';
 
 //Libraries
@@ -39,5 +40,4 @@ body {
 .container {
   width: 100%;
   margin: 0 auto;
-  background-color: var(--green-100);
 }

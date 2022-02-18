@@ -1,6 +1,6 @@
 export interface Category {
   id: string;
-  name?: string;
+  name: string;
   image?: string;
   color?: string;
   checked?: boolean;
