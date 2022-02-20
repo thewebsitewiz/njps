@@ -30,9 +30,14 @@
 @import './libs/ui/ui.scss';
 
 
+
+html {
+  max-width: 98%;
+}
+
 body {
-  @media screen and (max-width: 375px) {
-    max-width: 375px;
+  @media screen and (max-width: 500px) {
+    max-width: 100%;
   }
 
 }

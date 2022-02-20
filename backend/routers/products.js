@@ -1,10 +1,13 @@
 const {
     Product
 } = require('../models/product');
-const express = require('express');
+const {
+    ProductSize
+} = require('../models/productSize');
 const {
     Category
 } = require('../models/category');
+const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
@@ -62,6 +65,7 @@ router.get(`/`, async (req, res) => {
 
 router.get(`/:id`, async (req, res) => {
     const product = await Product.findById(req.params.id).populate('category');
+    console.log('Product: ', product);
 
     if (!product) {
         res.status(500).json({

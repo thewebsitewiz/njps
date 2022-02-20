@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class GalleryComponent implements OnInit {
   selectedImageUrl!: string;
+  showThumbs: boolean = false;
 
   @Input() images!: string[];
 
@@ -14,11 +15,17 @@ export class GalleryComponent implements OnInit {
     if (this.hasImages) {
       this.selectedImageUrl = this.images[0];
     }
+
+    if (this.images.length > 1) {
+      this.showThumbs = true;
+    }
   }
 
   changeSelectedImage(imageUrl: string) {
     this.selectedImageUrl = imageUrl;
   }
+
+
 
   get hasImages() {
     return this.images?.length > 0;

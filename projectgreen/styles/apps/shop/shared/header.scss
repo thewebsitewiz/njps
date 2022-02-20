@@ -56,6 +56,9 @@ header {
 .p-button-icon-only {
   width: 65px !important;
   padding: 21px 0 !important;
+  background-color: $dark-green;
+  margin-top: 7px;
+  margin-right: 10px;
 
   & .pi-bars {
     font-size: 28px;
@@ -80,11 +83,7 @@ header {
 }
 
 .cart-symbol {
-
-
   text-align: right;
-  //height: 370px;
-  // width: 28px;
   background-repeat: no-repeat;
   background-position-x: right;
   background-position-y: 10px;
@@ -100,6 +99,6 @@ header {
   font-weight: 700;
   color: white;
   font-size: 20px;
-  top: 21px;
+  top: 24px;
   right: 11px;
 }

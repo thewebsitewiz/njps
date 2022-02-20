@@ -33,7 +33,7 @@ export class FeaturedProductsComponent implements OnInit, OnDestroy {
         results.forEach((product: any) => {
           product.image = `${environment.imageUrl}${product.image}`;
           this.featuredProducts.push(product)
-        })
+        });
       });
   }
 }

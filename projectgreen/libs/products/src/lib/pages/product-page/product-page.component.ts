@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product';
 import { ProductsService } from '../../services/products.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'products-product-page',
@@ -15,6 +16,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   product!: Product;
   endSubs$: Subject<any> = new Subject();
   quantity = 1;
+  productImages: string[] = [];
 
   constructor(
     private prodService: ProductsService,
@@ -29,12 +31,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.product.images === undefined) {
-      this.product.images = [];
-    }
-    if (this.product.price === undefined) {
-      this.product.price = 0;
-    }
   }
 
   ngOnDestroy(): void {
@@ -57,6 +53,20 @@ export class ProductPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.endSubs$))
       .subscribe((resProduct) => {
         this.product = resProduct;
+        console.log(this.product);
+
+
+
+
+        this.product.images.unshift(this.product.image);
+        this.product.images.forEach((image: any) => {
+          image = `${environment.imageUrl}${image}`;
+          this.productImages.push(image)
+        });
+
+        if (this.product.price === undefined) {
+          this.product.price = 0;
+        }
       });
   }
 }

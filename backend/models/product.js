@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const price = mongoose.Schema({
+    type: String,
+    amount: Number,
+    price: Number,
+});
+
 const productSchema = mongoose.Schema({
     name: {
         type: String,
@@ -20,13 +26,14 @@ const productSchema = mongoose.Schema({
     images: [{
         type: String
     }],
+    prices: [price],
     brand: {
         type: String,
         default: ''
     },
-    price: {
-        type: Number,
-        default: 0
+    flavor: {
+        type: String,
+        default: ''
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,16 +43,7 @@ const productSchema = mongoose.Schema({
     countInStock: {
         type: Number,
         required: false,
-        min: 0,
-        max: 255
-    },
-    rating: {
-        type: Number,
-        default: 0,
-    },
-    numReviews: {
-        type: Number,
-        default: 0,
+        min: 0
     },
     isFeatured: {
         type: Boolean,
@@ -55,6 +53,16 @@ const productSchema = mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    lastInventoriedDate: {
+        type: Date
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    userName: {
+        type: String
+    }
 })
 
 productSchema.virtual('id').get(function () {
