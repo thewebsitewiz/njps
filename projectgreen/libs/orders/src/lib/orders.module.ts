@@ -13,6 +13,7 @@ import { CheckoutPageComponent } from './pages/checkout-page/checkout-page.compo
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { DropdownModule } from 'primeng/dropdown';
+import { TableModule } from 'primeng/table';
 import { ThankYouComponent } from './pages/thank-you/thank-you.component';
 import { AuthGuard } from '@projectgreen/users';
 const routes: Routes = [
@@ -41,6 +42,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     InputTextModule,
     InputMaskModule,
+    TableModule,
     DropdownModule
   ],
   providers: [],

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const price = mongoose.Schema({
-    type: String,
+    name: String,
     amount: Number,
     price: Number,
 });
@@ -26,12 +26,20 @@ const productSchema = mongoose.Schema({
     images: [{
         type: String
     }],
+    price: {
+        type: String,
+        default: ''
+    },
     prices: [price],
     brand: {
         type: String,
         default: ''
     },
     flavor: {
+        type: String,
+        default: ''
+    },
+    unitType: {
         type: String,
         default: ''
     },

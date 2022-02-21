@@ -15,13 +15,13 @@ export class ProductItemComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  addProductToCart() {
-    const cartItem: CartItem = {
-      productId: this.product.id,
-      quantity: 1
-    };
-    this.cartService.setCartItem(cartItem);
-  }
+  /*   addProductToCart() {
+      const cartItem: CartItem = {
+        productId: this.product.id,
+        amount: 1
+      };
+      this.cartService.setCartItem(cartItem);
+    } */
 
 
   productDetail(id: string) {

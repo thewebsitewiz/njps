@@ -5,6 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 import { CartItemDetailed } from '../../models/cart';
 import { CartService } from '../../services/cart.service';
 import { OrdersService } from '../../services/orders.service';
+import { environment } from '@env/environment';
+
 @Component({
   selector: 'orders-cart-page',
   templateUrl: './cart-page.component.html',
@@ -14,6 +16,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
   cartItemsDetailed: CartItemDetailed[] = [];
   cartCount = 0;
   endSubs$: Subject<any> = new Subject();
+
   constructor(
     private router: Router,
     private cartService: CartService,
@@ -33,18 +36,32 @@ export class CartPageComponent implements OnInit, OnDestroy {
     this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
       this.cartItemsDetailed = [];
 
+      console.log('respCart: ', respCart)
+
       if (respCart.items !== undefined) {
         this.cartCount = respCart.items.length ?? 0;
         respCart.items.forEach((cartItem) => {
           if (cartItem.productId !== undefined) {
             this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
-              if (respProduct.product.price !== undefined && cartItem.quantity !== undefined) {
-                const unitPrice = respProduct.price ?? 0;
-                const quantity = cartItem.quantity ?? 0;
-                const subTotal = unitPrice * quantity;
+              respProduct.image = `${environment.imageUrl}${respProduct.image}`;
+              if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
                 this.cartItemsDetailed.push({
+                  image: respProduct.image,
+                  name: respProduct.name,
+                  unitType: cartItem.unitType,
+                  subTotal: cartItem.price
+                });
+              }
+              else if (respProduct.product?.price !== undefined && cartItem.amount !== undefined) {
+                const unitPrice = respProduct.price ?? 0;
+                const amount = cartItem.amount ?? 0;
+                let subTotal = unitPrice * amount;
+
+                this.cartItemsDetailed.push({
+                  image: respProduct.image,
                   product: respProduct,
-                  quantity: cartItem.quantity,
+                  amount: cartItem.amount,
+                  unitType: cartItem.unitType,
                   subTotal: subTotal
                 });
               }
@@ -52,6 +69,8 @@ export class CartPageComponent implements OnInit, OnDestroy {
           }
         });
       }
+
+      console.log('this.cartItemsDetailed: ', this.cartItemsDetailed);
     });
   }
 
@@ -59,17 +78,17 @@ export class CartPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/products']);
   }
 
-  deleteCartItem(cartItem: CartItemDetailed) {
-    this.cartService.deleteCartItem(cartItem.product.id);
-  }
+  /*   deleteCartItem(cartItem: CartItemDetailed) {
+      this.cartService.deleteCartItem(cartItem.product.id);
+    } */
 
-  updateCartItemQuantity(event: any, cartItem: CartItemDetailed) {
+  /* updateCartItemQuantity(event: any, cartItem: CartItemDetailed) {
     this.cartService.setCartItem(
       {
         productId: cartItem.product.id,
-        quantity: event.value
+        amount: event.value
       },
       true
     );
-  }
+  } */
 }

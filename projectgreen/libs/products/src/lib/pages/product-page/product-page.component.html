@@ -1,21 +1,45 @@
 <div class="product-page" *ngIf="product">
 
   <div class="product-content">
-    <h2 class="primary-heading product-name">{{ product.name }}</h2>
+    <ng-container *ngIf="product.brand || product.flavor">
+      <h2 class="brand-flavor-name" *ngIf="product.name">{{ product.name }}</h2>
+      <h1 class="brand-flavor-name"><span *ngIf="product.brand">{{ product.brand }}</span><span
+          *ngIf="product.brand && product.flavor"> &ndash; </span><span
+          *ngIf="product.flavor">{{ product.flavor }}</span>
+      </h1>
+    </ng-container>
+
+    <h2 class="primary-heading product-name" *ngIf="!product.brand && !product.flavor">{{ product.name }}</h2>
     <ui-gallery [images]="productImages"></ui-gallery>
     <img src="{{ product.image }}" *ngIf="productImages.length < 1" />
 
+    <ng-container *ngIf="product.prices.length > 0">
+      <p-dropdown [options]="prices" [(ngModel)]="selectedAmount" optionLabel="name" optionValue="code"
+        placeholder="Prices" optionDisabled="unavailable" (click)="addToCart(null)"></p-dropdown>
+      <div class="selectedAmount" [innerHTML]="selectedAmountDisplay"></div>
+    </ng-container>
 
+    <ng-container *ngIf="(product.prices === undefined || product.prices.length === 0)
+    && product.price !== undefined && product.price !== null">
+      <div class="action-row">
+        <div class="item-price">{{ this.product.price | currency}}</div>
+        <p-inputNumber [(ngModel)]="qty" [showButtons]="true" buttonLayout="horizontal"
+          incrementButtonIcon="pi pi-plus smaller-btn" decrementButtonIcon="pi pi-minus smaller-btn" [min]="0"
+          decrementButtonClass="number-input-btn" incrementButtonClass="number-input-btn"
+          inputStyleClass="input-style-class">
+        </p-inputNumber>
+        <p-button styleClass="see-more" label="Add to cart" (click)="addToCart(1)"></p-button>
+      </div>
+    </ng-container>
 
-
-    <p class="product-desc">
+    <p class="product-desc"
+      *ngIf="product.description !== null && product.description !=='' && product.description  !== 'null'">
       {{ product.description }}
     </p>
 
-    <div class="product-rich-desc">
-
+    <div class="product-rich-desc"
+      *ngIf="product.richDescription !== null && product.richDescription !=='' && product.richDescription  !== 'null'">
       <div [innerHTML]="product?.richDescription"></div>
-
     </div>
   </div>
 </div>

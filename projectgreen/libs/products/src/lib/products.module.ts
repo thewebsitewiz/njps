@@ -13,6 +13,7 @@ import { ProductsListComponent } from './pages/products-list/products-list.compo
 import { FormsModule } from '@angular/forms';
 import { ProductPageComponent } from './pages/product-page/product-page.component';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { DropdownModule } from 'primeng/dropdown'
 import { UiModule } from '@projectgreen/ui';
 
 const routes: Routes = [
@@ -39,6 +40,7 @@ const routes: Routes = [
     FormsModule,
     RatingModule,
     InputNumberModule,
+    DropdownModule,
     UiModule
   ],
   declarations: [

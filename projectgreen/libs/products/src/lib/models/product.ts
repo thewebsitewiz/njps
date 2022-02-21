@@ -8,12 +8,22 @@ export interface Product {
   image: string;
   images: string[];
   brand?: string;
+  flavor?: string;
   price: number;
+  prices: Price[];
   category?: Category;
   countInStock?: number;
+  unitType: string;
   rating?: number;
   numReviews?: number;
   isFeatured?: boolean;
   dateCreated?: string;
 }
 
+
+export interface Price {
+  name: string;
+  amount: number;
+  type: string;
+  price: number;
+}

@@ -41,8 +41,8 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
               .getProduct(item.productId)
               .pipe(take(1))
               .subscribe((product) => {
-                if (item.quantity !== undefined) {
-                  this.totalPrice += product.price * item.quantity;
+                if (item.amount !== undefined) {
+                  this.totalPrice += product.price * item.amount;
                 }
               });
           }

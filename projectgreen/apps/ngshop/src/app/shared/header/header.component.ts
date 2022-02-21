@@ -4,6 +4,9 @@ import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { CategoriesService, Category } from '@projectgreen/products';
 import { Categories } from '@projectgreen/products';
 
+import { Cart, CartService } from '@projectgreen/orders';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'ngshop-header',
   templateUrl: './header.component.html'
@@ -11,24 +14,37 @@ import { Categories } from '@projectgreen/products';
 export class HeaderComponent {
 
   items!: MenuItem[];
-  cartCount: number = 8;
 
+  cartCountLength = 0;
+  cartCount: string = '0';
 
   categories: Categories = {};
   categoryName!: string | undefined;
 
-
   constructor(private primengConfig: PrimeNGConfig,
-    private categoriesService: CategoriesService) { }
+    private categoriesService: CategoriesService,
+    private cartService: CartService,
+    private router: Router) { }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
 
-    this._getCategories()
+    this.cartService.initCartLocalStorage();
 
+    this._getCategories();
+
+    this.cartService.cart$.subscribe((cart) => {
+      this.cartCountLength = cart?.items?.length ?? 0;
+      this.cartCount = this.cartCountLength.toString();
+    });
 
 
   }
+
+  goToCart() {
+    this.router.navigateByUrl('cart');
+  }
+
 
   private _getCategories() {
     this.categoriesService.getCategories().subscribe((results) => {

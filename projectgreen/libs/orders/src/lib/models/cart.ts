@@ -4,11 +4,18 @@ export interface Cart {
 
 export interface CartItem {
   productId?: string;
-  quantity?: number;
+  amount?: number;
+  unitType?: string;
+  type?: string;
+  price?: number;
 }
 
 export interface CartItemDetailed {
-  product: any;
-  quantity: number;
-  subTotal: number;
+  product?: any;
+  image?: string;
+  name?: string;
+  amount?: number;
+  unitType?: string;
+  unitPrice?: number;
+  subTotal?: number;
 }

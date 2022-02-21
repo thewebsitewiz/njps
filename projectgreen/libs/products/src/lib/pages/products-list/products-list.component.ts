@@ -41,8 +41,6 @@ export class ProductsListComponent implements OnInit {
         product.image = `${environment.imageUrl}${product.image}`;
         this.products.push(product);
       })
-
-
     });
   }
 
@@ -52,7 +50,6 @@ export class ProductsListComponent implements OnInit {
         this.categories[cat.id] = cat;
       });
       this.categoryName = this.categories[this.categoryId].name;
-      console.log(this.categories[this.categoryId])
     });
   }
 

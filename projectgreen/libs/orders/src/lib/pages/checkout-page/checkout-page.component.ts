@@ -79,7 +79,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       this.orderItems = cart.items.map((item) => {
         return {
           product: item.productId,
-          quantity: item.quantity
+          quantity: item.amount
         };
       });
     }

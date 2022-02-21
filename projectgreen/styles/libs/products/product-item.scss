@@ -1,6 +1,8 @@
 .product-item {
 
   text-align: center;
+  margin-top: 40px;
+  margin-bottom: 10px;
 
   & .product {
     width: 100%;
@@ -17,18 +19,16 @@
     text-align: center;
   }
 
-  & products-product-item {
-    width: 100%;
-    min-width: 100%;
-  }
-
-  & .product-item {
-    text-align: center;
-    min-width: 100%;
-  }
 
   & .featured-product-image {
     width: 80%;
+    border-radius: 8px;
+    filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .4));
+  }
+
+  & .product-name {
+    margin-top: 10px;
+    margin-bottom: 5px;
   }
 
 }

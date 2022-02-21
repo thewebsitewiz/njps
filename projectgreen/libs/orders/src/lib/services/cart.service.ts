@@ -13,7 +13,7 @@ export class CartService {
 
   initCartLocalStorage() {
     const cart: Cart = this.getCart();
-    if (!cart) {
+    if (!cart || !cart.items) {
       const intialCart = {
         items: []
       };
@@ -39,27 +39,43 @@ export class CartService {
     return {};
   }
 
+  /*
+    const cartItem: CartItem = {
+      productId: this.product.id,
+      amount: parseInt(amount, 10),
+      amountName: name,
+      type: type,
+      price: parseInt(price, 10)
+    }; */
+
+
   setCartItem(cartItem: CartItem, updateCartItem?: boolean): Cart {
+    console.log(cartItem, updateCartItem)
     const cart = this.getCart();
+    console.log(cart);
+    if (cart.items === undefined) {
+      this.initCartLocalStorage();
+    }
     if (cart.items !== undefined) {
-      const cartItemExist = cart.items.find((item) => item.productId === cartItem.productId);
+      /* const cartItemExist = cart.items.find((item) => item.productId === cartItem.productId);
       if (cartItemExist && cart.items !== undefined) {
         cart.items.map((item) => {
           if (item.productId === cartItem.productId) {
             if (updateCartItem) {
-              item.quantity = cartItem.quantity;
-            } else {
-              if (item.quantity !== undefined && cartItem.quantity !== undefined) {
-                item.quantity = item.quantity + cartItem.quantity;
+              if (item.amount !== undefined && cartItem.amount !== undefined) {
+                item.amount = item.amount + cartItem.amount;
               }
+            } else {
+              item.amount = cartItem.amount;
             }
             return item;
           }
           return;
         });
-      } else {
-        cart.items.push(cartItem);
-      }
+      } else { */
+      cart.items.push(cartItem);
+      //}
+
     }
 
     const cartJson = JSON.stringify(cart) ?? '';

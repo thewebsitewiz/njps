@@ -18,6 +18,12 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   quantity = 1;
   productImages: string[] = [];
 
+  prices: PriceType[] = [];
+  selectedAmount!: string;
+  selectedAmountDisplay!: string;
+
+  qty: number = 1;
+
   constructor(
     private prodService: ProductsService,
     private route: ActivatedRoute,
@@ -38,13 +44,41 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     this.endSubs$.complete();
   }
 
-  addProductToCart() {
-    const cartItem: CartItem = {
-      productId: this.product.id,
-      quantity: this.quantity
-    };
+  addToCart(qty: number | null, price?: number,) {
+    if (qty === null) {
+      // ${pr.name}:${pr.amount}:${pr.type}:${pr.price}
+      const [name, amount, type, price] = this.selectedAmount.split(':');
+      this.selectedAmountDisplay = `${name} @ $${price}<br/>added to cart`;
 
-    this.cartService.setCartItem(cartItem);
+      const cartItem: CartItem = {
+        productId: this.product.id,
+        amount: parseInt(amount, 10),
+        unitType: this.product.unitType,
+        price: parseInt(price, 10)
+      };
+
+      console.log('Flower or Designer Flower: ', cartItem)
+
+
+      this.cartService.setCartItem(cartItem, false);
+    }
+    else if (qty !== null && qty > 0) {
+      const cartItem: CartItem = {
+        productId: this.product.id,
+        amount: 1,
+        unitType: this.product.unitType
+      };
+
+      if (price !== undefined && price > 0) {
+        cartItem['price'] = price;
+      }
+
+      console.log('Everything else: ', cartItem)
+
+      this.cartService.setCartItem(cartItem, true);
+    }
+
+
   }
 
   private _getProduct(id: string) {
@@ -55,18 +89,35 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         this.product = resProduct;
         console.log(this.product);
 
+        if (this.product.prices !== undefined && this.product.prices.length > 0) {
+          this.product.prices.forEach(pr => {
+            let inactive: boolean = false;
+            let name = pr.name;
+            if (this.product.countInStock === undefined || this.product.countInStock < pr.amount) {
+              inactive = true;
+              name += ': NA';
+            }
+            else {
+              name += `: $${pr.price}`
+            }
+            this.prices.push({ name: name, code: `${pr.name}:${pr.amount}:${pr.type}:${pr.price}`, unavailable: inactive })
+          });
 
+          console.log(this.prices);
 
+        }
 
         this.product.images.unshift(this.product.image);
         this.product.images.forEach((image: any) => {
           image = `${environment.imageUrl}${image}`;
           this.productImages.push(image)
         });
-
-        if (this.product.price === undefined) {
-          this.product.price = 0;
-        }
       });
   }
+}
+
+export interface PriceType {
+  name: string;
+  code: string;
+  unavailable: boolean;
 }

@@ -40,23 +40,8 @@
     }
   }
 
-  &-button {
-    filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .8));
 
-    &:hover {
-      cursor: pointer;
-      background-color: scale-color(#198754, $lightness: -20%);
-      transition: 220ms all ease-in-out;
-      filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .3));
-
-    }
-
-    &:focus {
-      filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .7));
-    }
-
-
-    /* background-color: var(--surface-0);
+  /* background-color: var(--surface-0);
     color: $primary-color;
     border: 0;
     border-radius: 13px;
@@ -67,5 +52,4 @@
       color: $primary-color;
       border: 0;
     } */
-  }
 }

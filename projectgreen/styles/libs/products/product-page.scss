@@ -1,6 +1,42 @@
 .product-page {
   width: 100%;
 
+  h2.brand-flavor-name {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  h1.brand-flavor-name {
+    color: $dark-green;
+    margin-top: 10px;
+  }
+
+  & .name-with-brand-or-flavor {
+    margin-bottom: 3px !important;
+  }
+
+
+  & .action-row {
+    height: 40px;
+    position: relative;
+
+    & p-button {
+      float: right;
+    }
+  }
+
+  & .item-price {
+    font-weight: 700;
+    font-size: 24px;
+    color: $black;
+
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+
   & .product-content {
     width: 90%;
     margin-left: auto;
@@ -11,6 +47,23 @@
       line-height: 1.5;
     }
 
+  }
+
+  .p-dropdown-item {
+    font-weight: 700;
+    font-size: 16px;
+    color: $black;
+
+    .p-disabled {
+      font-weight: 400;
+      color: $med-grey;
+    }
+
+
+  }
+
+  .selectedAmount {
+    float: right;
   }
 
 }
