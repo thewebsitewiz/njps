@@ -2,30 +2,28 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CategoriesService, Category } from '@projectgreen/products';
+import { Delivery, DeliveryService } from '@projectgreen/orders';
 import { MessageService } from 'primeng/api';
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { environment } from '@env/environment';
-
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'admin-categories-form',
-  templateUrl: './categories-form.component.html',
+  selector: 'admin-delivery-form',
+  templateUrl: './delivery-form.component.html',
   styles: []
 })
-export class CategoriesFormComponent implements OnInit, OnDestroy {
+export class DeliveryFormComponent implements OnInit, OnDestroy {
   editmode = false;
   form!: FormGroup;
   isSubmitted = false;
+  catagories = [];
   imageDisplay!: string | ArrayBuffer | null | undefined;
-  currentCategoryId!: string;
+  currentDeliveryId!: string;
   endsubs$: Subject<any> = new Subject();
 
   constructor(
     private formBuilder: FormBuilder,
-    private categoriesService: CategoriesService,
+    private deliveryService: DeliveryService,
     private messageService: MessageService,
     private location: Location,
     private route: ActivatedRoute
@@ -43,21 +41,22 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
 
   private _initForm() {
     this.form = this.formBuilder.group({
-      name: ['', Validators.required],
-      image: ['', Validators.required]
+      zipCode: ['', Validators.required],
+      city: ['', Validators.required],
+      price: ['', Validators.required]
     });
   }
 
-  private _addCategory(categoryData: FormData) {
-    this.categoriesService
-      .createCategory(categoryData)
+  private _addDelivery(deliveryData: FormData) {
+    this.deliveryService
+      .createDelivery(deliveryData)
       .pipe(takeUntil(this.endsubs$))
       .subscribe(
-        (category: Category) => {
+        (delivery: Delivery) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: `Category ${category.name} is created!`
+            detail: `Product ${delivery.zipCode} ${delivery.city} is created!`
           });
           timer(2000)
             .toPromise()
@@ -69,24 +68,22 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Category is not created!'
+            detail: 'Delivery is not created!'
           });
         }
       );
   }
 
-  private _updateCategory(categoryFormData: FormData) {
-
-
-    this.categoriesService
-      .updateCategory(categoryFormData, this.currentCategoryId)
+  private _updateProduct(productFormData: FormData) {
+    this.deliveryService
+      .updateDelivery(productFormData, this.currentDeliveryId)
       .pipe(takeUntil(this.endsubs$))
       .subscribe(
         () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Product is updated!'
+            detail: 'Delivery is updated!'
           });
           timer(2000)
             .toPromise()
@@ -98,7 +95,7 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Category is not updated!'
+            detail: 'Delivery is not updated!'
           });
         }
       );
@@ -108,16 +105,14 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
       if (params['id']) {
         this.editmode = true;
-        this.currentCategoryId = params['id'];
-        this.categoriesService
-          .getCategory(params['id'])
+        this.currentDeliveryId = params['id'];
+        this.deliveryService
+          .getDelivery(params['id'])
           .pipe(takeUntil(this.endsubs$))
-          .subscribe((category) => {
-            category.image = `${environment.imageUrl}${category.image}`;
-            this.categoryForm['name'].setValue(category.name);
-            this.imageDisplay = category.image;
-            this.categoryForm['image'].setValidators([]);
-            this.categoryForm['image'].updateValueAndValidity();
+          .subscribe((delivery) => {
+            this.deliveryForm['zipCode'].setValue(delivery.zipCode);
+            this.deliveryForm['city'].setValue(delivery.city);
+            this.deliveryForm['price'].setValue(delivery.price);
           });
       }
     });
@@ -125,17 +120,19 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.isSubmitted = true;
+    console.log(this.form.value)
     if (this.form.invalid) return;
 
-    const categoryFormData = new FormData();
-    Object.keys(this.categoryForm).map((key) => {
-      categoryFormData.append(key, this.categoryForm[key].value);
+    const deliveryFormData: any = {};
+    Object.keys(this.deliveryForm).map((key) => {
+      console.log(key, this.deliveryForm[key].value)
+      deliveryFormData[key] = this.deliveryForm[key].value;
     });
 
     if (this.editmode) {
-      this._updateCategory(categoryFormData);
+      this._updateProduct(deliveryFormData);
     } else {
-      this._addCategory(categoryFormData);
+      this._addDelivery(deliveryFormData);
     }
   }
   onCancel() {
@@ -158,7 +155,7 @@ export class CategoriesFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  get categoryForm() {
+  get deliveryForm() {
     return this.form.controls;
   }
 }

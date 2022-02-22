@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
@@ -11,6 +11,20 @@ import { OrdersService } from '../../services/orders.service';
   styles: []
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
+
+  private _delivery: any;
+  @Input() set delivery(value: any) {
+    if (this._delivery !== value) {
+      this._delivery = value;
+      this.updateDelivery(this._delivery);
+    }
+
+
+  }
+
+  deliveryMsg: string = 'Based on location';
+  displayMsgAlert: boolean = false;
+
   endSubs$: Subject<any> = new Subject();
   totalPrice!: number;
   isCheckout = false;
@@ -20,6 +34,10 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     private ordersService: OrdersService
   ) {
     this.router.url.includes('checkout') ? (this.isCheckout = true) : (this.isCheckout = false);
+  }
+
+  get delivery(): any {
+    return this._delivery;
   }
 
   ngOnInit(): void {
@@ -35,20 +53,42 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((cart) => {
       this.totalPrice = 0;
       if (cart && cart.items !== undefined) {
+        console.log('order summary cart: ', cart)
         cart.items.map((item) => {
           if (item.productId !== undefined) {
             this.ordersService
               .getProduct(item.productId)
               .pipe(take(1))
               .subscribe((product) => {
-                if (item.amount !== undefined) {
-                  this.totalPrice += product.price * item.amount;
+                if (item.unitType === 'gram' && item.price !== undefined) {
+                  this.totalPrice += item.price
                 }
+                else {
+                  if (item.amount !== undefined) {
+                    this.totalPrice += product.price * item.amount;
+                  }
+                }
+
               });
           }
         });
       }
     });
+  }
+
+  updateDelivery(delivery: any) {
+    if (delivery === null || delivery === '') {
+      this._getOrderSummary();
+      this.deliveryMsg = 'Delivery not available';
+      this.displayMsgAlert = true;
+    }
+    else if (delivery.toString().match(/^[0-9]*$/)) {
+      this.totalPrice += delivery;
+      this.deliveryMsg = `$${delivery}.00`
+    }
+  }
+  emptyCart() {
+    this.cartService.emptyCart();
   }
 
   navigateToCheckout() {

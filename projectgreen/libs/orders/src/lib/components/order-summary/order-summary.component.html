@@ -1,12 +1,15 @@
 <div class="order-summary">
-  <h3>Order Summary</h3>
+  <div class="cart-info">
+    <h3 style="display: inline-block;">Order Summary</h3>
+    <div class="empty-cart" (click)="emptyCart()" style="float: right;">Empty Cart</div>
+  </div>
   <div class="summary-price">
     <span>Items Price</span>
     <span>{{ totalPrice | currency }}</span>
   </div>
   <div class="summary-price">
-    <span>Packing & Shipping</span>
-    <span class="free">Free</span>
+    <span>Delivery</span>
+    <span class="free" [ngClass]="{'displayMsgAlert' : displayMsgAlert }">{{ deliveryMsg }}</span>
   </div>
   <div class="to-checkout">
     <div class="summary-price">
@@ -14,7 +17,8 @@
       <span>{{ totalPrice | currency }}</span>
     </div>
     <div class="checkout-button" *ngIf="!isCheckout">
-      <p-button label="Checkout" (onClick)="navigateToCheckout()"></p-button>
+      <p-button label="Checkout" [ngClass]="{'ready-for-checkout': !displayMsgAlert}" (onClick)="navigateToCheckout()">
+      </p-button>
     </div>
   </div>
 </div>

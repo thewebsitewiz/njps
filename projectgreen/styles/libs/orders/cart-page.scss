@@ -17,8 +17,9 @@
     margin-bottom: 15px;
 
     &-image {
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
+      border-radius: 3px;
 
       &-container {
         display: inline-block;
@@ -36,7 +37,7 @@
       }
 
       &-right {
-        text-align: right;
+        text-align: right !important;
       }
 
 
@@ -70,4 +71,8 @@
     }
   }
 
+
+  & .p-datatable .p-datatable-tbody>tr>td {
+    border-bottom: 1px solid $med-grey;
+  }
 }

@@ -23,13 +23,16 @@
     && product.price !== undefined && product.price !== null">
       <div class="action-row">
         <div class="item-price">{{ this.product.price | currency}}</div>
-        <p-inputNumber [(ngModel)]="qty" [showButtons]="true" buttonLayout="horizontal"
-          incrementButtonIcon="pi pi-plus smaller-btn" decrementButtonIcon="pi pi-minus smaller-btn" [min]="0"
-          decrementButtonClass="number-input-btn" incrementButtonClass="number-input-btn"
+        <p-inputNumber [disabled]="fieldDisabled" [(ngModel)]="qty" [showButtons]="true" buttonLayout="horizontal"
+          incrementButtonIcon="pi pi-plus smaller-btn" decrementButtonIcon="pi pi-minus smaller-btn" [min]="1"
+          [max]="max" decrementButtonClass="number-input-btn" incrementButtonClass="number-input-btn"
           inputStyleClass="input-style-class">
         </p-inputNumber>
-        <p-button styleClass="see-more" label="Add to cart" (click)="addToCart(1)"></p-button>
+        <p-button [disabled]="fieldDisabled" styleClass="see-more" [ngClass]="{'disabled-btn': !fieldDisabled }"
+          label="Add to cart" (click)="addToCart(qty)">
+        </p-button>
       </div>
+      <div class="message-row" *ngIf="limitedQuantityMessage !== ''">{{ limitedQuantityMessage }}</div>
     </ng-container>
 
     <p class="product-desc"

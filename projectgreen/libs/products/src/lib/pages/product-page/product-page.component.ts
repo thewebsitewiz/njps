@@ -15,7 +15,6 @@ import { environment } from '@env/environment';
 export class ProductPageComponent implements OnInit, OnDestroy {
   product!: Product;
   endSubs$: Subject<any> = new Subject();
-  quantity = 1;
   productImages: string[] = [];
 
   prices: PriceType[] = [];
@@ -23,6 +22,12 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   selectedAmountDisplay!: string;
 
   qty: number = 1;
+  min: number = 1;
+  max!: number;
+  addToCartBtn: boolean = true;
+  qtyField: boolean = true;
+  fieldDisabled: boolean = false;
+  limitedQuantityMessage: string = '';
 
   constructor(
     private prodService: ProductsService,
@@ -44,41 +49,46 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     this.endSubs$.complete();
   }
 
-  addToCart(qty: number | null, price?: number,) {
-    if (qty === null) {
-      // ${pr.name}:${pr.amount}:${pr.type}:${pr.price}
-      const [name, amount, type, price] = this.selectedAmount.split(':');
-      this.selectedAmountDisplay = `${name} @ $${price}<br/>added to cart`;
+  addToCart(qty: number | null, price?: number) {
+    if (!this.fieldDisabled) {
+      console.log('qty: ', qty)
+      if (qty === null) {
+        console.log('selectedAmount: ', this.selectedAmount)
+        // ${pr.name}:${pr.amount}:${pr.type}:${pr.price}
+        if (this.selectedAmount !== undefined) {
+          const [name, amount, price] = this.selectedAmount.split(':');
+          this.selectedAmountDisplay = `${name} @ $${price}<br/>added to cart`;
 
-      const cartItem: CartItem = {
-        productId: this.product.id,
-        amount: parseInt(amount, 10),
-        unitType: this.product.unitType,
-        price: parseInt(price, 10)
-      };
+          const cartItem: CartItem = {
+            productId: this.product.id,
+            amount: parseInt(amount, 10),
+            unitType: this.product.unitType,
+            amountName: name,
+            price: parseInt(price, 10)
+          };
 
-      console.log('Flower or Designer Flower: ', cartItem)
+          console.log('Flower or Designer Flower: ', cartItem)
 
+          this.cartService.setCartItem(cartItem, false);
+        }
+      }
+      else if (qty !== null && qty > 0) {
+        const cartItem: CartItem = {
+          productId: this.product.id,
+          amount: qty,
+          unitType: this.product.unitType
+        };
 
-      this.cartService.setCartItem(cartItem, false);
-    }
-    else if (qty !== null && qty > 0) {
-      const cartItem: CartItem = {
-        productId: this.product.id,
-        amount: 1,
-        unitType: this.product.unitType
-      };
+        if (price !== undefined && price > 0) {
+          cartItem['price'] = price;
+        }
 
-      if (price !== undefined && price > 0) {
-        cartItem['price'] = price;
+        console.log('Everything else: ', cartItem)
+
+        this.cartService.setCartItem(cartItem, true);
       }
 
-      console.log('Everything else: ', cartItem)
-
-      this.cartService.setCartItem(cartItem, true);
     }
-
-
   }
 
   private _getProduct(id: string) {
@@ -88,6 +98,17 @@ export class ProductPageComponent implements OnInit, OnDestroy {
       .subscribe((resProduct) => {
         this.product = resProduct;
         console.log(this.product);
+
+        this.max = this.product.countInStock;
+        if (this.product.countInStock < 1) {
+          this.fieldDisabled = true;
+        }
+        if (this.product.countInStock < 5) {
+          this.limitedQuantityMessage = 'Limited quantity available!';
+        }
+        if (this.product.countInStock < 1) {
+          this.limitedQuantityMessage = 'Sold out!';
+        }
 
         if (this.product.prices !== undefined && this.product.prices.length > 0) {
           this.product.prices.forEach(pr => {
@@ -100,7 +121,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
             else {
               name += `: $${pr.price}`
             }
-            this.prices.push({ name: name, code: `${pr.name}:${pr.amount}:${pr.type}:${pr.price}`, unavailable: inactive })
+            this.prices.push({ name: name, code: `${pr.name}:${pr.amount}:${pr.price}`, unavailable: inactive })
           });
 
           console.log(this.prices);
@@ -121,3 +142,5 @@ export interface PriceType {
   code: string;
   unavailable: boolean;
 }
+
+

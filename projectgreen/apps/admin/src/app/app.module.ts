@@ -10,6 +10,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
 import { ProductsFormComponent } from './pages/products/products-form/products-form.component';
+import { DeliveryListComponent } from './pages/delivery/delivery-list/delivery-list.component';
+import { DeliveryFormComponent } from './pages/delivery/delivery-form/delivery-form.component';
 import { UsersListComponent } from './pages/users/users-list/users-list.component';
 import { UsersFormComponent } from './pages/users/users-form/users-form.component';
 import { JwtInterceptor, UsersModule } from '@projectgreen/users';
@@ -84,7 +86,9 @@ const UX_MODULE = [
     UsersListComponent,
     UsersFormComponent,
     OrdersListComponent,
-    OrdersDetailComponent
+    OrdersDetailComponent,
+    DeliveryListComponent,
+    DeliveryFormComponent
 
 
   ],

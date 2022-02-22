@@ -3,15 +3,25 @@
   padding: 15px;
   border: 1px solid var(--surface-200);
 
+  & .cart-info {
+    .empty-cart {
+      margin-top: 18px;
+      color: $dark-green;
+      display: inline-block;
+    }
+  }
+
   .summary-price {
     display: flex;
     margin: 15px 0;
+
     span {
       display: block;
-      width: 80%;
+      width: 70%;
 
       &:last-child {
-        width: 20%;
+        text-align: right;
+        width: 30%;
         font-weight: 600;
       }
 
@@ -23,7 +33,17 @@
 
   .checkout-button {
     button {
+      background-color: $dark-green;
       width: 100%;
     }
   }
+
+}
+
+.displayMsgAlert {
+  color: $alert-color !important;
+}
+
+.enabledButton {
+  background-color: $dark-green !important;
 }

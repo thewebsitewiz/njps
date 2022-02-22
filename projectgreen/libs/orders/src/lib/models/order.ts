@@ -25,6 +25,7 @@ export interface OrderForm {
   country?: string;
   phone?: string;
   status?: number;
+  delivery?: number;
   totalPrice?: string;
   user?: any;
   dateOrdered?: string;

@@ -4,21 +4,21 @@
   <div class="continue-shopping">
     <p-button label="Continue shopping" icon="pi pi-arrow-left" (onClick)="backToShop()"></p-button>
   </div>
-  <div>
-    <h4>My Cart: {{ cartCount }} Item(s)</h4>
-  </div>
+
+  <h4>My Cart: {{ cartCount }} Item(s)</h4>
+
   <!--   <div class="cart-shipping p-mb-5">
     Delivery costs based on location:
   </div> -->
-  <p-table [value]="cartItemsDetailed" responsiveLayout="scroll">
-    <!-- <ng-template pTemplate="header">
+  <p-table [value]="cartItemsDetailed" responsiveLayout="scroll" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
       <tr>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Amount</th>
-        <th>Price</th>
+        <th class="cart-item-cell cart-item-cell-left">Image</th>
+        <th class="cart-item-cell cart-item-cell-left">Name</th>
+        <th class="cart-item-cell cart-item-cell-left">Amt</th>
+        <th class="cart-item-cell cart-item-cell-right">Price</th>
       </tr>
-    </ng-template> -->
+    </ng-template>
     <ng-template pTemplate="body" let-cartItemsDetailed>
       <tr>
         <td class="cart-item-cell cart-item-cell-left"><img [src]="cartItemsDetailed.image" class="cart-item-image" />

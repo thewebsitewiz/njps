@@ -15,7 +15,6 @@
     margin-bottom: 3px !important;
   }
 
-
   & .action-row {
     height: 40px;
     position: relative;
@@ -23,6 +22,10 @@
     & p-button {
       float: right;
     }
+  }
+
+  & .message-row {
+    color: $alert-color;
   }
 
   & .item-price {

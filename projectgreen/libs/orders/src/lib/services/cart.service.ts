@@ -49,15 +49,15 @@ export class CartService {
     }; */
 
 
-  setCartItem(cartItem: CartItem, updateCartItem?: boolean): Cart {
-    console.log(cartItem, updateCartItem)
+  setCartItem(cartItem: CartItem, updateCartItem: boolean = true): Cart {
+    console.log('cartItem: ', cartItem, updateCartItem)
     const cart = this.getCart();
-    console.log(cart);
+    console.log('cart: ', cart);
     if (cart.items === undefined) {
       this.initCartLocalStorage();
     }
     if (cart.items !== undefined) {
-      /* const cartItemExist = cart.items.find((item) => item.productId === cartItem.productId);
+      const cartItemExist = cart.items.find((item) => item.productId === cartItem.productId);
       if (cartItemExist && cart.items !== undefined) {
         cart.items.map((item) => {
           if (item.productId === cartItem.productId) {
@@ -72,9 +72,9 @@ export class CartService {
           }
           return;
         });
-      } else { */
-      cart.items.push(cartItem);
-      //}
+      } else {
+        cart.items.push(cartItem);
+      }
 
     }
 

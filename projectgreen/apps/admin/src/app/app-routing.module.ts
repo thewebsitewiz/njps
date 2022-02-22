@@ -8,6 +8,8 @@ import { OrdersDetailComponent } from './pages/orders/orders-detail/orders-detai
 import { OrdersListComponent } from './pages/orders/orders-list/orders-list.component';
 import { ProductsFormComponent } from './pages/products/products-form/products-form.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
+import { DeliveryFormComponent } from './pages/delivery/delivery-form/delivery-form.component';
+import { DeliveryListComponent } from './pages/delivery/delivery-list/delivery-list.component';
 import { UsersFormComponent } from './pages/users/users-form/users-form.component';
 import { UsersListComponent } from './pages/users/users-list/users-list.component';
 import { ShellComponent } from './shared/shell/shell.component';
@@ -45,6 +47,18 @@ const routes: Routes = [
       {
         path: 'products/form/:id',
         component: ProductsFormComponent
+      },
+      {
+        path: 'delivery',
+        component: DeliveryListComponent
+      },
+      {
+        path: 'delivery/form',
+        component: DeliveryFormComponent
+      },
+      {
+        path: 'delivery/form/:id',
+        component: DeliveryFormComponent
       },
       {
         path: 'users',

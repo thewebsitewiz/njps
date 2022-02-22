@@ -16,7 +16,7 @@ export class HeaderComponent {
   items!: MenuItem[];
 
   cartCountLength = 0;
-  cartCount: string = '0';
+  cartCount: number = 0;
 
   categories: Categories = {};
   categoryName!: string | undefined;
@@ -34,8 +34,16 @@ export class HeaderComponent {
     this._getCategories();
 
     this.cartService.cart$.subscribe((cart) => {
-      this.cartCountLength = cart?.items?.length ?? 0;
-      this.cartCount = this.cartCountLength.toString();
+      if (cart.items !== undefined) {
+        cart.items.forEach((cart) => {
+          if (cart.unitType === 'gram') {
+            this.cartCount++;
+          }
+          if (cart.unitType === 'Item' && cart.amount !== undefined) {
+            this.cartCount = this.cartCount + cart.amount;
+          }
+        })
+      }
     });
 
 

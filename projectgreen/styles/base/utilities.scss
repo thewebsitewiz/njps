@@ -9,13 +9,26 @@ p-button {
     background-color: scale-color(#198754, $lightness: -20%);
     transition: 220ms all ease-in-out;
     filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .3));
-
   }
 
   &:focus {
     filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .7));
   }
 }
+
+
+.disabled-btn {
+  background-color: scale-color($med-green, $lightness: -20%);
+  filter: drop-shadow();
+
+  &:hover {}
+
+  &:focus {
+    filter: drop-shadow();
+  }
+}
+
+
 
 
 .centered {

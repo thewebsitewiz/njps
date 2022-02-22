@@ -12,7 +12,7 @@ export interface Product {
   price: number;
   prices: Price[];
   category?: Category;
-  countInStock?: number;
+  countInStock: number;
   unitType: string;
   rating?: number;
   numReviews?: number;

@@ -36,11 +36,10 @@ export class CartPageComponent implements OnInit, OnDestroy {
     this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
       this.cartItemsDetailed = [];
 
-      console.log('respCart: ', respCart)
-
       if (respCart.items !== undefined) {
         this.cartCount = respCart.items.length ?? 0;
         respCart.items.forEach((cartItem) => {
+
           if (cartItem.productId !== undefined) {
             this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
               respProduct.image = `${environment.imageUrl}${respProduct.image}`;
@@ -48,20 +47,19 @@ export class CartPageComponent implements OnInit, OnDestroy {
                 this.cartItemsDetailed.push({
                   image: respProduct.image,
                   name: respProduct.name,
-                  unitType: cartItem.unitType,
+                  amountName: cartItem.amountName,
                   subTotal: cartItem.price
                 });
               }
-              else if (respProduct.product?.price !== undefined && cartItem.amount !== undefined) {
+              else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
                 const unitPrice = respProduct.price ?? 0;
                 const amount = cartItem.amount ?? 0;
                 let subTotal = unitPrice * amount;
 
                 this.cartItemsDetailed.push({
                   image: respProduct.image,
-                  product: respProduct,
-                  amount: cartItem.amount,
-                  unitType: cartItem.unitType,
+                  name: respProduct.name,
+                  amountName: cartItem.amount,
                   subTotal: subTotal
                 });
               }
@@ -74,8 +72,9 @@ export class CartPageComponent implements OnInit, OnDestroy {
     });
   }
 
+
   backToShop() {
-    this.router.navigate(['/products']);
+    this.router.navigate(['/']);
   }
 
   /*   deleteCartItem(cartItem: CartItemDetailed) {

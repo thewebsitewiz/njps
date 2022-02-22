@@ -1,9 +1,14 @@
 .checkout-page {
+  padding: 15px;
   min-height: 500px;
 
   button {
-    background-color: $primary-color;
+    background-color: $med-green;
     border: 0;
+  }
+
+  .ready-for-checkout button {
+    background-color: $dark-green !important;
   }
 
   .checkout {
@@ -13,6 +18,7 @@
 
     &-button {
       margin-top: 20px;
+
       button {
         width: 100%;
       }
