@@ -44,7 +44,6 @@ export class DeliveryListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.endsubs$))
       .subscribe((deliveries: any) => {
         this.deliveries = deliveries;
-        console.log(this.deliveries)
       });
   }
 

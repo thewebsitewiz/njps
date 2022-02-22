@@ -85,9 +85,6 @@ router.post('/', uploadOptions.single('image'), async (req, res) => {
 
 
 router.put('/:id', uploadOptions.single('image'), async (req, res) => {
-
-    console.log('req.body: ', req.body);
-    console.log('req.file: ', req.file);
     const file = req.file;
     const dirFilePath = imgPathUtils.getNewDirPath();
 
@@ -100,7 +97,6 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         imagePath = req.body.icon;
     }
 
-    console.log('imagePath: ', imagePath)
     const category = await Category.findByIdAndUpdate(
         req.params.id, {
             name: req.body.name,

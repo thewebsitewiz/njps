@@ -44,11 +44,16 @@ router.get(`/:id`, async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    const orderRef = [];
+    console.log('******************************');
+    console.log(req.body.orderItems);
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) => {
+
         let newOrderItem = new OrderItem({
-            quantity: orderItem.quantity,
+            amount: orderItem.amount,
+            amountName: orderItem.amountName,
             product: orderItem.product
-        })
+        });
 
         newOrderItem = await newOrderItem.save();
 
@@ -56,32 +61,47 @@ router.post('/', async (req, res) => {
     }))
     const orderItemsIdsResolved = await orderItemsIds;
 
+
+
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
-        const orderItem = await OrderItem.findById(orderItemId).populate('product', 'price');
-        const totalPrice = orderItem.product.price * orderItem.quantity;
-        return totalPrice
+        const orderItem = await OrderItem.findById(orderItemId).populate('product');
+
+
+
+        /* if ( unitType === 'gram') {
+
+          }
+          else {
+              totalPrice += orderItem.product.price * orderItem.quantity;
+          }
+
+    return totalPrice */
     }))
 
-    const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
 
-    let order = new Order({
-        orderItems: orderItemsIdsResolved,
-        shippingAddress1: req.body.shippingAddress1,
-        shippingAddress2: req.body.shippingAddress2,
-        city: req.body.city,
-        zip: req.body.zip,
-        country: req.body.country,
-        phone: req.body.phone,
-        status: req.body.status,
-        totalPrice: totalPrice,
-        user: req.body.user,
-    })
-    order = await order.save();
+    /* 
+        const totalPrice = 4; //totalPrices.reduce((a, b) => a + b, 0);
 
-    if (!order)
-        return res.status(400).send('the order cannot be created!')
+        let order = new Order({
+            orderItems: orderItemsIdsResolved,
+            shippingAddress1: req.body.shippingAddress1,
+            shippingAddress2: req.body.shippingAddress2,
+            city: req.body.city,
+            zip: req.body.zip,
+            delivery: req.body.delivery,
+            phone: req.body.phone,
+            status: req.body.status,
+            name: req.body.name,
+            totalPrice: totalPrice,
+            user: req.body.user,
+        })
+        order = await order.save();
 
-    res.send(order);
+        if (!order)
+            return res.status(400).send('the order cannot be created!') */
+
+    //res.send(order);
+    res.send(null);
 })
 
 

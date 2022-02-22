@@ -5,23 +5,18 @@ const maxNumberOfFilesInDirectory = 100;
 
 module.exports.getNewDirPath = () => {
     const currentScriptPath = path.join(__dirname);
-    console.log('file: file.ts ~ line 48 ~ getNewDirPath ~ currentScriptPath', currentScriptPath);
 
     const srcPath = currentScriptPath.replace(/helpers$/, '');
-    console.log('file: file.ts ~ line 51 ~ getNewDirPath ~ srcPath', srcPath);
 
     const imgPath = `${srcPath}public/images`
-    console.log('file: file.ts ~ line 54 ~ getNewDirPath ~ imgPath', imgPath);
 
     const currentImgPath = getCurrentDirPath(imgPath)
-    console.log('file: file.ts ~ line 57 ~ getcurrentDirPath ~ currentImgPath', currentImgPath);
 
     return currentImgPath;
 }
 
 function getCurrentDirPath(imgPath) {
     const lastImgDirPath = getLastDirectoryInDirectory(imgPath);
-    console.log('file: file.ts ~ line 64 ~ getCurrentDirPath ~ lastImgDirPath', lastImgDirPath);
 
     const filesInLastDirectory = fs.readdirSync(lastImgDirPath).length;
 
@@ -39,7 +34,7 @@ function getCurrentDirPath(imgPath) {
         fs.mkdirSync(nextDirectoryPath);
 
     }
-    console.log('file: products.js ~ line 82 ~ getCurrentDirPath ~ nextDirectoryPath', nextDirectoryPath);
+
     return nextDirectoryPath;
 
 }

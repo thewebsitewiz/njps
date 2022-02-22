@@ -73,7 +73,6 @@ export class CategoriesListComponent implements OnInit, OnDestroy {
       .subscribe((results) => {
         results.forEach((category: any) => {
           category.image = `${environment.imageUrl}${category.image}`;
-          console.log('category.image: ', category.image)
           this.categories.push(category)
         })
       });

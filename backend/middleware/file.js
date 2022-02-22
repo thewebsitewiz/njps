@@ -1,4 +1,4 @@
-export { }
+export {}
 
 const multer = require("multer");
 const fs = require("fs");
@@ -41,20 +41,15 @@ const storage = multer.diskStorage({
     }
 });
 
-module.exports = multer({ storage: storage }).single("image");
+module.exports = multer({
+    storage: storage
+}).single("image");
 
 function getNewDirPath() {
     const currentScriptPath = path.join(__dirname);
-    console.log('file: file.ts ~ line 44 ~ getNewDirPath ~ currentScriptPath', currentScriptPath);
-
     const srcPath = currentScriptPath.replace(/middleware$/, '');
-    console.log('file: file.ts ~ line 44 ~ getNewDirPath ~ srcPath', srcPath);
-
     const imgPath = `${srcPath}images`
-    console.log('file: file.ts ~ line 48 ~ getNewDirPath ~ imgPath', imgPath);
-
     const currentImgPath = getCurrentDirPath(imgPath)
-    console.log('file: file.ts ~ line 52 ~ getcurrentDirPath ~ currentImgPath', currentImgPath);
 
     return currentImgPath;
 
@@ -63,7 +58,6 @@ function getNewDirPath() {
 
 function getCurrentDirPath(imgPath) {
     const lastImgDirPath = getLastDirectoryInDirectory(imgPath);
-    console.log('file: file.ts ~ line 57 ~ getCurrentDirPath ~ lastImgDirPath', lastImgDirPath);
 
     const filesInLastDirectory = fs.readdirSync(lastImgDirPath).length;
 

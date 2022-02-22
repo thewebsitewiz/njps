@@ -48,7 +48,6 @@ export class ProductsListComponent implements OnInit, OnDestroy {
           this.products.push(product)
         })
         this.totalRecords = this.products.length;
-        console.log(this.products)
       });
   }
 

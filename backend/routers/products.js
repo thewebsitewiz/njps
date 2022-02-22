@@ -65,7 +65,6 @@ router.get(`/`, async (req, res) => {
 
 router.get(`/:id`, async (req, res) => {
     const product = await Product.findById(req.params.id).populate('category');
-    console.log('Product: ', product);
 
     if (!product) {
         res.status(500).json({
@@ -213,12 +212,10 @@ router.delete('/:id', (req, res) => {
 router.get('/get/count', async (req, res) => {
     try {
         const productCount = await Product.countDocuments();
-        console.log('countOrder: ', productCount)
         res.send({
             productCount: productCount
         });
     } catch (err) {
-        console.log('productCount Error: ', err)
         res.status(500).json({
             success: false
         });

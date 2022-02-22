@@ -22,7 +22,6 @@ export class DeliveryService {
   }
 
   createDelivery(deliveryForm: FormData): Observable<Delivery> {
-    console.log('file: delivery.service.ts ~ line 25 ~ DeliveryService ~ createDelivery ~ deliveryForm', deliveryForm);
     return this.http.post<Delivery>(this.apiURLDelivery, deliveryForm);
   }
 

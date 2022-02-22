@@ -68,7 +68,6 @@ export class CartPageComponent implements OnInit, OnDestroy {
         });
       }
 
-      console.log('this.cartItemsDetailed: ', this.cartItemsDetailed);
     });
   }
 

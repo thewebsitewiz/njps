@@ -120,12 +120,10 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.isSubmitted = true;
-    console.log(this.form.value)
     if (this.form.invalid) return;
 
     const deliveryFormData: any = {};
     Object.keys(this.deliveryForm).map((key) => {
-      console.log(key, this.deliveryForm[key].value)
       deliveryFormData[key] = this.deliveryForm[key].value;
     });
 

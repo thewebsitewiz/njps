@@ -51,9 +51,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
 
   addToCart(qty: number | null, price?: number) {
     if (!this.fieldDisabled) {
-      console.log('qty: ', qty)
       if (qty === null) {
-        console.log('selectedAmount: ', this.selectedAmount)
         // ${pr.name}:${pr.amount}:${pr.type}:${pr.price}
         if (this.selectedAmount !== undefined) {
           const [name, amount, price] = this.selectedAmount.split(':');
@@ -66,8 +64,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
             amountName: name,
             price: parseInt(price, 10)
           };
-
-          console.log('Flower or Designer Flower: ', cartItem)
 
           this.cartService.setCartItem(cartItem, false);
         }
@@ -83,8 +79,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
           cartItem['price'] = price;
         }
 
-        console.log('Everything else: ', cartItem)
-
         this.cartService.setCartItem(cartItem, true);
       }
 
@@ -97,7 +91,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.endSubs$))
       .subscribe((resProduct) => {
         this.product = resProduct;
-        console.log(this.product);
 
         this.max = this.product.countInStock;
         if (this.product.countInStock < 1) {
@@ -123,8 +116,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
             }
             this.prices.push({ name: name, code: `${pr.name}:${pr.amount}:${pr.price}`, unavailable: inactive })
           });
-
-          console.log(this.prices);
 
         }
 

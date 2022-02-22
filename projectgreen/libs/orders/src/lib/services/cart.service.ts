@@ -50,9 +50,7 @@ export class CartService {
 
 
   setCartItem(cartItem: CartItem, updateCartItem: boolean = true): Cart {
-    console.log('cartItem: ', cartItem, updateCartItem)
     const cart = this.getCart();
-    console.log('cart: ', cart);
     if (cart.items === undefined) {
       this.initCartLocalStorage();
     }

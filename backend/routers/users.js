@@ -32,11 +32,8 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const saltRounds = parseInt(process.env.PG_SALT, 10);
-    console.log('saltRounds: ', saltRounds);
     const salt = bcrypt.genSaltSync(saltRounds);
-    console.log('salt: ', salt);
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-    console.log('hashedPassword: ', hashedPassword);
     let user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -168,12 +165,10 @@ router.delete('/:id', (req, res) => {
 router.get('/get/count', async (req, res) => {
     try {
         const userCount = await User.countDocuments();
-        console.log('userCount: ', userCount)
         res.send({
             userCount: userCount
         });
     } catch (err) {
-        console.log('userCount Error: ', err)
         res.status(500).json({
             success: false
         });

@@ -25,7 +25,6 @@ export class CategoriesService {
   }
 
   updateCategory(category: FormData, categoryid: string): Observable<Category> {
-    console.log('file: categories.service.ts ~ line 28 ~ CategoriesService ~ updateCategory ~ category', category);
     return this.http.put<Category>(`${this.apiURLCategories}/${categoryid}`, category);
   }
 

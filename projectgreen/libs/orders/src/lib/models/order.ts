@@ -18,6 +18,7 @@ export interface Order {
 export interface OrderForm {
   id?: string;
   orderItems?: OrderItem[];
+  name: string;
   shippingAddress1?: string;
   shippingAddress2?: string;
   city?: string;

@@ -53,7 +53,6 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((cart) => {
       this.totalPrice = 0;
       if (cart && cart.items !== undefined) {
-        console.log('order summary cart: ', cart)
         cart.items.map((item) => {
           if (item.productId !== undefined) {
             this.ordersService

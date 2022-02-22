@@ -34,6 +34,7 @@ export class HeaderComponent {
     this._getCategories();
 
     this.cartService.cart$.subscribe((cart) => {
+      this.cartCount = 0;
       if (cart.items !== undefined) {
         cart.items.forEach((cart) => {
           if (cart.unitType === 'gram') {

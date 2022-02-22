@@ -30,6 +30,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   userId!: string;
   countries: { id: string; name: string }[] = [];
   unsubscribe$: Subject<any> = new Subject();
+  endSubs$: Subject<any> = new Subject();
 
   readyForCheckout: boolean = false;
 
@@ -39,13 +40,15 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._initCheckoutForm();
     //this._autoFillUserData();
-    this._getCartItems();
-    // this._getCountries();
+    //this._getCartItems();
+    this._getCartDetails();
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next(null);
     this.unsubscribe$.complete();
+    this.endSubs$.next(null);
+    this.endSubs$.complete();
   }
 
   private _initCheckoutForm() {
@@ -95,23 +98,53 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       this.orderItems = cart.items.map((item) => {
         return {
           product: item.productId,
-          quantity: item.amount
+          amount: item.amount,
+          amountName: item.amountName,
+          unitType: item.unitType,
+          price: item.price
         };
       });
     }
   }
-  /*
-    private _getCountries() {
-      this.countries = this.usersService.getCountries();
-    }
-   */
+
+  private async _getCartDetails() {
+    this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
+      this.orderItems = [];
+
+      if (respCart.items !== undefined) {
+        respCart.items.forEach((cartItem) => {
+          if (cartItem.productId !== undefined) {
+            this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
+              if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
+                this.orderItems.push({
+                  productId: cartItem.productId,
+                  amount: cartItem.amount,
+                  amountName: cartItem.amountName
+                });
+              }
+              else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
+                const unitPrice = respProduct.price ?? 0;
+                const amount = cartItem.amount ?? 0;
+
+                this.orderItems.push({
+                  productId: cartItem.productId,
+                  amount: cartItem.amount
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+
   backToCart() {
     this.router.navigate(['/cart']);
   }
 
 
   onKey(event: any) {
-    console.log(event.key);
     if (event.key.match(/[0-9]/)) {
       this.zip += event.key;
     }
@@ -120,10 +153,8 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       this.zip = this.zip.slice(0, -1);
     }
 
-    console.log(this.zip, this.zip.length);
     if (this.zip.length === 5) {
       this.deliveryService.deliveryFee(this.zip).subscribe((res: any) => {
-        console.log(res);
         if (res === null) {
           this.delivery = '';
           this.readyForCheckout = false
@@ -137,6 +168,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     }
   }
   placeOrder() {
+
     this.isSubmitted = true;
     if (this.checkoutFormGroup.invalid && this.readyForCheckout !== true) {
       return;
@@ -144,13 +176,14 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
 
     const order: OrderForm = {
       orderItems: this.orderItems,
+      name: this.checkoutForm['name'].value,
       shippingAddress1: this.checkoutForm['street'].value,
       shippingAddress2: this.checkoutForm['apartment'].value,
       city: this.checkoutForm['city'].value,
       zip: this.checkoutForm['zip'].value,
       phone: this.checkoutForm['phone'].value,
       status: 0,
-      delivery: 0,
+      delivery: this.delivery,
       dateOrdered: `${Date.now()}`
     };
 

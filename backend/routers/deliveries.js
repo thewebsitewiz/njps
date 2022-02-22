@@ -20,11 +20,9 @@ router.get(`/`, async (req, res) => {
 
 
 router.get(`/fee/:zip`, async (req, res) => {
-    console.log('zip: ', req.params.zip)
     const delivery = await Delivery.findOne({
         zipCode: req.params.zip
     });
-    console.log('delivery: ', delivery);
 
     if (delivery === null) {
         res.send(null);
@@ -35,12 +33,9 @@ router.get(`/fee/:zip`, async (req, res) => {
 
 
 router.post('/', async (req, res) => {
-    console.log(req.body.zipCode, req.body.city, req.body.price);
     const deliveries = await Delivery.find({
         zipCode: req.body.zipCode
     });
-
-    console.log(deliveries);
 
     if (deliveries.length > 0) {
         return res.status(500).send('The delivery zip code already exists');
@@ -52,7 +47,6 @@ router.post('/', async (req, res) => {
         });
 
         const newDelivery = await delivery.save();
-        console.log('newDelivery: ', newDelivery)
 
         if (!newDelivery) return res.status(500).send('The delivery cannot be created', newDelivery);
 
