@@ -15,6 +15,13 @@
 //Shared
 @import './apps/admin/shell.scss';
 @import './apps/admin/dashboard.scss';
+@import './apps/shop/shared/header.scss';
+@import './apps/shop/shared/footer.scss';
+/*
+@import './apps/shop/shared/nav.scss'; */
+
+// Pages
+@import './apps/admin/orders-detail.scss';
 
 //Libs
 @import './libs/users/users.scss';

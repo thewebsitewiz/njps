@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { ShellComponent } from './shared/shell/shell.component';
-import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
@@ -46,37 +45,39 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { HeaderComponent } from './shared/header/header.component';
+import { MenuModule } from 'primeng/menu';
 
 const UX_MODULE = [
-  CardModule,
-  ToastModule,
-  InputTextModule,
-  TableModule,
-  ToolbarModule,
   ButtonModule,
-  ConfirmDialogModule,
-  ColorPickerModule,
-  InputNumberModule,
-  DropdownModule,
-  InputTextareaModule,
-  InputSwitchModule,
-  EditorModule,
-  TagModule,
-  InputMaskModule,
-  FieldsetModule,
   CalendarModule,
-  SliderModule,
+  CardModule,
+  ColorPickerModule,
+  ConfirmDialogModule,
   ContextMenuModule,
-  MultiSelectModule,
   DialogModule,
-  ProgressBarModule
+  DropdownModule,
+  EditorModule,
+  FieldsetModule,
+  InputMaskModule,
+  InputNumberModule,
+  InputSwitchModule,
+  InputTextModule,
+  InputTextareaModule,
+  MenuModule,
+  MultiSelectModule,
+  ProgressBarModule,
+  SliderModule,
+  TableModule,
+  TagModule,
+  ToastModule,
+  ToolbarModule
 
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    SidebarComponent,
     ShellComponent,
     DashboardComponent,
     CategoriesListComponent,
@@ -88,7 +89,8 @@ const UX_MODULE = [
     OrdersListComponent,
     OrdersDetailComponent,
     DeliveryListComponent,
-    DeliveryFormComponent
+    DeliveryFormComponent,
+    HeaderComponent
 
 
   ],

@@ -115,28 +115,32 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
         respCart.items.forEach((cartItem) => {
           if (cartItem.productId !== undefined) {
             this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
-              if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
-                this.orderItems.push({
-                  productId: cartItem.productId,
-                  amount: cartItem.amount,
-                  amountName: cartItem.amountName
-                });
-              }
-              else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
-                const unitPrice = respProduct.price ?? 0;
-                const amount = cartItem.amount ?? 0;
-
-                this.orderItems.push({
-                  productId: cartItem.productId,
-                  amount: cartItem.amount
-                });
-              }
+              this.orderItems.push({
+                product: cartItem.productId,
+                amount: cartItem.amount
+              });
             });
           }
         });
       }
     });
   }
+
+  /*   if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
+      this.orderItems.push({
+        productId: cartItem.productId,
+        amount: cartItem.amount
+      });
+    }
+    else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
+      const unitPrice = respProduct.price ?? 0;
+      const amount = cartItem.amount ?? 0;
+
+      this.orderItems.push({
+        productId: cartItem.productId,
+        amount: cartItem.amount
+      });
+    } */
 
 
   backToCart() {

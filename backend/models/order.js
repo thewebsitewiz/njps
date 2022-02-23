@@ -33,6 +33,9 @@ const orderSchema = mongoose.Schema({
     delivery: {
         type: Number,
     },
+    name: {
+        type: String,
+    },
     totalPrice: {
         type: Number,
     },

@@ -1,8 +1,15 @@
-body,
-.p-component {
-  font-family: 'Merriweather Sans', sans-serif;
+body {
+  font-family: 'Merriweather Sans', sans-serif !important;
   font-size: 14px;
-  background-color: $light-green;
+  background-color: rgb(193, 213, 185, .8);
+}
+
+.p-card {
+  box-shadow: none;
+}
+
+.p-component {
+  background-color: transparent;
 }
 
 a {

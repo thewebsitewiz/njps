@@ -1,0 +1,62 @@
+admin-orders-detail {
+
+  & .p-fieldset {
+    margin-bottom: 20px;
+    border: 2px solid $brown !important;
+    background-color: rgb(232, 245, 236);
+    border-radius: 5px;
+
+    filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .4));
+  }
+
+  & .p-fieldset-legend {
+    background-color: $brown !important;
+    border-radius: 5px;
+  }
+
+  & .p-fieldset.p-fieldset-toggleable .p-fieldset-legend a {
+    color: white !important;
+    padding: 10px !important;
+  }
+
+  & .p-fieldset-content {
+    padding: 0 !important;
+  }
+
+  // p-element p-inputwrapper ng-tns-c65-3 p-inputwrapper-filled ng-untouched ng-pristine ng-valid ng-star-inserted
+  & .p-inputwrapper-filled {
+    padding: 5px !important;
+    background-color: $med-green !important;
+    border: 1px solid white !important;
+
+    border-radius: 5px;
+    filter: drop-shadow(4px 4px 2px rgba(0, 0, 0, .2));
+
+    & .p-dropdown {
+      background-color: $med-green !important;
+    }
+  }
+
+  & .p-dropdown-label.p-inputtext {
+    padding: 2px !important;
+    font-size: 14px !important;
+    font-weight: 600;
+    font-family: 'Merriweather Sans', sans-serif !important;
+  }
+
+  & .order-item {
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid $dark-green;
+  }
+
+  & .grid {
+    font-size: 14px;
+  }
+
+  & .detail-header {
+    color: $brown;
+    font-weight: 600 !important;
+    font-size: 16px;
+  }
+}

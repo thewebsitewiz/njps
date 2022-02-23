@@ -51,57 +51,61 @@ router.post('/', async (req, res) => {
 
         let newOrderItem = new OrderItem({
             amount: orderItem.amount,
-            amountName: orderItem.amountName,
             product: orderItem.product
         });
 
         newOrderItem = await newOrderItem.save();
+        console.log(newOrderItem);
 
         return newOrderItem._id;
     }))
     const orderItemsIdsResolved = await orderItemsIds;
 
-
+    console.log('******************************');
 
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
-        const orderItem = await OrderItem.findById(orderItemId).populate('product');
+        const orderItem = await OrderItem.findById(orderItemId).populate('product').exec();
 
 
+        console.log(orderItem.product.unitType, orderItem.product.price, orderItem.product.prices);
+        let totalPrice = 0;
+        if (orderItem.product.unitType === 'gram' && orderItem.product.price === '') {
+            const prices = {};
+            orderItem.product.prices.forEach(pr => {
+                prices[pr.amount] = pr.price;
+            });
 
-        /* if ( unitType === 'gram') {
+            totalPrice += prices[orderItem.amount]
 
-          }
-          else {
-              totalPrice += orderItem.product.price * orderItem.quantity;
-          }
+        } else {
+            totalPrice += orderItem.product.price * orderItem.amount;
+        }
 
-    return totalPrice */
+        return totalPrice
     }))
 
 
-    /* 
-        const totalPrice = 4; //totalPrices.reduce((a, b) => a + b, 0);
+    const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
 
-        let order = new Order({
-            orderItems: orderItemsIdsResolved,
-            shippingAddress1: req.body.shippingAddress1,
-            shippingAddress2: req.body.shippingAddress2,
-            city: req.body.city,
-            zip: req.body.zip,
-            delivery: req.body.delivery,
-            phone: req.body.phone,
-            status: req.body.status,
-            name: req.body.name,
-            totalPrice: totalPrice,
-            user: req.body.user,
-        })
-        order = await order.save();
+    let order = new Order({
+        orderItems: orderItemsIdsResolved,
+        shippingAddress1: req.body.shippingAddress1,
+        shippingAddress2: req.body.shippingAddress2,
+        city: req.body.city,
+        zip: req.body.zip,
+        delivery: req.body.delivery,
+        phone: req.body.phone,
+        status: req.body.status,
+        name: req.body.name,
+        totalPrice: totalPrice,
+        user: req.body.user,
+    })
+    order = await order.save();
 
-        if (!order)
-            return res.status(400).send('the order cannot be created!') */
+    if (!order)
+        return res.status(400).send('the order cannot be created!');
 
-    //res.send(order);
-    res.send(null);
+    res.send(order);
 })
 
 

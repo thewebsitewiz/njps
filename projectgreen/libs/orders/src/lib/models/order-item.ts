@@ -1,14 +1,22 @@
 export interface OrderItem {
   product: Product;
-  quantity: number;
+  amount: number;
 }
 
+export interface price {
+  name: string;
+  amount: number;
+  price: number;
+}
 
 export interface Product {
   name: string;
-  brand: string;
+  brand?: string;
+  flavor?: string;
   price: number;
+  prices: [price];
   category: Category;
+  amountName: string;
 }
 
 export interface Category {
