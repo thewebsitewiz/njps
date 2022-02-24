@@ -1,0 +1,62 @@
+//   background-color: rgb(243, 250, 245);
+.orders-list {
+
+  & .orders {
+    margin-left: 15px;
+    margin-right: 15px;
+
+    padding: 15px;
+    background-color: rgb(243, 250, 245);
+
+    & .order-row {
+      padding-bottom: 15px;
+      border-bottom: 1px solid $dark-green;
+      margin-bottom: 15px;
+      display: flex;
+
+      width: 100%;
+
+      & .order-info {
+        vertical-align: top;
+        margin-right: 10px;
+        display: inline-flex;
+        flex-grow: 1;
+      }
+
+      & .order-info:last-child {
+        margin-right: 0;
+        text-align: right;
+
+        display: inline-flex;
+      }
+
+      & .order-prices {
+        text-align: right;
+      }
+
+      & .order-status {
+        text-align: right;
+
+        & p-badge {
+          border-radius: 30px !important;
+          height: 30px !important;
+          width: 30px !important;
+          min-width: 30px !important;
+          max-width: 30px !important;
+
+          & span {
+
+            border-radius: 30px !important;
+            height: 30px !important;
+            width: 30px !important;
+            min-width: 30px !important;
+            max-width: 30px !important;
+          }
+        }
+      }
+    }
+
+
+  }
+
+}

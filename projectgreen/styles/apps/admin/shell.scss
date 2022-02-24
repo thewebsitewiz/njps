@@ -12,6 +12,11 @@
 
 
   &-page {
-    padding: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    & .p-card-body {
+      padding-top: 0 !important;
+    }
   }
 }

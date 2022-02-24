@@ -36,12 +36,15 @@ export class OrdersListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.endsubs$))
       .subscribe((orders) => {
         this.orders = orders;
+        console.log('file: orders-list.component.ts ~ line 39 ~ OrdersListComponent ~ .subscribe ~ this.orders', this.orders);
+
       });
   }
 
   showOrder(orderId: any) {
     this.router.navigateByUrl(`orders/${orderId}`);
   }
+
 
   deleteOrder(orderId: string) {
     this.confirmationService.confirm({

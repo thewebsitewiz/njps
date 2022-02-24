@@ -10,7 +10,7 @@ export interface Order {
   zip?: string;
   email?: string;
   phone?: string;
-  status?: number;
+  status: number;
   totalPrice?: string;
   delivery?: number;
   user?: any;

@@ -1,4 +1,26 @@
-<p-toast></p-toast>
+<div class="orders-list">
+  <div class="orders">
+    <div class="order-item" *ngFor="let order of orders">
+      <div class="order-row">
+        <div class="order-info order-date">{{ order.dateOrdered | date: 'M/d/yy'}}<br />{{ order.name }}</div>
+        <div class="order-info order-location">{{ order.city }}<br />{{ order.zip }}</div>
+        <div class="order-info order-prices">{{ order.totalPrice | currency }}<br />{{ order.delivery | currency  }}
+        </div>
+        <div class="order-info order-status">
+
+          <p-badge [severity]="orderStatus[order.status].color" (click)="showOrder(order.id)">
+          </p-badge>
+          <!--
+          <button pButton type="button" class="p-button-raised p-button-rounded p-button-sm"
+            [ngClass]="orderStatusClass(order.status)"></button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <p-toast></p-toast>
 <div class="admin-page">
   <p-card header="Orders" subheader="List of all orders">
     <div class="grid">
@@ -21,23 +43,24 @@
           </ng-template>
           <ng-template pTemplate="body" let-order>
             <tr>
-              <td>{{ order.name }}</td>
+              <td>{{ order.name }}: {{ order.dateOrdered | date: 'short' }}</td>
               <td>{{ order.totalPrice }}</td>
-              <td>{{ order.dateOrdered | date: 'short' }}</td>
+              <td></td>
               <td>
                 <p-tag [value]="orderStatus[order.status].label" [severity]="orderStatus[order.status].color"></p-tag>
               </td>
               <td>
-                <p-button (click)="deleteOrder(order.id)" styleClass="p-button-danger p-mr-2" icon="pi pi-trash">
+                 <p-button (click)="deleteOrder(order.id)" styleClass="p-button-danger p-mr-2" icon="pi pi-trash">
                 </p-button>
-                <p-button (click)="showOrder(order.id)" styleClass="p-button-success" icon="pi pi-eye"></p-button>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    </div>
-  </p-card>
+<p-button (click)="showOrder(order.id)" styleClass="p-button-success" icon="pi pi-eye"></p-button>
+</td>
+</tr>
+</ng-template>
+</p-table>
+</div>
+</div>
+</p-card>
 </div>
 <p-confirmDialog [style]="{ width: '50vw' }" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
 </p-confirmDialog>
+-->

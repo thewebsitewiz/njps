@@ -47,8 +47,11 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { HeaderComponent } from './shared/header/header.component';
 import { MenuModule } from 'primeng/menu';
+import { BadgeModule } from 'primeng/badge';
+
 
 const UX_MODULE = [
+  BadgeModule,
   ButtonModule,
   CalendarModule,
   CardModule,

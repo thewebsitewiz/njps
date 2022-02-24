@@ -1,8 +1,8 @@
 <div class="admin-page" *ngIf="statistics.length">
   <p-card header="Dashboard" subheader="Latest Updates">
     <div class="grid">
-      <div class="col-3">
-        <p-card styleClass="d-orders">
+      <div class="col-12">
+        <p-card styleClass="d-orders" [routerLink]="['/orders']">
           <div class="d-item">
             <div>
               <i class="pi pi-shopping-cart"></i><br />
@@ -12,8 +12,10 @@
           </div>
         </p-card>
       </div>
-      <div class="col-3">
-        <p-card styleClass="d-products">
+    </div>
+    <div class="grid">
+      <div class="col-12">
+        <p-card styleClass="d-products" [routerLink]="['/products']">
           <div class="d-item">
             <div>
               <i class="pi pi-briefcase"></i><br />
@@ -23,8 +25,10 @@
           </div>
         </p-card>
       </div>
-      <div class="col-3">
-        <p-card styleClass="d-users">
+    </div>
+    <div class="grid">
+      <div class="col-12">
+        <p-card styleClass="d-users" [routerLink]="['/users']">
           <div class="d-item">
             <div>
               <i class="pi pi-users"></i><br />
@@ -34,14 +38,16 @@
           </div>
         </p-card>
       </div>
-      <div class="col-3">
-        <p-card styleClass="d-totalsales">
+    </div>
+    <div class="grid">
+      <div class="col-12">
+        <p-card styleClass="d-totalsales" [routerLink]="['/sales']">
           <div class="d-item">
             <div>
               <i class="pi pi-dollar"></i><br />
-              <span class="name">TotalSales</span>
+              <span class="name">Sales</span>
             </div>
-            <span class="number">{{ statistics[3] | currency }}</span>
+            <span class="number">{{ statistics[3] | number: '1.2-2' }}</span>
           </div>
         </p-card>
       </div>
