@@ -4,19 +4,19 @@ export const ORDER_STATUS: { [index: string]: { label: string; color: string; } 
     color: 'help'
   },
   1: {
-    label: 'Packaged',
+    label: 'Pckgd',
     color: 'warning'
   },
   2: {
-    label: 'Shipped',
+    label: 'Shpd',
     color: 'info'
   },
   3: {
-    label: 'Delivered',
+    label: 'Delrd',
     color: 'success'
   },
   4: {
-    label: 'Failed',
+    label: 'Fail',
     color: 'danger'
   }
 };

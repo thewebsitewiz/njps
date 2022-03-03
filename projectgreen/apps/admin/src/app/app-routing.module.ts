@@ -10,6 +10,8 @@ import { ProductsFormComponent } from './pages/products/products-form/products-f
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
 import { DeliveryFormComponent } from './pages/delivery/delivery-form/delivery-form.component';
 import { DeliveryListComponent } from './pages/delivery/delivery-list/delivery-list.component';
+import { FAQFormComponent } from './pages/faq/faq-form/faq-form.component';
+import { FAQListComponent } from './pages/faq/faq-list/faq-list.component';
 import { UsersFormComponent } from './pages/users/users-form/users-form.component';
 import { UsersListComponent } from './pages/users/users-list/users-list.component';
 import { ShellComponent } from './shared/shell/shell.component';
@@ -79,6 +81,18 @@ const routes: Routes = [
       {
         path: 'orders/:id',
         component: OrdersDetailComponent
+      },
+      {
+        path: 'faq',
+        component: FAQListComponent
+      },
+      {
+        path: 'faq/form',
+        component: FAQFormComponent
+      },
+      {
+        path: 'faq/form/:id',
+        component: FAQFormComponent
       }
     ]
   }

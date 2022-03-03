@@ -17,6 +17,13 @@ p-button {
 }
 
 
+.see-more {
+  & .p-ripple.p-element.p-button {
+    background-color: $dark-green !important;
+    border-radius: 5px !important;
+  }
+}
+
 .disabled-btn {
   background-color: scale-color($med-green, $lightness: -20%);
   filter: drop-shadow();
@@ -51,42 +58,3 @@ p-button {
 }
 
 // Input Number Customizations
-
-.product-page {
-  & p-inputnumber {
-    margin-left: 110px;
-    margin-top: 5px;
-  }
-
-  .p-inputnumber-buttons-horizontal {
-    line-height: 1;
-  }
-
-  & .number-input-btn {
-    height: 30px;
-    width: 30px;
-  }
-
-  & .input-style-class {
-    height: 30px;
-    width: 30px;
-    padding: 0;
-    text-align: center;
-  }
-
-  & .smaller-btn {
-    font-size: 12px;
-  }
-
-
-  & .p-button-icon-only {
-    width: 30px !important;
-    height: 30px !important;
-    padding: 5px 0 !important;
-    background-color: $dark-green;
-
-    & .pi-bars {
-      font-size: 28px;
-    }
-  }
-}

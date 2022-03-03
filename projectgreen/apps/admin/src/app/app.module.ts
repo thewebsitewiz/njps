@@ -11,6 +11,8 @@ import { ProductsListComponent } from './pages/products/products-list/products-l
 import { ProductsFormComponent } from './pages/products/products-form/products-form.component';
 import { DeliveryListComponent } from './pages/delivery/delivery-list/delivery-list.component';
 import { DeliveryFormComponent } from './pages/delivery/delivery-form/delivery-form.component';
+import { FAQListComponent } from './pages/faq/faq-list/faq-list.component';
+import { FAQFormComponent } from './pages/faq/faq-form/faq-form.component';
 import { UsersListComponent } from './pages/users/users-list/users-list.component';
 import { UsersFormComponent } from './pages/users/users-form/users-form.component';
 import { JwtInterceptor, UsersModule } from '@projectgreen/users';
@@ -48,7 +50,9 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { HeaderComponent } from './shared/header/header.component';
 import { MenuModule } from 'primeng/menu';
 import { BadgeModule } from 'primeng/badge';
-
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { DragDropModule } from 'primeng/dragdrop';
+import { OrderListModule } from 'primeng/orderlist';
 
 const UX_MODULE = [
   BadgeModule,
@@ -70,12 +74,14 @@ const UX_MODULE = [
   MenuModule,
   MultiSelectModule,
   ProgressBarModule,
+  SelectButtonModule,
   SliderModule,
   TableModule,
   TagModule,
   ToastModule,
-  ToolbarModule
-
+  ToolbarModule,
+  DragDropModule,
+  OrderListModule
 ];
 
 @NgModule({
@@ -93,7 +99,9 @@ const UX_MODULE = [
     OrdersDetailComponent,
     DeliveryListComponent,
     DeliveryFormComponent,
-    HeaderComponent
+    HeaderComponent,
+    FAQListComponent,
+    FAQFormComponent
 
 
   ],

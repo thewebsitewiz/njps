@@ -66,6 +66,8 @@ export class ProductPageComponent implements OnInit, OnDestroy {
           };
 
           this.cartService.setCartItem(cartItem, false);
+
+          this.selectedAmount = '';
         }
       }
       else if (qty !== null && qty > 0) {

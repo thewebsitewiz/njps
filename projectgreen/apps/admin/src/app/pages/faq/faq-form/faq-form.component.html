@@ -1,0 +1,37 @@
+<p-toast></p-toast>
+<div class="admin-page">
+  <p-card [header]="editmode ? 'Edit FAQs' : 'Add FAQ'" subheader="You can add or edit FAQs here">
+    <div class="grid p-mb-5">
+      <div class="col-12">
+        <p-toolbar>
+          <div class="p-toolbar-group-left"></div>
+          <div class="p-toolbar-group-right">
+            <p-button styleClass="p-button-primary p-mr-2" [label]="editmode ? 'Update' : 'Create'" icon="pi pi-plus"
+              (click)="onSubmit()"></p-button>
+            <p-button styleClass="p-button-secondary" label="Cancel" icon="pi pi-arrow-circle-left"
+              (click)="onCancel()"></p-button>
+          </div>
+        </p-toolbar>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="col-12">
+        <form [formGroup]="FAQform">
+          <div class="p-fluid p-formgrid grid">
+            <div class="p-field col">
+              <label for="question">Question</label>
+              <input formControlName="question" id="question" type="text" pInputText />
+              <small *ngIf="faqForm['question'].invalid && isSubmitted" class="p-error">Question is
+                required</small>
+            </div>
+            <div class="p-field col">
+              <label for="answer">Answer</label>
+              <input formControlName="answer" id="answer" type="text" pInputText />
+              <small *ngIf="faqForm['answer'].invalid && isSubmitted" class="p-error">Answer is required</small>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </p-card>
+</div>

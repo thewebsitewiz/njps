@@ -26,6 +26,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   displayMsgAlert: boolean = false;
 
   endSubs$: Subject<any> = new Subject();
+  itemsPrice!: number;
   totalPrice!: number;
   isCheckout = false;
   constructor(
@@ -51,7 +52,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
 
   _getOrderSummary() {
     this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((cart) => {
-      this.totalPrice = 0;
+      this.itemsPrice = 0;
       if (cart && cart.items !== undefined) {
         cart.items.map((item) => {
           if (item.productId !== undefined) {
@@ -60,11 +61,11 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
               .pipe(take(1))
               .subscribe((product) => {
                 if (item.unitType === 'gram' && item.price !== undefined) {
-                  this.totalPrice += item.price
+                  this.itemsPrice += item.price
                 }
                 else {
                   if (item.amount !== undefined) {
-                    this.totalPrice += product.price * item.amount;
+                    this.itemsPrice += product.price * item.amount;
                   }
                 }
 
@@ -82,7 +83,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
       this.displayMsgAlert = true;
     }
     else if (delivery.toString().match(/^[0-9]*$/)) {
-      this.totalPrice += delivery;
+      this.totalPrice = this.itemsPrice + delivery;
       this.deliveryMsg = `$${delivery}.00`
     }
   }

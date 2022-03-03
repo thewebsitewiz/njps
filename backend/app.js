@@ -36,6 +36,7 @@ const productsRoutes = require('./routers/products');
 const usersRoutes = require('./routers/users');
 const ordersRoutes = require('./routers/orders');
 const deliveryRoutes = require('./routers/deliveries');
+const faqRoutes = require('./routers/faqs');
 
 const api = process.env.API_URL;
 
@@ -44,6 +45,7 @@ app.use(`${api}/products`, productsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/orders`, ordersRoutes);
 app.use(`${api}/delivery`, deliveryRoutes);
+app.use(`${api}/faq`, faqRoutes);
 
 //Database
 mongoose.connect(process.env.PG_CONN, {

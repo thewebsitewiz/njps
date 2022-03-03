@@ -40,7 +40,7 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
   private _mapOrderStatus() {
     this.orderStatuses = Object.keys(ORDER_STATUS).map((key) => {
       return {
-        id: key,
+        code: key,
         name: ORDER_STATUS[key].label
       };
     });
