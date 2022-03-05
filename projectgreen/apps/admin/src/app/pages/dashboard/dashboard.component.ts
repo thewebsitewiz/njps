@@ -14,6 +14,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   statistics: any[] = [];
   endsubs$: Subject<any> = new Subject();
 
+  reportHeader: string = "Today's Sales";
+  reportSubHeader!: string;
+
   constructor(
     private userService: UsersService,
     private productService: ProductsService,

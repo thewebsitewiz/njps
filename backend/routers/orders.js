@@ -33,8 +33,6 @@ router.get(`/:id`, async (req, res) => {
             }
         });
 
-    console.log(order)
-
     if (!order) {
         res.status(500).json({
             success: false
@@ -44,30 +42,21 @@ router.get(`/:id`, async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const orderRef = [];
-    console.log('******************************');
-    console.log(req.body.orderItems);
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) => {
-
         let newOrderItem = new OrderItem({
             amount: orderItem.amount,
             product: orderItem.product
         });
 
         newOrderItem = await newOrderItem.save();
-        console.log(newOrderItem);
 
         return newOrderItem._id;
     }))
     const orderItemsIdsResolved = await orderItemsIds;
 
-    console.log('******************************');
-
     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
         const orderItem = await OrderItem.findById(orderItemId).populate('product').exec();
 
-
-        console.log(orderItem.product.unitType, orderItem.product.price, orderItem.product.prices);
         let totalPrice = 0;
         if (orderItem.product.unitType === 'gram' && orderItem.product.price === '') {
             const prices = {};
@@ -119,7 +108,7 @@ router.put('/:id', async (req, res) => {
     )
 
     if (!order)
-        return res.status(400).send('the order cannot be update!')
+        return res.status(400).send('the order cannot be updated!')
 
     res.send(order);
 })
@@ -164,7 +153,6 @@ router.get('/get/totalsales', async (req, res) => {
                     }
                 }
             }]);
-            console.log('totalsales: ', totalsales[0].total);
 
             res.send({
                 totalsales: totalsales[0].total
@@ -179,7 +167,6 @@ router.get('/get/totalsales', async (req, res) => {
 router.get('/get/count', async (req, res) => {
     try {
         const orderCount = await Order.countDocuments();
-        console.log('orderCount: ', orderCount);
         totalOrderCount = orderCount;
         res.send({
             orderCount: orderCount

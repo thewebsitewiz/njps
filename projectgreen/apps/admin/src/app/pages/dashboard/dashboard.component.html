@@ -1,53 +1,31 @@
 <div class="admin-page" *ngIf="statistics.length">
-  <p-card header="Dashboard" subheader="Latest Updates">
-    <div class="grid">
-      <div class="col-3">
-        <p-card styleClass="d-orders" [routerLink]="['/orders']">
-          <div class="d-item">
-            <div>
-              <i class="pi pi-shopping-cart"></i><br />
-              <span class="name">Orders</span>
-            </div>
-            <span class="number">{{ statistics[0] }}</span>
-          </div>
-        </p-card>
+  <p-card class="main-card" header="Dashboard" subheader="Latest Updates">
+    <div class="items-grid">
+
+      <div class="d-item" [routerLink]="['/orders']">
+        <div class="name">Orders</div>
+        <div class="number">{{ statistics[0] }}</div>
       </div>
 
-      <div class="col-3">
-        <p-card styleClass="d-products" [routerLink]="['/products']">
-          <div class="d-item">
-            <div>
-              <i class="pi pi-briefcase"></i><br />
-              <span class="name">Products</span>
-            </div>
-            <span class="number">{{ statistics[1] }}</span>
-          </div>
-        </p-card>
+      <div class="d-item" [routerLink]="['/products']">
+        <div class="name">Products</div>
+        <div class="number">{{ statistics[1] }}</div>
       </div>
 
-      <div class="col-3">
-        <p-card styleClass="d-users" [routerLink]="['/users']">
-          <div class="d-item">
-            <div>
-              <i class="pi pi-users"></i><br />
-              <span class="name">Users</span>
-            </div>
-            <span class="number">{{ statistics[2] }}</span>
-          </div>
-        </p-card>
+      <div class="d-item" [routerLink]="['/users']">
+        <div class="name">Users</div>
+        <div class="number">{{ statistics[2] }}</div>
       </div>
 
-      <div class="col-3">
-        <p-card styleClass="d-totalsales" [routerLink]="['/sales']">
-          <div class="d-item">
-            <div>
-              <i class="pi pi-dollar"></i><br />
-              <span class="name">Sales</span>
-            </div>
-            <span class="number">{{ statistics[3] | number: '1.2-2' }}</span>
-          </div>
-        </p-card>
+      <div class="d-item" [routerLink]="['/sales']">
+        <div class="name">Sales</div>
+        <div class="number">{{ statistics[3] | number: '1.2-2' }}</div>
       </div>
+
     </div>
+  </p-card>
+  <p-card class="main-card report-area" [header]="reportHeader" [subheader]="reportSubHeader">
+
+
   </p-card>
 </div>

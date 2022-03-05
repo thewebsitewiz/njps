@@ -17,21 +17,32 @@ admin-orders-detail {
     background-color: green;
   }
 
-  .button-row {
+  /* .button-row {
+    display: flex;
     width: 100%;
     min-width: 100%;
-    justify-content: space-betwe
-  }
+    justify-content: space-between;
+  } */
 
+  // [ngClass]="{'order-placed':status.name === 'Order Placed'}"
 
-  .status-button {
+  /* .status-button {
     flex-grow: 1;
     font-size: 11px;
+  } */
+
+  div.order-status>div>span {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: $brown !important;
   }
 
+  .order-status>div.p-highlight {
+    background-color: $brown !important;
+  }
 
-  .order-placed {
-    background-color: $orange;
+  .order-status>div.p-highlight>span {
+    color: $med-grey !important;
   }
 
   & .p-fieldset {

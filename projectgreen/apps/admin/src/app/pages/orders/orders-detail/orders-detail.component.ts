@@ -57,6 +57,7 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
             this.name = this.order.name;
             this.orderIdDecimal = parseInt(this.order.id, 10);
             this.selectedStatus = order.status;
+
             if (this.order.orderItems.length > 0) {
               this.order.orderItems.forEach(item => {
                 const priceRef: any = {};
@@ -87,24 +88,29 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
   }
 
   onStatusChange(event: HTMLInputElement) {
+
+    const status = JSON.parse(event.value);
+    this.selectedStatus = status.code
+
     this.orderService
-      .updateOrder({ status: event.value }, this.order.id)
+      .updateOrder({ status: status.code }, this.order.id)
       .pipe(takeUntil(this.endsubs$))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Order is updated!'
           });
         },
-        () => {
+        error: () => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
             detail: 'Order is not updated!'
           });
         }
+      }
       );
   }
 }
