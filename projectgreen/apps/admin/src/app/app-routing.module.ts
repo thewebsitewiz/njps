@@ -8,6 +8,8 @@ import { OrdersDetailComponent } from './pages/orders/orders-detail/orders-detai
 import { OrdersListComponent } from './pages/orders/orders-list/orders-list.component';
 import { ProductsFormComponent } from './pages/products/products-form/products-form.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
+import { InventoryFormComponent } from './pages/inventory/inventory-form/inventory-form.component';
+import { InventoryListComponent } from './pages/inventory/inventory-list/inventory-list.component';
 import { DeliveryFormComponent } from './pages/delivery/delivery-form/delivery-form.component';
 import { DeliveryListComponent } from './pages/delivery/delivery-list/delivery-list.component';
 import { FAQFormComponent } from './pages/faq/faq-form/faq-form.component';
@@ -61,6 +63,18 @@ const routes: Routes = [
       {
         path: 'delivery/form/:id',
         component: DeliveryFormComponent
+      },
+      {
+        path: 'inventory',
+        component: InventoryListComponent
+      },
+      {
+        path: 'inventory/form',
+        component: InventoryFormComponent
+      },
+      {
+        path: 'inventory/form/:id',
+        component: InventoryFormComponent
       },
       {
         path: 'users',

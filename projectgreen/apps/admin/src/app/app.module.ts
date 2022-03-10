@@ -9,6 +9,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
 import { ProductsFormComponent } from './pages/products/products-form/products-form.component';
+import { InventoryFormComponent } from './pages/inventory/inventory-form/inventory-form.component';
+import { InventoryListComponent } from './pages/inventory/inventory-list/inventory-list.component';
 import { DeliveryListComponent } from './pages/delivery/delivery-list/delivery-list.component';
 import { DeliveryFormComponent } from './pages/delivery/delivery-form/delivery-form.component';
 import { FAQListComponent } from './pages/faq/faq-list/faq-list.component';
@@ -53,6 +55,7 @@ import { BadgeModule } from 'primeng/badge';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DragDropModule } from 'primeng/dragdrop';
 import { OrderListModule } from 'primeng/orderlist';
+import { PaginatorModule } from 'primeng/paginator';
 
 const UX_MODULE = [
   BadgeModule,
@@ -62,6 +65,7 @@ const UX_MODULE = [
   ColorPickerModule,
   ConfirmDialogModule,
   ContextMenuModule,
+  DragDropModule,
   DialogModule,
   DropdownModule,
   EditorModule,
@@ -73,6 +77,8 @@ const UX_MODULE = [
   InputTextareaModule,
   MenuModule,
   MultiSelectModule,
+  OrderListModule,
+  PaginatorModule,
   ProgressBarModule,
   SelectButtonModule,
   SliderModule,
@@ -80,8 +86,6 @@ const UX_MODULE = [
   TagModule,
   ToastModule,
   ToolbarModule,
-  DragDropModule,
-  OrderListModule
 ];
 
 @NgModule({
@@ -93,6 +97,8 @@ const UX_MODULE = [
     CategoriesFormComponent,
     ProductsListComponent,
     ProductsFormComponent,
+    InventoryListComponent,
+    InventoryFormComponent,
     UsersListComponent,
     UsersFormComponent,
     OrdersListComponent,

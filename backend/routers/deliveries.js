@@ -19,6 +19,18 @@ router.get(`/`, async (req, res) => {
 });
 
 
+
+router.get(`/:id`, async (req, res) => {
+    const delivery = await Delivery.findById(req.params.id);
+
+    if (delivery === null) {
+        res.send(null);
+        return;
+    }
+    res.send(delivery);
+});
+
+
 router.get(`/fee/:zip`, async (req, res) => {
     const delivery = await Delivery.findOne({
         zipCode: req.params.zip

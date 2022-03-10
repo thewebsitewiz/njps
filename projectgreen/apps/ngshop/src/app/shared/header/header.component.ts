@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 
-import { CategoriesService, Category } from '@projectgreen/products';
-import { Categories } from '@projectgreen/products';
+import { CategoriesService, Categories, Category } from '@projectgreen/products';
 
 import { Cart, CartService } from '@projectgreen/orders';
 import { Router } from '@angular/router';
@@ -18,7 +17,7 @@ export class HeaderComponent {
   cartCountLength = 0;
   cartCount: number = 0;
 
-  categories: Categories = {};
+  categories!: { [key: string]: Category };
   categoryName!: string | undefined;
 
   constructor(private primengConfig: PrimeNGConfig,
@@ -56,15 +55,17 @@ export class HeaderComponent {
 
 
   private _getCategories() {
+    this.categories = {};
     this.categoriesService.getCategories().subscribe((results) => {
       results.forEach((cat: Category) => {
-        this.categories[cat.name] = cat;
+        const name = cat['name'];
+        this.categories[name] = cat;
       });
 
       this.items = [
         { label: 'Home', icon: 'icon product-icon', routerLink: ['/'] },
-        { label: 'Flower', icon: 'icon product-icon', routerLink: ['/category/' + this.categories['Flower'].id] },
-        { label: 'Designer Flower', icon: 'icon product-icon', routerLink: ['/category/' + this.categories['Designer Flower'].id] },
+        { label: 'Flower', icon: 'icon product-icon', routerLink: [`/category/${this.categories['Flower'].id}`] },
+        { label: 'Designer Flower', icon: 'icon product-icon', routerLink: [`/category/${this.categories['Designer Flower'].id}`] },
         { label: 'Pre Rolls', icon: 'icon product-icon', routerLink: ['/category/' + this.categories['Pre Rolls'].id] },
         { label: 'Edibles', icon: 'icon product-icon', routerLink: ['/category/' + this.categories['Edibles'].id] },
         { label: 'Concentrates', icon: 'icon specials-icon', routerLink: ['/category/' + this.categories['Concentrates'].id] },

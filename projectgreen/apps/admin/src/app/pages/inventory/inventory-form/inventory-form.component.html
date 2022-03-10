@@ -1,0 +1,33 @@
+<p-toast></p-toast>
+<div class="admin-page">
+  <p-card class="main-card" [header]="editmode ? 'Edit Product' : 'Add Product'" subheader="{{productName}}">
+    <div class="grid p-mb-5">
+      <div class="col-12">
+        <p-toolbar>
+          <div class="p-toolbar-group-left"></div>
+          <div class="p-toolbar-group-right">
+            <p-button styleClass="p-button-primary p-mr-2" [label]="editmode ? 'Update' : 'Create'" icon="pi pi-plus"
+              (click)="onSubmit()"></p-button>
+            <p-button styleClass="p-button-secondary" label="Cancel" icon="pi pi-arrow-circle-left"
+              (click)="onCancel()"></p-button>
+          </div>
+        </p-toolbar>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="col-12">
+        <form [formGroup]="form">
+          <div class="p-fluid p-formgrid grid">
+            <div class="p-field col-4">
+              <label for="countInStock">countInStock</label><br />
+              <p-inputNumber formControlName="countInStock" mode="decimal" [useGrouping]="false">
+              </p-inputNumber>
+              <small *ngIf="productForm['countInStock'].invalid && isSubmitted" class="p-error">Count in stock is
+                required</small>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </p-card>
+</div>

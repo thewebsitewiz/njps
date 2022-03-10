@@ -41,8 +41,9 @@ const uploadOptions = multer({
 
 router.get(`/`, async (req, res) => {
     try {
-        const categoryList = await Category.find({});
-
+        const categoryList = await Category.find({}).sort({
+            'order': 1
+        });
         res.status(200).send(categoryList);
     } catch (err) {
         res.status(500).json({

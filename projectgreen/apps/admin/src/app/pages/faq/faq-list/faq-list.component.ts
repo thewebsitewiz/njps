@@ -20,6 +20,8 @@ export class FAQListComponent implements OnInit, OnDestroy {
   FAQs!: FAQ[];
   selectedFAQs!: FAQ[];
 
+  @ViewChild('dt') dt: Table | undefined;
+
   constructor(
     private faqService: FAQService,
     private router: Router,
@@ -46,6 +48,10 @@ export class FAQListComponent implements OnInit, OnDestroy {
         this.totalFAQs = this.faqs.length;
         this.selectedFAQs = this.faqs
       });
+  }
+
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   updateFAQ(faqId: string) {

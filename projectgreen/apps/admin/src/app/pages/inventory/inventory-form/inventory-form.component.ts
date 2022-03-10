@@ -2,28 +2,30 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Delivery, DeliveryService } from '@projectgreen/orders';
+import { CategoriesService, Product, ProductsService } from '@projectgreen/products';
 import { MessageService } from 'primeng/api';
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'admin-delivery-form',
-  templateUrl: './delivery-form.component.html',
+  selector: 'admin-inventory-form',
+  templateUrl: './inventory-form.component.html',
   styles: []
 })
-export class DeliveryFormComponent implements OnInit, OnDestroy {
+export class InventoryFormComponent implements OnInit, OnDestroy {
   editmode = false;
   form!: FormGroup;
   isSubmitted = false;
   categories = [];
   imageDisplay!: string | ArrayBuffer | null | undefined;
-  currentDeliveryId!: string;
+  currentProductId!: string;
   endsubs$: Subject<any> = new Subject();
+  productName!: string | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
-    private deliveryService: DeliveryService,
+    private productsService: ProductsService,
+    private categoriesService: CategoriesService,
     private messageService: MessageService,
     private location: Location,
     private route: ActivatedRoute
@@ -31,6 +33,7 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._initForm();
+    this._getCategories();
     this._checkEditMode();
   }
 
@@ -41,22 +44,29 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
 
   private _initForm() {
     this.form = this.formBuilder.group({
-      zipCode: ['', Validators.required],
-      city: ['', Validators.required],
-      price: ['', Validators.required]
+      countInStock: ['', Validators.required]
     });
   }
 
-  private _addDelivery(deliveryData: FormData) {
-    this.deliveryService
-      .createDelivery(deliveryData)
+  private _getCategories() {
+    this.categoriesService
+      .getCategories()
+      .pipe(takeUntil(this.endsubs$))
+      .subscribe((categories: any) => {
+        this.categories = categories;
+      });
+  }
+
+  private _addProduct(productData: FormData) {
+    this.productsService
+      .createProduct(productData)
       .pipe(takeUntil(this.endsubs$))
       .subscribe(
-        (delivery: Delivery) => {
+        (product: Product) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: `Product ${delivery.zipCode} ${delivery.city} is created!`
+            detail: `Product ${product.name} is created!`
           });
           timer(2000)
             .toPromise()
@@ -68,22 +78,22 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Delivery is not created!'
+            detail: 'Product is not created!'
           });
         }
       );
   }
 
   private _updateProduct(productFormData: FormData) {
-    this.deliveryService
-      .updateDelivery(productFormData, this.currentDeliveryId)
+    this.productsService
+      .updateProduct(productFormData, this.currentProductId)
       .pipe(takeUntil(this.endsubs$))
       .subscribe(
         () => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Delivery is updated!'
+            detail: 'Product is updated!'
           });
           timer(2000)
             .toPromise()
@@ -95,7 +105,7 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Delivery is not updated!'
+            detail: 'Product is not updated!'
           });
         }
       );
@@ -105,14 +115,13 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
       if (params['id']) {
         this.editmode = true;
-        this.currentDeliveryId = params['id'];
-        this.deliveryService
-          .getDelivery(params['id'])
+        this.currentProductId = params['id'];
+        this.productsService
+          .getProduct(params['id'])
           .pipe(takeUntil(this.endsubs$))
-          .subscribe((delivery) => {
-            this.deliveryForm['zipCode'].setValue(delivery.zipCode);
-            this.deliveryForm['city'].setValue(delivery.city);
-            this.deliveryForm['price'].setValue(delivery.price);
+          .subscribe((product) => {
+            this.productName = product.name;
+            this.productForm['countInStock'].setValue(product.countInStock);
           });
       }
     });
@@ -122,15 +131,14 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
     this.isSubmitted = true;
     if (this.form.invalid) return;
 
-    const deliveryFormData: any = {};
-    Object.keys(this.deliveryForm).map((key) => {
-      deliveryFormData[key] = this.deliveryForm[key].value;
+    const productFormData = new FormData();
+    Object.keys(this.productForm).map((key) => {
+      productFormData.append(key, this.productForm[key].value);
     });
-
     if (this.editmode) {
-      this._updateProduct(deliveryFormData);
+      this._updateProduct(productFormData);
     } else {
-      this._addDelivery(deliveryFormData);
+      this._addProduct(productFormData);
     }
   }
   onCancel() {
@@ -153,7 +161,7 @@ export class DeliveryFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  get deliveryForm() {
+  get productForm() {
     return this.form.controls;
   }
 }

@@ -21,8 +21,10 @@
 @import './apps/shop/shared/nav.scss'; */
 
 // Pages
+@import './apps/admin/admin-page.scss';
 @import './apps/admin/orders-detail.scss';
 @import './apps/admin/orders-list.scss';
 
 //Libs
 @import './libs/users/users.scss';
+@import './libs/products/products.scss';

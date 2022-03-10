@@ -41,7 +41,9 @@ const productSchema = mongoose.Schema({
     },
     unitType: {
         type: String,
-        default: ''
+        enum: ['Item', 'Gram', 'Package'],
+        default: '',
+        required: true
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,

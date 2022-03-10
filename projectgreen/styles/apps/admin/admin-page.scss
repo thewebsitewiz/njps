@@ -1,0 +1,42 @@
+.admin-page {
+
+  padding: 15px;
+
+  .main-card {
+
+    .p-card {
+      border-radius: 5px !important;
+      padding: 10px;
+      border: 1px solid $med-grey;
+
+      filter: drop-shadow(7px 7px 4px rgba(0, 0, 0, .4));
+    }
+  }
+
+
+  .p-datatable {
+    & .p-datatable-thead>tr>th {
+      font-size: 14px;
+      padding: 10px !important;
+    }
+
+    &-tbody>tr>td {
+      font-size: 14px;
+      padding: 10px !important;
+
+      &:last-child {}
+    }
+  }
+
+  .table-button {
+    width: 35px !important;
+    height: 35px !important;
+    padding: 0 !important;
+    margin-right: 5px !important;
+  }
+
+  .pi {
+    font-size: 14px !important;
+    font-weight: 600;
+  }
+}

@@ -16,7 +16,7 @@ export class FAQFormComponent implements OnInit, OnDestroy {
   editmode = false;
   FAQform!: FormGroup;
   isSubmitted = false;
-  catagories = [];
+  categories = [];
   currentDeliveryId!: string;
   endsubs$: Subject<any> = new Subject();
 

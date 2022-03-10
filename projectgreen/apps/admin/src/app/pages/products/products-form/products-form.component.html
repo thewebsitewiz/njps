@@ -1,6 +1,7 @@
 <p-toast></p-toast>
 <div class="admin-page">
-  <p-card [header]="editmode ? 'Edit Product' : 'Add Product'" subheader="You can add or edit products here">
+  <p-card class="main-card" [header]="editmode ? 'Edit Product' : 'Add Product'"
+    subheader="You can add or edit products here">
     <div class="grid p-mb-5">
       <div class="col-12">
         <p-toolbar>
@@ -16,62 +17,103 @@
     </div>
     <div class="grid">
       <div class="col-12">
-        <form [formGroup]="form">
-          <div class="p-fluid p-formgrid grid">
-            <div class="p-field col">
-              <label for="name">Name</label>
-              <input formControlName="name" id="name" type="text" pInputText />
-              <small *ngIf="productForm['name'].invalid && isSubmitted" class="p-error">Name is required</small>
+        <form [formGroup]="productForm">
+          <div class="grid">
+            <div class="p-field col-12 md:col-4">
+              <label for="name">Name<span class="required">*</span></label>
+              <input formControlName="name" id="name" type="text" class="inputfield w-full" pInputText />
+              <small *ngIf="prodForm['name'].invalid && isSubmitted" class="p-error">Name is required</small>
             </div>
-            <div class="p-field col">
-              <label for="brand">Brand</label>
-              <input formControlName="brand" id="brand" type="text" pInputText />
-              <small *ngIf="productForm['brand'].invalid && isSubmitted" class="p-error">Brand is required</small>
+            <div class="p-field  col-12 md:col-4">
+              <label for="category">Category<span class="required">*</span></label><br />
+              <p-dropdown [options]="categoryList" formControlName="category" optionLabel="name" optionValue="id"
+                (onChange)="categoryChanged($event)"></p-dropdown>
+              <small *ngIf="prodForm['category'].invalid && isSubmitted" class="p-error">Category is required</small>
             </div>
-            <div class="p-field col">
-              <label for="price">Price</label><br />
-              <p-inputNumber formControlName="price" mode="decimal" [useGrouping]="false">
-              </p-inputNumber>
-              <small *ngIf="productForm['price'].invalid && isSubmitted" class="p-error">Price is required</small>
-            </div>
-          </div>
-          <div class="p-fluid p-formgrid grid">
-            <div class="p-field col-4">
-              <label for="countInStock">countInStock</label><br />
-              <p-inputNumber formControlName="countInStock" mode="decimal" [useGrouping]="false">
-              </p-inputNumber>
-              <small *ngIf="productForm['countInStock'].invalid && isSubmitted" class="p-error">Count in stock is
-                required</small>
-            </div>
-            <div class="p-field col-4">
-              <label for="category">category</label><br />
-              <p-dropdown [options]="catagories" formControlName="category" optionLabel="name" optionValue="id"
-                [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Category"></p-dropdown>
-              <small *ngIf="productForm['category'].invalid && isSubmitted" class="p-error">Category is required</small>
-            </div>
-            <div class="p-field col-4">
+            <div class="p-field  col-12 md:col-4">
               <label for="isFeatured">Is Featured</label><br />
               <p-inputSwitch formControlName="isFeatured"></p-inputSwitch>
             </div>
-            <div class="p-field col-12">
-              <label for="description">Description</label><br />
-              <textarea pInputTextarea formControlName="description" [rows]="7" [cols]="30"></textarea>
-              <small *ngIf="productForm['description'].invalid && isSubmitted" class="p-error">Description is
+          </div>
+          <div class="grid">
+
+            <div class="p-field col-12 md:col-6">
+              <label for="brand">Brand</label>
+              <input formControlName="brand" id="brand" type="text" class="inputfield w-full" pInputText />
+            </div>
+            <div class="p-field col-12 md:col-6">
+              <label for="flavor">Flavor</label>
+              <input formControlName="flavor" id="flavor" type="text" class="inputfield w-full" pInputText />
+            </div>
+          </div>
+          <div class="grid">
+            <div class="p-field  col-12 md:col-6">
+              <label for="countInStock">countInStock<span class="required">*</span></label><br />
+              <p-inputNumber formControlName="countInStock" mode="decimal" [useGrouping]="false">
+              </p-inputNumber>
+              <small *ngIf="prodForm['countInStock'].invalid && isSubmitted" class="p-error">Count in stock is
                 required</small>
             </div>
+            <div class="p-field col-12 md:col-3" *ngIf="priceField === true">
+              <label for="price">Price<span class="required">*</span></label><br />
+              <p-inputNumber formControlName="price" mode="decimal" [useGrouping]="false" class="inputfield w-full">
+              </p-inputNumber>
+              <small *ngIf="prodForm['price']?.invalid && isSubmitted" class="p-error">Price is required</small>
+            </div>
+            <div class="p-field col-12 md:col-3" *ngIf="pricesField === true" formGroupName="prices">
+
+
+              <div class="field grid product-prices" *ngFor="let priceItem of priceList">
+                <div class="col">
+                  <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">$</span>
+                    <input id="{{priceItem.name}}" type="text" class="inputfield left" placeholder="Price">
+                    <span class="p-inputgroup-addon">{{priceItem.displayName}}</span>
+                  </div>
+                </div>
+                <!-- <label for="{{priceItem.name}}" class="col-fixed">{{priceItem.displayName}}</label> -->
+              </div>
+
+              <!--
+              <div class="price-grid" *ngFor="let priceItem of priceList">
+                <label for="{{priceItem.name}}">{{priceItem.name}} : {{priceItem.displayName}}</label><br />
+                <p-inputNumber formControlName="{{priceItem.name}}" mode="decimal" [useGrouping]="false"
+                  class="inputfield w-full price-grid-item">
+                </p-inputNumber>
+              </div> -->
+
+            </div>
+            <div class="p-field  col-12 md:col-3 centered">
+              <label for="unitType">Unit Type<span class="required">*</span></label><br />
+              <p-dropdown [options]="unitTypes" formControlName="unitType" optionLabel="label" optionValue="value">
+              </p-dropdown>
+              <small *ngIf="prodForm['unitType'].invalid && isSubmitted" class="p-error">Unit Type is
+                required</small>
+            </div>
+          </div>
+          <div class="grid">
             <div class="p-field col-12">
-              <label for="image">Main Image</label>
+              <label for="description">Description<span class="required">*</span></label><br />
+              <textarea pInputTextarea formControlName="description" [rows]="7" [cols]="60"></textarea>
+              <small *ngIf="prodForm['description'].invalid && isSubmitted" class="p-error">Description is
+                required</small>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="p-field col-12">
+              <label for="image">Main Image<span class="required">*</span></label>
               <input id="image" type="file" class="p-inputtext" accept="image/*" (change)="onImageUpload($event)" />
-              <small *ngIf="productForm['image'].invalid && isSubmitted" class="p-error">Image is required</small>
+              <small *ngIf="prodForm['image'].invalid && isSubmitted" class="p-error">Image is required</small>
               <div class="col-2 p-mt-2 p-pl-0">
                 <img style="width: 100%" [src]="imageDisplay" alt="" />
               </div>
             </div>
+          </div>
+          <div class="grid">
             <div class="p-field col-12">
               <label for="richDescription">Product Details</label><br />
               <p-editor formControlName="richDescription" [style]="{ height: '320px' }"></p-editor>
             </div>
-
           </div>
         </form>
       </div>

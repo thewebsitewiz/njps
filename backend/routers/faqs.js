@@ -6,8 +6,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 router.get(`/`, async (req, res) => {
-    let filter = {};
-
     const faqList = await FAQ.find({});
 
     if (!faqList) {

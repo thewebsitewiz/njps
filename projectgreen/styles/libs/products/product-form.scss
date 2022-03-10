@@ -1,0 +1,38 @@
+.admin-page {
+  font-size: 14px !important;
+
+
+  & .product-prices {
+
+    margin-bottom: 5px;
+
+    & label {
+      width: 50px;
+    }
+
+    .p-inputgroup-addon {
+      font-family: "Merriweather Sans";
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .inputfield {
+      font-family: "Merriweather Sans";
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    input {
+      border: 1px solid $med-green !important;
+      width: 100px;
+    }
+
+    /* &:nth-child(even) {
+      background-color: $light-green;
+    } */
+  }
+
+
+
+
+}

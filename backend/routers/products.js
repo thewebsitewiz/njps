@@ -7,6 +7,9 @@ const {
 const {
     Category
 } = require('../models/category');
+const {
+    FAQ
+} = require('../models/faq');
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -235,6 +238,23 @@ router.get(`/get/featured/:count`, async (req, res) => {
         });
     }
     res.send(products);
+});
+
+router.get(`/get/pricelist/:category`, async (req, res) => {
+    const category = decodeURI(req.params.category);
+
+    const prices = await ProductSize.find({
+        productType: category
+    }).sort({
+        'sortOrder': 1
+    });
+    if (!prices) {
+        res.status(500).json({
+            success: false
+        });
+    }
+
+    res.send(prices);
 });
 
 router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req, res) => {

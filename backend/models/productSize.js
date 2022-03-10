@@ -1,39 +1,17 @@
 const mongoose = require('mongoose');
 
-const productSizeSchema = mongoose.Schema({
+const productSizesSchema = mongoose.Schema({
     name: {
-        type: String,
-        required: true,
-    }
-})
-
-productSizeSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
-
-productSizeSchema.set('toJSON', {
-    virtuals: true,
-});
-
-
-exports.ProductSize = mongoose.model('ProductSize', productSizeSchema);
-
-
-/* ,displayName: {
-        type: String,
-        required: true
+        type: String
+    },
+    displayName: {
+        type: String
     },
     amount: {
-        type: Number,
-        default: 0
+        type: Number
     },
     productType: {
-        type: String,
-        default: ''
-    },
-    name: {
-        type: String,
-        required: true,
+        type: String
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
@@ -41,10 +19,20 @@ exports.ProductSize = mongoose.model('ProductSize', productSizeSchema);
         required: true
     },
     list: {
-        type: Boolean,
-        default: false,
+        type: Boolean
     },
     sortOrder: {
-        type: Number,
-        default: 0
-    } */
+        type: Number
+    }
+})
+
+productSizesSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+productSizesSchema.set('toJSON', {
+    virtuals: true,
+});
+
+
+exports.ProductSize = mongoose.model('ProductSize', productSizesSchema);

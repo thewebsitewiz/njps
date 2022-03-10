@@ -50,12 +50,13 @@ export class DeliveryListComponent implements OnInit, OnDestroy {
   reset() {
     this.first = 0;
   }
+
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
   updateDelivery(productid: string) {
-    this.router.navigateByUrl(`deliveries/form/${productid}`);
+    this.router.navigateByUrl(`delivery/form/${productid}`);
   }
 
   deleteDelivery(deliveryId: string) {

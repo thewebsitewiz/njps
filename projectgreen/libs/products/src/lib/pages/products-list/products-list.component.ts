@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from '../../models/category';
-import { Categories } from '../../models/categories';
+import { Categories } from '../../models/category';
 import { Product } from '../../models/product';
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
@@ -15,7 +15,7 @@ import { environment } from '@env/environment';
 export class ProductsListComponent implements OnInit {
   products: Product[] = [];
   categoryId!: string;
-  categories: Categories = {};
+  categories!: { [key: string]: Category };
   categoryName!: string | undefined;
 
   constructor(

@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <div class="admin-page">
-  <p-card header="Products" subheader="List of all products">
+  <p-card class="main-card" header="Products" subheader="List of all products">
     <div class="grid">
       <div class="col-12">
         <p-toolbar>
@@ -12,9 +12,9 @@
     </div>
     <div class="grid">
       <div class="col-12">
-        <p-table [paginator]="true" [totalRecords]="totalRecords" [(first)]="first" [rows]="10" [value]="products"
-          styleClass="p-datatable-gridlines" [globalFilterFields]="['name','category.name','isFeatured','countInStock']"
-          paginatorPosition="bottom">
+        <p-table [paginator]="true" [rowsPerPageOptions]="[10, 20, 30,{ showAll: 'All' }]" [totalRecords]="totalRecords"
+          [(first)]="first" [rows]="10" [value]="products" styleClass="p-datatable-gridlines"
+          [globalFilterFields]="['name','category.name','isFeatured','countInStock']" paginatorPosition="bottom">
           <ng-template pTemplate="caption">
             <div class="flex">
               <span class="p-input-icon-left p-ml-auto">
@@ -48,55 +48,10 @@
                 </div>
               </th>
               <th [pSortableColumn]="'dateCreated'">
-                Created on <p-sortIcon field="dateCreated"></p-sortIcon>
+                Created<p-sortIcon field="dateCreated"></p-sortIcon>
               </th>
-              <!--             <th>
-              <div class="p-d-flex p-jc-between p-ai-center">
-                Agent
-                <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false"
-                  [showOperator]="false" [showAddButton]="false">
-                  <ng-template pTemplate="header">
-                    <div class="p-px-3 p-pt-3 p-pb-0">
-                      <span class="p-text-bold">Agent Picker</span>
-                    </div>
-                  </ng-template>
-                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                    <p-multiSelect [ngModel]="value" [options]="representatives" placeholder="Any"
-                      (onChange)="filter($event.value)" optionLabel="name">
-                      <ng-template let-option pTemplate="item">
-                        <div class="p-multiselect-representative-option">
-                          <span class="p-ml-1">{{option.name}}</span>
-                        </div>
-                      </ng-template>
-                    </p-multiSelect>
-                  </ng-template>
-                </p-columnFilter>
-              </div>
-            </th> -->
             </tr>
           </ng-template>
-
-
-
-          <!--           <ng-template pTemplate="header">
-            <tr>
-              <th [pSortableColumn]="'name'">Name <p-sortIcon field="name"></p-sortIcon>
-              </th>
-              <th>Image</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th [pSortableColumn]="'category.name'">
-                Category <p-sortIcon field="category.name"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'isFeatured'">
-                Featured <p-sortIcon field="isFeatured"></p-sortIcon>
-              </th>
-              <th [pSortableColumn]="'dateCreated'">
-                Created on <p-sortIcon field="dateCreated"></p-sortIcon>
-              </th>
-              <th></th>
-            </tr>
-          </ng-template> -->
 
 
           <ng-template pTemplate="body" let-product>
@@ -109,13 +64,31 @@
               <td>{{ product.isFeatured }}</td>
               <td>{{ product.dateCreated | date: 'short' }}</td>
               <td>
-                <p-button (click)="deleteProduct(product.id)" styleClass="p-button-danger p-mr-2" icon="pi pi-trash">
+                <p-button (click)="updateProduct(product.id)"
+                  styleClass="p-button-rounded p-button-success mr-2 table-button" icon="pi pi-pencil">
                 </p-button>
-                <p-button (click)="updateProduct(product.id)" styleClass="p-button-success" icon="pi pi-pencil">
+                <p-button (click)="deleteProduct(product.id)"
+                  styleClass="p-button-rounded p-button-danger mr-2 table-button" icon="pi pi-trash">
                 </p-button>
               </td>
             </tr>
           </ng-template>
+          <ng-template let-item pTemplate="paginatordropdownitem">
+            {{item.value}} - per page
+          </ng-template>
+          <!--
+          <ng-template pTemplate="paginatorleft" let-state>
+            {{state.first}}
+            <button type="button" pButton icon="pi-refresh"></button>
+          </ng-template>
+          <ng-template pTemplate="paginatorright">
+            <button type="button" pButton icon="pi-cloud-upload"></button>
+          </ng-template>
+          <ng-template let-item pTemplate="paginatordropdownitem">
+            {{item.value}} - per page
+          </ng-template> -->
+
+
         </p-table>
       </div>
     </div>
