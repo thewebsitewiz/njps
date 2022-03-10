@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
   CategoriesService,
@@ -35,7 +35,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
   priceField: boolean = true;
   pricesField: boolean = false;
 
-  pricesAdded = false;
+  amtPrices: { [key: string]: number } = {};
 
   editProduct!: Product;
 
@@ -230,42 +230,36 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     if (category === 'Flower' ||
       category === 'Designer Flower') {
       if (!this.pricesField) {
-        this.priceField = false;
-        this.pricesField = true;
-
         this.productsService.getCategoryPriceList(category).subscribe((results: any) => {
-          const pricesGroup: { [key: string]: AbstractControl } = {};
-          const amtPrices: { [key: string]: number } = {};
+          const pricesGroup: { [key: string]: FormControl } = {};
+
           results.forEach((price: any) => {
             this.priceList.push({ name: price.name, displayName: price.displayName })
           });
 
-
           product?.prices.forEach((priceInfo) => {
-            amtPrices[priceInfo.name] = priceInfo.price;
+            this.amtPrices[priceInfo.name] = priceInfo.price;
           });
 
-          console.log(amtPrices);
+          console.log(this.amtPrices);
 
           FLOWER_AMOUNTS.forEach((amtName: string) => {
-            pricesGroup[amtName] = new FormControl();
-
-            console.log(amtName, amtPrices[amtName]);
-            if (amtPrices[amtName] !== undefined) {
-              pricesGroup[amtName].setValue(amtPrices[amtName]);
+            if (this.amtPrices[amtName] !== undefined) {
+              pricesGroup[amtName] = new FormControl(this.amtPrices[amtName]);
+            }
+            else {
+              pricesGroup[amtName] = new FormControl('');
             }
           });
 
+          this.priceField = false;
           this.productForm.removeControl('price');
-          this.productForm.addControl('prices', new FormGroup(pricesGroup));
-
-          /* FLOWER_AMOUNTS.forEach((amtName: string) => {
-            if (amtPrices[amtName] !== undefined) {
-              pricesGroup[amtName].setValue(amtPrices[amtName]);
-            }
-          }); */
-        })
+          this.productForm.addControl('prices', this.formBuilder.group(pricesGroup));
+          this.pricesField = true;
+        });
+        console.log(this.productForm);
       }
+
     }
     else {
       if (this.productForm.get('price') === null) {

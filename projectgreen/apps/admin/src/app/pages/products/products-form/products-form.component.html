@@ -61,13 +61,12 @@
               <small *ngIf="prodForm['price']?.invalid && isSubmitted" class="p-error">Price is required</small>
             </div>
             <div class="p-field col-12 md:col-3" *ngIf="pricesField === true" formGroupName="prices">
-
-
               <div class="field grid product-prices" *ngFor="let priceItem of priceList">
                 <div class="col">
                   <div class="p-inputgroup">
                     <span class="p-inputgroup-addon">$</span>
-                    <input id="{{priceItem.name}}" type="text" class="inputfield left" placeholder="Price">
+                    <input id="{{priceItem.name}}" type="text" class="inputfield left" placeholder="Price"
+                      value="{{amtPrices[priceItem.name]}}">
                     <span class="p-inputgroup-addon">{{priceItem.displayName}}</span>
                   </div>
                 </div>
