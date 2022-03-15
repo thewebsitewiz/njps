@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductsService } from '@projectgreen/products';
+import { ProductsService, Product, GRAMS } from '@projectgreen/products';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -43,13 +43,36 @@ export class ProductsListComponent implements OnInit, OnDestroy {
       .getProducts()
       .pipe(takeUntil(this.endsubs$))
       .subscribe((products: any) => {
-        products.forEach((product: any) => {
+        products.forEach((product: Product) => {
           product.image = `${environment.imageUrl}${product.image}`;
+          if (product.unitType === 'Gram' && (product.category?.name == 'Flower' || product.category?.name == 'Designer Flower')) {
+            product.displayCount = this.convertFromGrams(product.countInStock);
+            console.log(product)
+          }
           this.products.push(product)
         })
         this.totalRecords = this.products.length;
       });
   }
+
+  convertFromGrams(amt: number) {
+    const pounds = Math.trunc(amt / GRAMS['pound']);
+    const remainderGramsPounds = amt % GRAMS['pound'];
+    if (remainderGramsPounds <= 0) return { pounds: pounds }
+    if (remainderGramsPounds < GRAMS['ounce']) return { pounds: pounds, grams: remainderGramsPounds }
+    const ounces = Math.trunc(remainderGramsPounds / GRAMS['ounce']);
+    const remainderGramsOunces = Math.trunc(amt % GRAMS['ounce']);
+
+    return {
+      pounds: pounds,
+      ounces: ounces,
+      grams: remainderGramsOunces
+    }
+
+  }
+
+
+
 
   reset() {
     this.first = 0;

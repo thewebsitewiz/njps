@@ -7,6 +7,7 @@ import {
   ProductsService,
   UNIT_TYPES,
   FLOWER_AMOUNTS,
+  GRAMS,
   Product,
   Category,
   Categories
@@ -41,6 +42,13 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
   priceList: { name: string, displayName: string }[] = [];
 
+  inStockSimple: boolean = true;
+  inStockPounds: boolean = false;
+  totalInGrams: number = 0;
+  enteredLbs: number = 0;
+  enteredOzs: number = 0;
+  enteredGms: number = 0;
+
   constructor(
     private formBuilder: FormBuilder,
     private productsService: ProductsService,
@@ -55,6 +63,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     this._mapUnitType();
     this._getCategories();
     this._checkEditMode();
+    console.log('here 1');
   }
 
   ngOnDestroy() {
@@ -65,7 +74,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
   private _initForm() {
     this.productForm = this.formBuilder.group({
       name: ['', Validators.required],
-      brand: ['', Validators.required],
+      brand: ['',],
       flavor: [''],
       price: ['', Validators.required],
       unitType: ['', Validators.required],
@@ -170,8 +179,15 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.endsubs$))
           .subscribe((product: Product) => {
             this.editProduct = product;
-
+            console.log(product);
             this.checkCategory(product);
+
+            const results = this.convertFromGrams(product.countInStock);
+            console.log(results);
+
+            this.enteredLbs = results['pounds'] || 0;
+            this.enteredOzs = results['ounces'] || 0;
+            this.enteredGms = results['grams'] || 0;
 
             this.prodForm['name'].setValue(product.name);
             this.prodForm['category'].setValue(product?.category?.id);
@@ -180,6 +196,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
             this.prodForm['unitType'].setValue(product.unitType);
             this.prodForm['price'].setValue(product.price);
             this.prodForm['countInStock'].setValue(product.countInStock);
+            this.totalInGrams = product.countInStock;
             this.prodForm['isFeatured'].setValue(product.isFeatured);
             this.prodForm['description'].setValue(product.description);
             this.prodForm['richDescription'].setValue(product.richDescription);
@@ -192,10 +209,76 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
   }
 
   checkCategory(product: Product) {
+
     if (product?.category?.name === 'Flower' || product?.category?.name === 'Designer Flower') {
       this.unitTypes = [{ label: 'Gram', value: 'gram' }];
       this.priceFormatChanged({ product: product });
+      this.inStockSimple = false;
+      this.inStockPounds = true;
     }
+    else {
+      this.inStockSimple = true;
+      this.inStockPounds = false;
+    }
+  }
+
+  updateAmt(type: string, evt: HTMLInputElement): void {
+    console.log(type, evt);
+    let amt;
+    if (evt.value === null) {
+      if (type === 'lbs') {
+        this.enteredLbs = 0;
+      }
+      else if (type === 'ozs') {
+        this.enteredOzs = 0;
+      } else if (type === 'gms') {
+        this.enteredGms = 0;
+      }
+      amt = 0;
+    }
+    amt = parseInt(evt.value, 10);
+    if (type === 'lbs') {
+      if (amt !== this.enteredLbs) {
+        this.totalInGrams = this.round((amt * GRAMS['pound']) + (this.enteredOzs * GRAMS['ounce']) + (this.enteredGms));
+        this.enteredLbs = amt;
+      }
+    }
+    if (type === 'ozs') {
+      if (amt !== this.enteredOzs) {
+        this.totalInGrams = this.round((this.enteredLbs * GRAMS['pound']) + (amt * GRAMS['ounce']) + (this.enteredGms));
+        this.enteredOzs = amt;
+      }
+    } if (type === 'gms') {
+      if (amt !== this.enteredGms) {
+        this.totalInGrams = this.round((this.enteredLbs * GRAMS['pound']) + (this.enteredOzs * GRAMS['ounce']) + (amt));
+        this.enteredGms = amt;
+      }
+    }
+
+    this.prodForm['countInStock'].setValue(this.totalInGrams);
+
+  }
+
+  round(num: number) {
+    var m = Number((Math.abs(num) * 100).toPrecision(15));
+    return Math.round(m) / 100 * Math.sign(num);
+  }
+
+
+  convertFromGrams(amt: number) {
+    const pounds = Math.trunc(amt / GRAMS['pound']);
+    const remainderGramsPounds = amt % GRAMS['pound'];
+    if (remainderGramsPounds <= 0) return { pounds: pounds }
+    if (remainderGramsPounds < GRAMS['ounce']) return { pounds: pounds, grams: remainderGramsPounds }
+    const ounces = Math.trunc(remainderGramsPounds / GRAMS['ounce']);
+    const remainderGramsOunces = Math.trunc(amt % GRAMS['ounce']);
+
+    return {
+      pounds: pounds,
+      ounces: ounces,
+      grams: remainderGramsOunces
+    }
+
   }
 
   categoryChanged(event: HTMLInputElement) {
@@ -229,19 +312,21 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
     if (category === 'Flower' ||
       category === 'Designer Flower') {
-      if (!this.pricesField) {
+      if (this.pricesField === false) {
+        console.log(category);
         this.productsService.getCategoryPriceList(category).subscribe((results: any) => {
           const pricesGroup: { [key: string]: FormControl } = {};
 
+          console.log(results);
           results.forEach((price: any) => {
             this.priceList.push({ name: price.name, displayName: price.displayName })
           });
 
+          console.log(this.priceList)
+
           product?.prices.forEach((priceInfo) => {
             this.amtPrices[priceInfo.name] = priceInfo.price;
           });
-
-          console.log(this.amtPrices);
 
           FLOWER_AMOUNTS.forEach((amtName: string) => {
             if (this.amtPrices[amtName] !== undefined) {
@@ -253,18 +338,26 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
           });
 
           this.priceField = false;
-          this.productForm.removeControl('price');
+
+
+          console.log('here A');
+          if (this.productForm.contains('prices')) {
+            this.productForm.removeControl('price');
+          }
+          console.log('here B');
           this.productForm.addControl('prices', this.formBuilder.group(pricesGroup));
+
+          console.log('here C');
           this.pricesField = true;
         });
-        console.log(this.productForm);
       }
 
     }
     else {
       if (this.productForm.get('price') === null) {
-
-        this.productForm.removeControl('prices');
+        if (this.productForm.contains('prices')) {
+          this.productForm.removeControl('prices');
+        }
         this.pricesField = false;
 
         this.productForm.addControl('price', new FormControl('', Validators.required));
@@ -281,9 +374,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     const productFormData = new FormData();
     for (const field in this.prodForm) {
 
-      console.log(field)
-      console.log(this.prodForm[field].value);
-
+      console.log(field, this.prodForm[field].value)
       productFormData.append(field, this.prodForm[field].value);
     }
     if (this.editmode) {

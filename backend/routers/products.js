@@ -142,7 +142,8 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
             countInStock: req.body.countInStock,
             rating: req.body.rating,
             numReviews: req.body.numReviews,
-            isFeatured: req.body.isFeatured
+            isFeatured: req.body.isFeatured,
+            unitType: req.body.unitType
         }, {
             new: true
         }
@@ -243,6 +244,7 @@ router.get(`/get/featured/:count`, async (req, res) => {
 router.get(`/get/pricelist/:category`, async (req, res) => {
     const category = decodeURI(req.params.category);
 
+    console.log(category);
     const prices = await ProductSize.find({
         productType: category
     }).sort({
@@ -253,6 +255,8 @@ router.get(`/get/pricelist/:category`, async (req, res) => {
             success: false
         });
     }
+
+    console.log(prices)
 
     res.send(prices);
 });

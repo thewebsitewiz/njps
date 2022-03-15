@@ -14,13 +14,21 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class InventoryFormComponent implements OnInit, OnDestroy {
   editmode = false;
-  form!: FormGroup;
+  prodForm!: FormGroup;
   isSubmitted = false;
   categories = [];
   imageDisplay!: string | ArrayBuffer | null | undefined;
   currentProductId!: string;
   endsubs$: Subject<any> = new Subject();
   productName!: string | undefined;
+  unitType!: string;
+
+  inStockSimple: boolean = true;
+  inStockPounds: boolean = false;
+  totalInGrams: number = 0;
+  enteredLbs: number = 0;
+  enteredOzs: number = 0;
+  enteredGms: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,7 +51,7 @@ export class InventoryFormComponent implements OnInit, OnDestroy {
   }
 
   private _initForm() {
-    this.form = this.formBuilder.group({
+    this.prodForm = this.formBuilder.group({
       countInStock: ['', Validators.required]
     });
   }
@@ -55,33 +63,6 @@ export class InventoryFormComponent implements OnInit, OnDestroy {
       .subscribe((categories: any) => {
         this.categories = categories;
       });
-  }
-
-  private _addProduct(productData: FormData) {
-    this.productsService
-      .createProduct(productData)
-      .pipe(takeUntil(this.endsubs$))
-      .subscribe(
-        (product: Product) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: `Product ${product.name} is created!`
-          });
-          timer(2000)
-            .toPromise()
-            .then(() => {
-              this.location.back();
-            });
-        },
-        () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Product is not created!'
-          });
-        }
-      );
   }
 
   private _updateProduct(productFormData: FormData) {
@@ -120,16 +101,62 @@ export class InventoryFormComponent implements OnInit, OnDestroy {
           .getProduct(params['id'])
           .pipe(takeUntil(this.endsubs$))
           .subscribe((product) => {
+            console.log(product)
             this.productName = product.name;
+            this.unitType = `${product.unitType}s`;
             this.productForm['countInStock'].setValue(product.countInStock);
           });
       }
     });
   }
 
+
+  updateAmt(type: string, evt: HTMLInputElement): void {
+    console.log(type, evt);
+    let amt;
+    if (evt.value === null) {
+      if (type === 'lbs') {
+        this.enteredLbs = 0;
+      }
+      else if (type === 'ozs') {
+        this.enteredOzs = 0;
+      } else if (type === 'gms') {
+        this.enteredGms = 0;
+      }
+      amt = 0;
+    }
+    amt = parseInt(evt.value, 10);
+    if (type === 'lbs') {
+      if (amt !== this.enteredLbs) {
+        this.totalInGrams = this.round((amt * 453.592) + (this.enteredOzs * 28.3495) + (this.enteredGms));
+        this.enteredLbs = amt;
+      }
+    }
+    if (type === 'ozs') {
+      if (amt !== this.enteredOzs) {
+        this.totalInGrams = this.round((this.enteredLbs * 453.592) + (amt * 28.3495) + (this.enteredGms));
+        this.enteredOzs = amt;
+      }
+    } if (type === 'gms') {
+      if (amt !== this.enteredGms) {
+        this.totalInGrams = this.round((this.enteredLbs * 453.592) + (this.enteredOzs * 28.3495) + (amt));
+        this.enteredGms = amt;
+      }
+    }
+
+    this.productForm['countInStock'].setValue(this.totalInGrams);
+
+  }
+
+  round(num: number) {
+    var m = Number((Math.abs(num) * 100).toPrecision(15));
+    return Math.round(m) / 100 * Math.sign(num);
+  }
+
+
   onSubmit() {
     this.isSubmitted = true;
-    if (this.form.invalid) return;
+    if (this.prodForm.invalid) return;
 
     const productFormData = new FormData();
     Object.keys(this.productForm).map((key) => {
@@ -138,30 +165,15 @@ export class InventoryFormComponent implements OnInit, OnDestroy {
     if (this.editmode) {
       this._updateProduct(productFormData);
     } else {
-      this._addProduct(productFormData);
+
     }
   }
   onCancel() {
     this.location.back();
   }
 
-  onImageUpload(event: any) {
-    const file = event.target.files[0];
-    if (file && this.form !== null) {
-      this.form.patchValue({ image: file });
-      if (this.form.get('image')) {
-        this.form.get('image')!.updateValueAndValidity();
-      }
-
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        this.imageDisplay = fileReader.result;
-      };
-      fileReader.readAsDataURL(file);
-    }
-  }
 
   get productForm() {
-    return this.form.controls;
+    return this.prodForm.controls;
   }
 }

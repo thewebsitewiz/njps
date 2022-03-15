@@ -33,14 +33,11 @@
               </th>
               <th [pSortableColumn]="'category.name'">
                 <div class="p-d-flex p-jc-between p-ai-center">
-                  Category <p-sortIcon field="category.nam"></p-sortIcon>
-                  <p-columnFilter type="text" field="category.name" display="menu"></p-columnFilter>
+                  Last inventoried<p-sortIcon field="category.lastInventoriedDate"></p-sortIcon>
+                  <p-columnFilter type="text" field="category.lastInventoriedDate" display="menu"></p-columnFilter>
                 </div>
               </th>
-
-              <th [pSortableColumn]="'dateCreated'">
-                Last inventoried on <p-sortIcon field="dateInventoried"></p-sortIcon>
-              </th>
+              <th></th>
             </tr>
           </ng-template>
 
@@ -49,7 +46,7 @@
               <td>{{ product.name }}</td>
               <td>{{ product.countInStock }}</td>
               <td>{{ product.category.name }}</td>
-              <td>{{ product.dateCreated | date: 'short' }}</td>
+              <td>{{ product.lastInventoriedDate | date: 'short' }}</td>
               <td>
                 <p-button (click)="updateProduct(product.id)" styleClass="p-button-success" icon="pi pi-pencil">
                 </p-button>

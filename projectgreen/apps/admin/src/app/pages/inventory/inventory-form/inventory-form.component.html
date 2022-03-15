@@ -16,14 +16,66 @@
     </div>
     <div class="grid">
       <div class="col-12">
-        <form [formGroup]="form">
-          <div class="p-fluid p-formgrid grid">
-            <div class="p-field col-4">
-              <label for="countInStock">countInStock</label><br />
+        <form [formGroup]="prodForm">
+          <div class="grid">
+            <!--             <div class="p-field  col-12 md:col-6" *ngIf="inStockSimple">
+              <label for="countInStock">Count In Stock<span class="required">*</span></label><br />
               <p-inputNumber formControlName="countInStock" mode="decimal" [useGrouping]="false">
               </p-inputNumber>
-              <small *ngIf="productForm['countInStock'].invalid && isSubmitted" class="p-error">Count in stock is
+              <small *ngIf="productForm['countInStock'].invalid && isSubmitted" class="p-error">Count In Stock is
                 required</small>
+            </div> -->
+
+            <div class="p-field  col-12 md:col-6" *ngIf="inStockSimple">
+              <label>{{unitType}} In Stock<span class="required">*</span></label><br />
+              <div class="fieldgrid grid wis">
+
+                <div class="field col">
+                  <div class="p-inputgroup">
+                    <p-inputNumber value="product.countInStock" mode="decimal" [useGrouping]="false">
+                    </p-inputNumber>
+                    <span class="p-inputgroup-addon">{{unitType}}</span>
+                  </div>
+                  <small *ngIf="productForm['countInStock'].invalid && isSubmitted" class="p-error">Count In Stock is
+                    required</small>
+                </div>
+              </div>
+            </div>
+            <div class="p-field  col-12 md:col-6" *ngIf="inStockPounds">
+              <label>Weight In Stock<span class="required">*</span></label><br />
+              <div class="fieldgrid grid wis">
+                <div class="field col">
+                  <div class="p-inputgroup">
+                    <p-inputNumber (onInput)="updateAmt('lbs',$event)" [min]=0 value="enteredLbs" mode="decimal"
+                      [useGrouping]="false">
+                    </p-inputNumber>
+                    <span class="p-inputgroup-addon">LBS</span>
+                  </div>
+                </div>
+
+                <div class="field col">
+                  <div class="p-inputgroup">
+                    <p-inputNumber (onInput)="updateAmt('ozs',$event)" [min]=0 value="enteredOzs" mode="decimal"
+                      [useGrouping]="false">
+                    </p-inputNumber>
+                    <span class="p-inputgroup-addon">OZ</span>
+                  </div>
+                </div>
+
+                <div class="field col">
+                  <div class="p-inputgroup">
+                    <p-inputNumber (onInput)="updateAmt('gms',$event)" [min]=0 value="enteredGms" mode="decimal"
+                      [useGrouping]="false">
+                    </p-inputNumber>
+                    <span class="p-inputgroup-addon">gms</span>
+                  </div>
+                </div>
+              </div>
+
+              <small *ngIf="productForm['countInStock'].invalid && isSubmitted" class="p-error">Weight In Stock is
+                required</small>
+              <div class="totalInGrams"> Total in grams: {{totalInGrams}}g
+              </div>
             </div>
           </div>
         </form>

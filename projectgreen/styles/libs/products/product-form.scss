@@ -24,7 +24,7 @@
 
     input {
       border: 1px solid $med-green !important;
-      width: 100px;
+      width: 80px !important;
     }
 
     /* &:nth-child(even) {
@@ -32,6 +32,13 @@
     } */
   }
 
+  & .wis {
+
+    input {
+      border: 1px solid $med-green !important;
+      width: 80px !important;
+    }
+  }
 
 
 

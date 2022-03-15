@@ -18,6 +18,11 @@ export interface Product {
   numReviews?: number;
   isFeatured?: boolean;
   dateCreated?: string;
+  displayCount?: {
+    pounds?: number;
+    ounces?: number,
+    grams?: number
+  }
 }
 
 

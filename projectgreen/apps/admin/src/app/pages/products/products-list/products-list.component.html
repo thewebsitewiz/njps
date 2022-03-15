@@ -59,7 +59,21 @@
               <td>{{ product.name }}</td>
               <td><img [src]="product.image" style="max-width: 75px" alt="" /></td>
               <td>{{ product.price }}</td>
-              <td>{{ product.countInStock }}</td>
+              <td>
+                <span *ngIf="product.displayCount?.pounds > 0 ||
+                  product.displayCount?.ounces > 0 ||
+                  product.displayCount?.grams > 0">
+                  <span *ngIf="product.displayCount?.pounds > 0">{{ product.displayCount?.pounds }} lbs </span>
+                  <span *ngIf="product.displayCount?.ounces > 0">{{ product.displayCount?.ounces }} ozs </span>
+                  <span *ngIf="product.displayCount?.grams > 0">{{ product.displayCount?.grams }} gms</span>
+                </span>
+                <span *ngIf="product.displayCount?.pounds === undefined &&
+                product.displayCount?.ounces === undefined &&
+                product.displayCount?.grams === undefined">
+                  {{product.countInStock}}
+
+                </span>
+              </td>
               <td>{{ product.category.name }}</td>
               <td>{{ product.isFeatured }}</td>
               <td>{{ product.dateCreated | date: 'short' }}</td>
