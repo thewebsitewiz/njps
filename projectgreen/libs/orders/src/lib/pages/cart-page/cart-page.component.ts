@@ -37,13 +37,14 @@ export class CartPageComponent implements OnInit, OnDestroy {
       this.cartItemsDetailed = [];
 
       if (respCart.items !== undefined) {
-        this.cartCount = respCart.items.length ?? 0;
+        // this.cartCount = respCart.items.length ?? 0;
         respCart.items.forEach((cartItem) => {
-
           if (cartItem.productId !== undefined) {
             this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
               respProduct.image = `${environment.imageUrl}${respProduct.image}`;
               if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
+                this.cartCount++;
+                // console.log('file: cart-page.component.ts ~ line 47 ~ CartPageComponent ~ this.ordersService.getProduct ~ this.cartCount', this.cartCount);
                 this.cartItemsDetailed.push({
                   image: respProduct.image,
                   name: respProduct.name,
@@ -55,6 +56,9 @@ export class CartPageComponent implements OnInit, OnDestroy {
                 const unitPrice = respProduct.price ?? 0;
                 const amount = cartItem.amount ?? 0;
                 let subTotal = unitPrice * amount;
+
+                this.cartCount += cartItem.amount;
+                // console.log('file: cart-page.component.ts ~ line 61 ~ CartPageComponent ~ this.ordersService.getProduct ~ this.cartCount', this.cartCount);
 
                 this.cartItemsDetailed.push({
                   image: respProduct.image,
@@ -71,22 +75,8 @@ export class CartPageComponent implements OnInit, OnDestroy {
     });
   }
 
-
   backToShop() {
     this.router.navigate(['/']);
   }
 
-  /*   deleteCartItem(cartItem: CartItemDetailed) {
-      this.cartService.deleteCartItem(cartItem.product.id);
-    } */
-
-  /* updateCartItemQuantity(event: any, cartItem: CartItemDetailed) {
-    this.cartService.setCartItem(
-      {
-        productId: cartItem.product.id,
-        amount: event.value
-      },
-      true
-    );
-  } */
 }

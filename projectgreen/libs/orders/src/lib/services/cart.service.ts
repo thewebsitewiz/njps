@@ -14,27 +14,28 @@ export class CartService {
   initCartLocalStorage() {
     const cart: Cart = this.getCart();
     if (!cart || !cart.items) {
-      const intialCart = {
+      const initalCart = {
         items: []
       };
-      const intialCartJson = JSON.stringify(intialCart);
-      localStorage.setItem(CART_KEY, intialCartJson);
+      const initalCartJson = JSON.stringify(initalCart);
+      localStorage.setItem(CART_KEY, initalCartJson);
     }
   }
 
   emptyCart() {
-    const intialCart = {
+    const initalCart = {
       items: []
     };
-    const intialCartJson = JSON.stringify(intialCart);
-    localStorage.setItem(CART_KEY, intialCartJson);
-    this.cart$.next(intialCart);
+    const initalCartJson = JSON.stringify(initalCart);
+    localStorage.setItem(CART_KEY, initalCartJson);
+    this.cart$.next(initalCart);
   }
 
   getCart(): Cart {
     const cartJsonString: string | null = localStorage.getItem(CART_KEY);
     if (cartJsonString !== null) {
-      return JSON.parse(cartJsonString);
+      const cartInfo = JSON.parse(cartJsonString);
+      return cartInfo;
     }
     return {};
   }
@@ -50,10 +51,7 @@ export class CartService {
 
 
   setCartItem(cartItem: CartItem, updateCartItem: boolean = true): Cart {
-    console.log('file: cart.service.ts ~ line 53 ~ CartService ~ setCartItem ~ cartItem', cartItem);
-    console.log('file: cart.service.ts ~ line 53 ~ CartService ~ setCartItem ~ updateCartItem', updateCartItem);
     const cart = this.getCart();
-    console.log('file: cart.service.ts ~ line 56 ~ CartService ~ setCartItem ~ cart', cart);
     if (cart.items === undefined) {
       this.initCartLocalStorage();
     }

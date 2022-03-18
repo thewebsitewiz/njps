@@ -7,18 +7,11 @@
     </div>
     <!-- <div class="col"><products-search></products-search></div> -->
 
-    <!--  <div class="col cart-symbol" (click)="goToCart()"><span class="cart-count">{{cartCount}}</span></div> -->
     <div class="col navigation">
-
-      <!--   <p-menu #menu [popup]="true" [model]="items"></p-menu>
-      <button type="button" pButton icon="pi pi-list" label="Show" (click)="menu.toggle($event)"></button> -->
 
       <button type="button" pButton pRipple icon="pi pi-bars" label="" (click)="menu.toggle($event)"></button>
       <p-menu #menu [popup]="true" [model]="items"></p-menu>
     </div>
-    <!-- <div class="col-1 tools">
-      <i class="pi pi-user p-text-secondary" style="font-size: 1.5rem"></i>
-      <orders-cart-icon></orders-cart-icon>
-    </div> -->
+
   </div>
 </header>

@@ -36,10 +36,10 @@ export class HeaderComponent {
       this.cartCount = 0;
       if (cart.items !== undefined) {
         cart.items.forEach((cart) => {
-          if (cart.unitType === 'gram') {
+          if (cart.unitType === 'Gram') {
             this.cartCount++;
           }
-          if (cart.unitType === 'Item' && cart.amount !== undefined) {
+          if ((cart.unitType === 'Item' || cart.unitType === 'Package') && cart.amount !== undefined) {
             this.cartCount = this.cartCount + cart.amount;
           }
         })
