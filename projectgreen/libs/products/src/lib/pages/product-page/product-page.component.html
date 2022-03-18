@@ -1,6 +1,5 @@
 <div class="product-page" *ngIf="product">
 
-
   <ng-container *ngIf="product.brand || product.flavor">
     <h2 class="brand-flavor-name" *ngIf="product.name">{{ product.name }}</h2>
     <h1 class="brand-flavor-name"><span *ngIf="product.brand">{{ product.brand }}</span><span
@@ -8,13 +7,13 @@
     </h1>
   </ng-container>
 
-  <h2 class="primary-heading product-name" *ngIf="!product.brand && !product.flavor">{{ product.name }}</h2>
+  <h2 class="primary-heading product-name">{{ product.name }}</h2>
   <ui-gallery [images]="productImages"></ui-gallery>
-  <img src="{{ product.image }}" *ngIf="productImages.length < 1" />
+  <img src="{{ product.image }}" *ngIf="productImages !== undefined && productImages.length < 1" />
 
-  <ng-container *ngIf="product.prices.length > 0">
-    <p-dropdown [options]="prices" [(ngModel)]="selectedAmount" optionLabel="name" optionValue="code"
-      placeholder="Prices" optionDisabled="unavailable" (click)="addToCart(null)"></p-dropdown>
+  <ng-container *ngIf="product.prices !== undefined && product.prices.length > 0">
+    <p-dropdown class="dropdown-button-text" [options]="prices" [(ngModel)]="selectedAmount" optionLabel="name"
+      optionValue="code" placeholder="Prices" optionDisabled="unavailable" (click)="addToCart(null)"></p-dropdown>
     <div class="selectedAmount" [innerHTML]="selectedAmountDisplay"></div>
   </ng-container>
 
@@ -48,28 +47,3 @@
     <div [innerHTML]="product?.richDescription"></div>
   </div>
 </div>
-
-
-
-
-<!-- <div class="product-rating">
-      <p-rating [(ngModel)]="product.rating" [cancel]="false" [disabled]="true"></p-rating>
-    </div> -->
-<!--     <div class="product-price">
-      {{ product.price | currency }}
-      <span class="price-before">{{ product.price + 18 | currency }}</span>
-    </div>
-    <div class="product-quantity">
-      <div class="p-field col-12 p-md-3 p-p-0">
-        <label for="quantity">Quantity</label>
-        <p-inputNumber [(ngModel)]="quantity" mode="decimal" [showButtons]="true" inputId="quantity" [min]="1"
-          [max]="100">
-        </p-inputNumber>
-      </div>
-    </div>
-    <div class="product-actions">
-      <button pButton pRipple type="button" label="Buy Now" class="p-button-rounded p-mr-2"></button>
-      <button pButton pRipple type="button" label="Add to Cart" class="p-button-rounded"
-        (click)="addProductToCart()"></button>
-    </div>
- -->

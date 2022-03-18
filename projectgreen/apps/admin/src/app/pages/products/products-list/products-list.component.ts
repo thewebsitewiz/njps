@@ -47,9 +47,17 @@ export class ProductsListComponent implements OnInit, OnDestroy {
           product.image = `${environment.imageUrl}${product.image}`;
           if (product.unitType === 'Gram' && (product.category?.name == 'Flower' || product.category?.name == 'Designer Flower')) {
             product.displayCount = this.convertFromGrams(product.countInStock);
-            console.log(product)
+            product.price = undefined;
+            let prices: string = '';
+            if (product.prices !== undefined) {
+              product.prices.forEach(pr => {
+                if (pr.price !== undefined && pr.price !== null)
+                  prices += (`${pr.name}: $${pr.price}<br/>`)
+              })
+            }
+            product.cost = prices;
           }
-          this.products.push(product)
+          this.products.push(product);
         })
         this.totalRecords = this.products.length;
       });

@@ -23,6 +23,16 @@ export const FLOWER_AMOUNTS: string[] = [
   'pound',
 ]
 
+export const FLOWER_GRAMS: { [key: string]: number } = {
+  'eighth': 3.5,
+  'quarter': 7,
+  'half': 14,
+  'ounce': 28,
+  'quarterPound': 112,
+  'halfPound': 224,
+  'pound': 448
+};
+
 export const GRAMS: { [key: string]: number } = {
   pound: 453.59,
   ounce: 28.35

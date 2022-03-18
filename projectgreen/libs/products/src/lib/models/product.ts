@@ -9,8 +9,8 @@ export interface Product {
   images: string[];
   brand?: string;
   flavor?: string;
-  price: number;
-  prices: Price[];
+  price: number | undefined;
+  prices: Price[] | undefined;
   category?: Category;
   countInStock: number;
   unitType: string;
@@ -23,6 +23,7 @@ export interface Product {
     ounces?: number,
     grams?: number
   }
+  cost?: string
 }
 
 
@@ -30,5 +31,12 @@ export interface Price {
   name: string;
   amount: number;
   type: string;
+  price: number;
+}
+
+export interface ProductPrices {
+  _id: string;
+  name: string;
+  amount: number;
   price: number;
 }

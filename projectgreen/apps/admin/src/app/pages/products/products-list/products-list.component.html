@@ -12,10 +12,12 @@
     </div>
     <div class="grid">
       <div class="col-12">
-        <p-table [paginator]="true" [rowsPerPageOptions]="[10, 20, 30,{ showAll: 'All' }]" [totalRecords]="totalRecords"
-          [(first)]="first" [rows]="10" [value]="products" styleClass="p-datatable-gridlines"
+        <p-table #dt [value]="products" [paginator]="true" [rowsPerPageOptions]="[10, 20, 30,{ showAll: 'All' }]"
+          [totalRecords]="totalRecords" [(first)]="first" [rows]="10" [rowHover]="true"
+          styleClass="p-datatable-gridlines"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           [globalFilterFields]="['name','category.name','isFeatured','countInStock']" paginatorPosition="bottom">
-          <ng-template pTemplate="caption">
+          <!-- <ng-template pTemplate="caption">
             <div class="flex">
               <span class="p-input-icon-left p-ml-auto">
                 <i class="pi pi-search"></i>
@@ -23,7 +25,7 @@
                   placeholder="Search keyword" />
               </span>
             </div>
-          </ng-template>
+          </ng-template> -->
           <ng-template pTemplate="header">
             <tr>
               <th [pSortableColumn]="'name'">
@@ -53,19 +55,21 @@
             </tr>
           </ng-template>
 
-
           <ng-template pTemplate="body" let-product>
             <tr>
-              <td>{{ product.name }}</td>
+              <td class="product-name">{{ product.name }}</td>
               <td><img [src]="product.image" style="max-width: 75px" alt="" /></td>
-              <td>{{ product.price }}</td>
+              <td>
+                <div *ngIf="product.price !== undefined">{{ product.price }}</div>
+                <div *ngIf="product.price === undefined" innerHTML="{{ product.cost }}"></div>
+              </td>
               <td>
                 <span *ngIf="product.displayCount?.pounds > 0 ||
                   product.displayCount?.ounces > 0 ||
                   product.displayCount?.grams > 0">
-                  <span *ngIf="product.displayCount?.pounds > 0">{{ product.displayCount?.pounds }} lbs </span>
-                  <span *ngIf="product.displayCount?.ounces > 0">{{ product.displayCount?.ounces }} ozs </span>
-                  <span *ngIf="product.displayCount?.grams > 0">{{ product.displayCount?.grams }} gms</span>
+                  <div *ngIf="product.displayCount?.pounds > 0">{{ product.displayCount?.pounds }} lbs </div>
+                  <div *ngIf="product.displayCount?.ounces > 0">{{ product.displayCount?.ounces }} ozs </div>
+                  <div *ngIf="product.displayCount?.grams > 0">{{ product.displayCount?.grams }} gms</div>
                 </span>
                 <span *ngIf="product.displayCount?.pounds === undefined &&
                 product.displayCount?.ounces === undefined &&

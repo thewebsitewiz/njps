@@ -14,6 +14,17 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
+const util = require('util');
+
+const FLOWER_AMOUNTS = [
+    'eighth',
+    'quarter',
+    'half',
+    'ounce',
+    'quarterPound',
+    'halfPound',
+    'pound',
+]
 
 
 const imgPathUtils = require('../helpers/imagePathUtils');
@@ -98,7 +109,8 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
         countInStock: req.body.countInStock,
         rating: req.body.rating,
         numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured
+        isFeatured: req.body.isFeatured,
+        prices: req.body.prices
     });
 
     product = await product.save();
@@ -130,21 +142,24 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         imagePath = product.image;
     }
 
+    const payload = {
+        name: req.body.name,
+        description: req.body.description,
+        richDescription: req.body.richDescription,
+        image: imagePath,
+        brand: req.body.brand,
+        price: req.body.price,
+        category: req.body.category,
+        countInStock: req.body.countInStock,
+        rating: req.body.rating,
+        numReviews: req.body.numReviews,
+        isFeatured: req.body.isFeatured,
+        unitType: req.body.unitType,
+        prices: req.body.prices
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
-        req.params.id, {
-            name: req.body.name,
-            description: req.body.description,
-            richDescription: req.body.richDescription,
-            image: imagePath,
-            brand: req.body.brand,
-            price: req.body.price,
-            category: req.body.category,
-            countInStock: req.body.countInStock,
-            rating: req.body.rating,
-            numReviews: req.body.numReviews,
-            isFeatured: req.body.isFeatured,
-            unitType: req.body.unitType
-        }, {
+        req.params.id, payload, {
             new: true
         }
     );
@@ -153,40 +168,6 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
 
     res.send(updatedProduct);
 });
-
-// Original
-
-/* router.post(`/`, uploadOptions.single('image'), async (req, res) => {
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send('Invalid Category');
-
-    const file = req.file;
-    if (!file) return res.status(400).send('No image in the request');
-
-    const fileName = file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-    let product = new Product({
-        name: req.body.name,
-        description: req.body.description,
-        richDescription: req.body.richDescription,
-        image: `${basePath}${fileName}`, // "http://localhost:3000/public/upload/image-2323232"
-        brand: req.body.brand,
-        price: req.body.price,
-        category: req.body.category,
-        countInStock: req.body.countInStock,
-        rating: req.body.rating,
-        numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured
-    });
-
-    product = await product.save();
-
-    if (!product) return res.status(500).send('The product cannot be created');
-
-    res.send(product);
-}); */
-
-
 
 router.delete('/:id', (req, res) => {
     Product.findByIdAndRemove(req.params.id)
@@ -244,19 +225,17 @@ router.get(`/get/featured/:count`, async (req, res) => {
 router.get(`/get/pricelist/:category`, async (req, res) => {
     const category = decodeURI(req.params.category);
 
-    console.log(category);
     const prices = await ProductSize.find({
         productType: category
     }).sort({
         'sortOrder': 1
     });
+
     if (!prices) {
         res.status(500).json({
             success: false
         });
     }
-
-    console.log(prices)
 
     res.send(prices);
 });

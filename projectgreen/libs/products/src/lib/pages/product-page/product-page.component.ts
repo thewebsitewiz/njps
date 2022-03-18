@@ -4,6 +4,7 @@ import { CartItem, CartService } from '@projectgreen/orders';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product';
+import { FLOWER_AMOUNTS } from '../../products.constants';
 import { ProductsService } from '../../services/products.service';
 import { environment } from '@env/environment';
 
@@ -50,6 +51,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   }
 
   addToCart(qty: number | null, price?: number) {
+
     if (!this.fieldDisabled) {
       if (qty === null) {
         // ${pr.name}:${pr.amount}:${pr.type}:${pr.price}
@@ -64,6 +66,8 @@ export class ProductPageComponent implements OnInit, OnDestroy {
             amountName: name,
             price: parseInt(price, 10)
           };
+
+          console.log(cartItem)
 
           this.cartService.setCartItem(cartItem, false);
 
@@ -98,28 +102,47 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         if (this.product.countInStock < 1) {
           this.fieldDisabled = true;
         }
-        if (this.product.countInStock < 5) {
+        if ((this.product.category?.name === 'Flower' || this.product.category?.name === 'Designer Flower') && this.product.countInStock <= 28) {
           this.limitedQuantityMessage = 'Limited quantity available!';
         }
-        if (this.product.countInStock < 1) {
+        else if (this.product.category?.name !== 'Flower' &&
+          this.product.category?.name !== 'Designer Flower'
+          && this.product.countInStock <= 5) {
+          this.limitedQuantityMessage = 'Limited quantity available!';
+        }
+
+        if (this.product.category?.name !== 'Flower' && this.product.category?.name !== 'Designer Flower' && this.product.countInStock < 1) {
           this.limitedQuantityMessage = 'Sold out!';
         }
-
-        if (this.product.prices !== undefined && this.product.prices.length > 0) {
+        const priceInfo: any = {};
+        if (this.product.prices !== undefined) {
           this.product.prices.forEach(pr => {
-            let inactive: boolean = false;
-            let name = pr.name;
-            if (this.product.countInStock === undefined || this.product.countInStock < pr.amount) {
+            const name = pr.name;
+            priceInfo[name] = pr;
+          })
+        }
+
+        FLOWER_AMOUNTS.forEach(pr => {
+          let inactive: boolean = false;
+          if (priceInfo[pr] !== undefined && priceInfo[pr].price !== null) {
+            let name;
+            if (this.product.countInStock !== undefined && this.product.countInStock < priceInfo[pr].amount) {
               inactive = true;
-              name += ': NA';
             }
             else {
-              name += `: $${pr.price}`
+              if (priceInfo[pr].price !== undefined && this.product.countInStock >= priceInfo[pr].amount) {
+                inactive = false;
+                name = `${priceInfo[pr].name}: $${priceInfo[pr].price}`;
+              } else {
+                inactive = true;
+              }
             }
-            this.prices.push({ name: name, code: `${pr.name}:${pr.amount}:${pr.price}`, unavailable: inactive })
-          });
-
-        }
+            if (name !== '' && name !== undefined) {
+              this.prices.push({ name: name, code: `${priceInfo[pr].name}:${priceInfo[pr].amount}:${priceInfo[pr].price}`, unavailable: inactive })
+              inactive = false;
+            }
+          }
+        });
 
         this.product.images.unshift(this.product.image);
         this.product.images.forEach((image: any) => {
@@ -128,6 +151,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         });
       });
   }
+
 }
 
 export interface PriceType {

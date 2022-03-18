@@ -7,6 +7,7 @@ import {
   ProductsService,
   UNIT_TYPES,
   FLOWER_AMOUNTS,
+  FLOWER_GRAMS,
   GRAMS,
   Product,
   Category,
@@ -38,7 +39,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
   amtPrices: { [key: string]: number } = {};
 
-  editProduct!: Product;
+  product!: Product;
 
   priceList: { name: string, displayName: string }[] = [];
 
@@ -63,7 +64,6 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     this._mapUnitType();
     this._getCategories();
     this._checkEditMode();
-    console.log('here 1');
   }
 
   ngOnDestroy() {
@@ -178,16 +178,8 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
           .getProduct(params['id'])
           .pipe(takeUntil(this.endsubs$))
           .subscribe((product: Product) => {
-            this.editProduct = product;
-            console.log(product);
-            this.checkCategory(product);
-
-            const results = this.convertFromGrams(product.countInStock);
-            console.log(results);
-
-            this.enteredLbs = results['pounds'] || 0;
-            this.enteredOzs = results['ounces'] || 0;
-            this.enteredGms = results['grams'] || 0;
+            this.product = product;
+            this.checkCategory();
 
             this.prodForm['name'].setValue(product.name);
             this.prodForm['category'].setValue(product?.category?.id);
@@ -208,52 +200,86 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkCategory(product: Product) {
+  checkCategory() {
 
-    if (product?.category?.name === 'Flower' || product?.category?.name === 'Designer Flower') {
-      this.unitTypes = [{ label: 'Gram', value: 'gram' }];
-      this.priceFormatChanged({ product: product });
+    if (this.product?.category?.name === 'Flower' || this.product?.category?.name === 'Designer Flower') {
+      this.unitTypes = [{ label: 'Gram', value: 'Gram' }];
+      this.priceFormatChanged();
+
+      const results = this.convertFromGrams(this.product.countInStock);
+
+      this.enteredLbs = results['pounds'] || 0;
+      this.enteredOzs = results['ounces'] || 0;
+      this.enteredGms = results['grams'] || 0;
+
       this.inStockSimple = false;
       this.inStockPounds = true;
+
+      this.productForm.addControl('pounds', new FormControl(this.enteredLbs));
+      this.productForm.addControl('ounces', new FormControl(this.enteredOzs));
+      this.productForm.addControl('grams', new FormControl(this.enteredGms));
+
     }
     else {
       this.inStockSimple = true;
       this.inStockPounds = false;
+
+      if (this.productForm.contains('pounds')) {
+        this.productForm.removeControl('pounds');
+      }
+      if (this.productForm.contains('ounces')) {
+        this.productForm.removeControl('ounces');
+      }
+      if (this.productForm.contains('grams')) {
+        this.productForm.removeControl('grams');
+      }
+
+      this.productForm.addControl('price', new FormControl(this.product.price, Validators.required));
+
     }
   }
 
-  updateAmt(type: string, evt: HTMLInputElement): void {
-    console.log(type, evt);
-    let amt;
-    if (evt.value === null) {
-      if (type === 'lbs') {
-        this.enteredLbs = 0;
-      }
-      else if (type === 'ozs') {
-        this.enteredOzs = 0;
-      } else if (type === 'gms') {
-        this.enteredGms = 0;
-      }
-      amt = 0;
+
+  categoryChanged(event: HTMLInputElement) {
+    if (this.categories[event.value]?.name === 'Flower' || this.categories[event.value]?.name === 'Designer Flower') {
+      this.unitTypes = [{ label: 'Gram', value: 'gram' }];
+      this.priceFormatChanged(event);
     }
-    amt = parseInt(evt.value, 10);
-    if (type === 'lbs') {
+    else {
+      this._mapUnitType();
+    }
+  }
+
+
+  updateAmt(type: string): void {
+    let amt: number = Number(this.prodForm[type].value);
+    console.log(type, amt)
+
+    console.log(type, amt)
+    if (type === 'pounds') {
       if (amt !== this.enteredLbs) {
         this.totalInGrams = this.round((amt * GRAMS['pound']) + (this.enteredOzs * GRAMS['ounce']) + (this.enteredGms));
-        this.enteredLbs = amt;
+        this.enteredLbs = Number(amt);
+        this.enteredLbs = Number(this.enteredLbs);
       }
     }
-    if (type === 'ozs') {
+    if (type === 'ounces') {
       if (amt !== this.enteredOzs) {
         this.totalInGrams = this.round((this.enteredLbs * GRAMS['pound']) + (amt * GRAMS['ounce']) + (this.enteredGms));
-        this.enteredOzs = amt;
-      }
-    } if (type === 'gms') {
-      if (amt !== this.enteredGms) {
-        this.totalInGrams = this.round((this.enteredLbs * GRAMS['pound']) + (this.enteredOzs * GRAMS['ounce']) + (amt));
-        this.enteredGms = amt;
+        this.enteredOzs = Number(amt);
+        this.enteredOzs = Number(this.enteredOzs);
       }
     }
+    if (type === 'grams') {
+      if (amt !== this.enteredGms) {
+        this.totalInGrams = this.round((this.enteredLbs * GRAMS['pound']) + (this.enteredOzs * GRAMS['ounce']) + (amt));
+        this.enteredGms = Number(amt);
+        this.enteredGms = Number(this.enteredGms);
+      }
+    }
+
+    console.log(this.totalInGrams);
+    console.log(typeof this.totalInGrams);
 
     this.prodForm['countInStock'].setValue(this.totalInGrams);
 
@@ -281,24 +307,11 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
   }
 
-  categoryChanged(event: HTMLInputElement) {
-    if (this.categories[event.value]?.name === 'Flower' || this.categories[event.value]?.name === 'Designer Flower') {
-      this.unitTypes = [{ label: 'Gram', value: 'gram' }];
-      this.priceFormatChanged({ product: this.editProduct, event: event });
-    }
-    else {
-      this._mapUnitType();
-    }
-  }
-
-  priceFormatChanged(passed?: { product: Product, event?: HTMLInputElement }): void {
-    const product = passed?.product;
-    const event = passed?.event;
-
+  priceFormatChanged(event?: HTMLInputElement): void {
     let category;
 
-    if (passed?.product) {
-      category = product?.category?.name;
+    if (this.product) {
+      category = this.product?.category?.name;
     }
     else if (event !== undefined && event.value !== undefined) {
       const key = event.value;
@@ -313,21 +326,16 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     if (category === 'Flower' ||
       category === 'Designer Flower') {
       if (this.pricesField === false) {
-        console.log(category);
         this.productsService.getCategoryPriceList(category).subscribe((results: any) => {
           const pricesGroup: { [key: string]: FormControl } = {};
-
-          console.log(results);
           results.forEach((price: any) => {
             this.priceList.push({ name: price.name, displayName: price.displayName })
           });
-
-          console.log(this.priceList)
-
-          product?.prices.forEach((priceInfo) => {
-            this.amtPrices[priceInfo.name] = priceInfo.price;
-          });
-
+          if (this.product.prices !== undefined) {
+            this.product.prices.forEach((priceInfo) => {
+              this.amtPrices[priceInfo.name] = priceInfo.price;
+            });
+          }
           FLOWER_AMOUNTS.forEach((amtName: string) => {
             if (this.amtPrices[amtName] !== undefined) {
               pricesGroup[amtName] = new FormControl(this.amtPrices[amtName]);
@@ -339,15 +347,12 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
           this.priceField = false;
 
-
-          console.log('here A');
-          if (this.productForm.contains('prices')) {
+          if (this.productForm.contains('price')) {
             this.productForm.removeControl('price');
           }
-          console.log('here B');
+
           this.productForm.addControl('prices', this.formBuilder.group(pricesGroup));
 
-          console.log('here C');
           this.pricesField = true;
         });
       }
@@ -371,12 +376,28 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     this.isSubmitted = true;
     if (this.productForm.invalid) return;
 
-    const productFormData = new FormData();
-    for (const field in this.prodForm) {
+    const productFormData: any = {};
 
-      console.log(field, this.prodForm[field].value)
-      productFormData.append(field, this.prodForm[field].value);
+
+
+    for (const field in this.prodForm) {
+      if (field !== 'prices') {
+        productFormData[field] = this.prodForm[field].value;
+      }
     }
+
+    const priceData: { name: string, amount: number, price: number }[] = [];
+    if (this.prodForm['prices'].value !== undefined) {
+      const prices = this.prodForm['prices'].value;
+
+      FLOWER_AMOUNTS.forEach(name => {
+        console.log('price: ', name, prices[name])
+        priceData.push({ name: name, amount: FLOWER_GRAMS[name], price: prices[name] })
+      });
+
+      productFormData['prices'] = priceData;
+    }
+
     if (this.editmode) {
       this._updateProduct(productFormData);
     } else {

@@ -20,86 +20,82 @@
         <form [formGroup]="productForm">
           <div class="grid">
             <div class="p-field col-12 md:col-4">
-              <label for="name">Name<span class="required">*</span></label>
+              <label class="label" for="name">Name<span class="required">*</span></label>
               <input formControlName="name" id="name" type="text" class="inputfield w-full" pInputText />
               <small *ngIf="prodForm['name'].invalid && isSubmitted" class="p-error">Name is required</small>
             </div>
             <div class="p-field  col-12 md:col-4">
-              <label for="category">Category<span class="required">*</span></label><br />
+              <label class="label" for="category">Category<span class="required">*</span></label><br />
               <p-dropdown [options]="categoryList" formControlName="category" optionLabel="name" optionValue="id"
                 (onChange)="categoryChanged($event)"></p-dropdown>
               <small *ngIf="prodForm['category'].invalid && isSubmitted" class="p-error">Category is required</small>
             </div>
             <div class="p-field  col-12 md:col-4">
-              <label for="isFeatured">Is Featured</label><br />
+              <label class="label" for="isFeatured">Is Featured</label><br />
               <p-inputSwitch formControlName="isFeatured"></p-inputSwitch>
             </div>
           </div>
           <div class="grid">
             <div class="p-field col-12 md:col-6">
-              <label for="brand">Brand</label>
+              <label class="label" for="brand">Brand</label>
               <input formControlName="brand" id="brand" type="text" class="inputfield w-full" pInputText />
             </div>
             <div class="p-field col-12 md:col-6">
-              <label for="flavor">Flavor</label>
+              <label class="label" for="flavor">Flavor</label>
               <input formControlName="flavor" id="flavor" type="text" class="inputfield w-full" pInputText />
             </div>
           </div>
           <div class="grid">
             <div class="p-field  col-12 md:col-6" *ngIf="inStockSimple">
-              <label for="countInStock">Count In Stock<span class="required">*</span></label><br />
+              <label class="label" for="countInStock">Count In Stock<span class="required">*</span></label><br />
               <p-inputNumber formControlName="countInStock" mode="decimal" [useGrouping]="false">
               </p-inputNumber>
               <small *ngIf="prodForm['countInStock'].invalid && isSubmitted" class="p-error">Count In Stock is
                 required</small>
             </div>
             <div class="p-field  col-12 md:col-6" *ngIf="inStockPounds">
-              <label>Weight In Stock<span class="required">*</span></label><br />
-              <div class="fieldgrid grid wis">
-                <div class="field col">
+              <label class="label" for="pounds">Weight In Stock<span class="required">*</span></label><br />
+              <div class="p-field grid in-stock">
+                <div class="col">
                   <div class="p-inputgroup">
-                    <p-inputNumber (onInput)="updateAmt('lbs',$event)" [min]=0 value="{{this.enteredLbs}}"
-                      mode="decimal" [useGrouping]="false">
-                    </p-inputNumber>
+                    <input id="pounds" formControlName="pounds" (change)="updateAmt('pounds')" type="texture"
+                      class="inputfield" value="{{enteredLbs}}">
                     <span class="p-inputgroup-addon">LBS</span>
                   </div>
                 </div>
-
-                <div class="field col">
+              </div>
+              <div class="p-field grid in-stock">
+                <div class="col">
                   <div class="p-inputgroup">
-                    <p-inputNumber (onInput)="updateAmt('ozs',$event)" [min]=0 value="{{enteredOzs}}" mode="decimal"
-                      [useGrouping]="false">
-                    </p-inputNumber>
+                    <input id="ounces" formControlName="ounces" (change)="updateAmt('ounces')" type="text"
+                      class="inputfield" value="{{(+enteredOzs)}}">
                     <span class="p-inputgroup-addon">OZ</span>
                   </div>
                 </div>
-
-                <div class="field col">
+              </div>
+              <div class="p-field grid in-stock">
+                <div class="col">
                   <div class="p-inputgroup">
-                    <p-inputNumber (onInput)="updateAmt('gms',$event)" [min]=0 value="{{enteredGms}}" mode="decimal"
-                      [useGrouping]="false">
-                    </p-inputNumber>
-                    <span class="p-inputgroup-addon">gms</span>
+                    <input id="grams" formControlName="grams" (change)="updateAmt('grams')" type="text"
+                      class="inputfield" value="{{(+enteredGms)}}">
+                    <span class="p-inputgroup-addon">g</span>
                   </div>
                 </div>
               </div>
 
-              <small *ngIf="prodForm['countInStock'].invalid && isSubmitted" class="p-error">Weight In Stock is
-                required</small>
-              <div class="totalInGrams"> Total in grams: {{totalInGrams}}g</div>
+              <div class="totalInGrams"> <span style="font-weight: 700;">Total in grams:</span> {{(+totalInGrams)}}g
+              </div>
             </div>
             <div class="p-field col-12 md:col-3" *ngIf="priceField === true">
-              <label for="price">Price<span class="required">*</span></label><br />
+              <label class="label" for="price">Price<span class="required">*</span></label><br />
               <p-inputNumber formControlName="price" mode="decimal" [useGrouping]="false" class="inputfield w-full">
               </p-inputNumber>
               <small *ngIf="prodForm['price']?.invalid && isSubmitted" class="p-error">Price is required</small>
             </div>
             <div class="p-field col-12 md:col-3" *ngIf="pricesField === true" formGroupName="prices">
-              <label>Prices</label><br />
-              {{priceList}}
+              <label class="label">Prices</label><br />
               <div class="field grid product-prices" *ngFor="let priceItem of priceList">
                 <div class="col">
-
                   <div class="p-inputgroup">
                     <span class="p-inputgroup-addon">$</span>
                     <input id="{{priceItem.name}}" formControlName="{{priceItem.name}}" type="text" class="inputfield"
@@ -111,7 +107,7 @@
 
             </div>
             <div class="p-field  col-12 md:col-3 centered">
-              <label for="unitType">Unit Type<span class="required">*</span></label><br />
+              <label class="label" for="unitType">Unit Type<span class="required">*</span></label><br />
               <p-dropdown [options]="unitTypes" formControlName="unitType" optionLabel="label" optionValue="value">
               </p-dropdown>
               <small *ngIf="prodForm['unitType'].invalid && isSubmitted" class="p-error">Unit Type is
@@ -120,7 +116,7 @@
 
             <div class="grid">
               <div class="p-field col-12">
-                <label for="description">Description<span class="required">*</span></label><br />
+                <label class="label" for="description">Description<span class="required">*</span></label><br />
                 <textarea pInputTextarea formControlName="description" [rows]="7" [cols]="60"></textarea>
                 <small *ngIf="prodForm['description'].invalid && isSubmitted" class="p-error">Description is
                   required</small>
@@ -138,7 +134,7 @@
             </div>
             <div class="grid">
               <div class="p-field col-12">
-                <label for="richDescription">Product Details</label><br />
+                <label class="label" for="richDescription">Product Details</label><br />
                 <p-editor formControlName="richDescription" [style]="{ height: '320px' }"></p-editor>
               </div>
             </div>

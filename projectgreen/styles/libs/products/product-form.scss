@@ -1,8 +1,15 @@
 .admin-page {
   font-size: 14px !important;
 
+  .label {
+    display: inline-block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
 
-  & .product-prices {
+  & .product-prices,
+  .in-stock {
 
     margin-bottom: 5px;
 
@@ -30,6 +37,11 @@
     /* &:nth-child(even) {
       background-color: $light-green;
     } */
+  }
+
+  .in-stock {
+    display: inline-block;
+    margin-right: 15px;
   }
 
   & .wis {

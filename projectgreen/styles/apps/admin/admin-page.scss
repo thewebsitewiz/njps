@@ -39,4 +39,18 @@
     font-size: 14px !important;
     font-weight: 600;
   }
+
+  .product-name {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+  }
+
+  .p-datatable .p-datatable-thead>tr>th {
+    border: 1px solid $light-green;
+  }
+
+  .p-datatable .p-datatable-tbody>tr>td {
+    border: 1px solid $light-green;
+  }
+
 }
