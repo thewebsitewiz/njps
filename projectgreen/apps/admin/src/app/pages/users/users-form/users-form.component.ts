@@ -28,27 +28,20 @@ export class UsersFormComponent implements OnInit {
 
   ngOnInit(): void {
     this._initUserForm();
-    this._getCountries();
     this._checkEditMode();
   }
 
   private _initUserForm() {
     this.form = this.formBuilder.group({
-      name: ['', Validators.required],
+      fullName: ['', Validators.required],
       password: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
       isAdmin: [false],
-      street: [''],
-      apartment: [''],
-      zip: [''],
-      city: [''],
-      country: ['']
+      streetAddress: ['', Validators.required],
+      aptOrUnit: [''],
+      zipCode: ['', Validators.required],
+      city: ['', Validators.required]
     });
-  }
-
-  private _getCountries() {
-    this.countries = this.usersService.getCountries();
   }
 
   private _addUser(user: User) {
@@ -57,7 +50,7 @@ export class UsersFormComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: `User ${user.name} is created!`
+          detail: `User ${user.fullName} is created!`
         });
         timer(2000)
           .toPromise()
@@ -105,17 +98,15 @@ export class UsersFormComponent implements OnInit {
         this.editmode = true;
         this.currentUserId = params.id;
         this.usersService.getUser(params.id).subscribe((user) => {
-          this.userForm['name'].setValue(user.name);
-          this.userForm['email'].setValue(user.email);
-          this.userForm['phone'].setValue(user.phone);
+          this.userForm['fullName'].setValue(user.fullName);
+          this.userForm['phoneNumber'].setValue(user.phoneNumber);
           this.userForm['isAdmin'].setValue(user.isAdmin);
-          this.userForm['street'].setValue(user.street);
-          this.userForm['apartment'].setValue(user.apartment);
-          this.userForm['zip'].setValue(user.zip);
+          this.userForm['streetAddress'].setValue(user.streetAddress);
+          this.userForm['aptOrUnit'].setValue(user.aptOrUnit);
+          this.userForm['zipCode'].setValue(user.zipCode);
           this.userForm['city'].setValue(user.city);
-          this.userForm['country'].setValue(user.country);
-          this.userForm['password'].setValidators([]);
-          this.userForm['password'].updateValueAndValidity();
+          this.userForm['password'].setValue(user.password);
+          // this.userForm['password'].updateValueAndValidity();
         });
       }
     });
@@ -128,16 +119,14 @@ export class UsersFormComponent implements OnInit {
     }
     const user: User = {
       id: this.currentUserId,
-      name: this.userForm['name'].value,
-      email: this.userForm['email'].value,
+      fullName: this.userForm['fullName'].value,
       password: this.userForm['password'].value,
-      phone: this.userForm['phone'].value,
+      phoneNumber: this.userForm['phoneNumber'].value,
       isAdmin: this.userForm['isAdmin'].value,
-      street: this.userForm['street'].value,
-      apartment: this.userForm['apartment'].value,
-      zip: this.userForm['zip'].value,
-      city: this.userForm['city'].value,
-      country: this.userForm['country'].value
+      streetAddress: this.userForm['streetAddress'].value,
+      aptOrUnit: this.userForm['aptOrUnit'].value,
+      zipCode: this.userForm['zipCode'].value,
+      city: this.userForm['city'].value
     };
     if (this.editmode) {
       this._updateUser(user);

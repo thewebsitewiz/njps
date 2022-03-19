@@ -3,17 +3,23 @@
   <div class="grid">
     <div class="col-12 pl-7 pr-7">
       <h3 class="text-center mt-4 secondary-heading">Login</h3>
-      <div class="p-field mb-4">
-        <label class="label block" for="phoneNumber">Phone Number</label>
-        <input id="phoneNumber" type="username" pInputText [(ngModel)]="phoneNumber" />
-      </div>
-      <div class="p-field">
-        <label class="label block" for="phoneNumber">Password</label>
-        <input id="password" type="username" pInputText [(ngModel)]="password" />
-      </div>
-    </div>
-    <div class="col-12 mt-3 centered">
-      <p-button styleClass="see-more" label="Login"></p-button>
+      <form action="" (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
+        <div class="p-field mb-4">
+          <label class="label block" for="phoneNumber">Phone Number</label>
+          <p-inputMask name="phoneNumber" mask="9999999999" [(ngModel)]="phoneNumber" placeholder="##########">
+          </p-inputMask>
+          <!--  <input id="phoneNumber" type="username" pInputText [(ngModel)]="phoneNumber" /> -->
+          <small id="phoneNumber-help" class="block">Numbers only.</small>
+        </div>
+        <div class="p-field">
+          <label class="label block" for="phoneNumber">Password</label>
+          <input id="password" name="password" type="username" pInputText [(ngModel)]="password" />
+        </div>
+
+        <div class="col-12 mt-3 centered">
+          <p-button styleClass="see-more" label="Login" type="submit"></p-button>
+        </div>
+      </form>
     </div>
   </div>
 </section>

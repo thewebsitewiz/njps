@@ -1,23 +1,45 @@
 <!-- Services Section -->
-<section class="page-section" id="login">
+<section class="page-section" id="signup">
   <div class="grid">
-    <div class="col-12 pl-7 pr-7">
+    <div class="col-12 pl-6 pr-6">
       <h3 class="text-center mt-4 secondary-heading">Create An Account</h3>
-      <div class="p-field mb-4">
-        <label class="label block" for="fullName">Your Full Name</label>
-        <input id="fullName" type="username" pInputText [(ngModel)]="fullName" />
-      </div>
-      <div class="p-field mb-4">
-        <label class="label block" for="phoneNumber">Phone Number</label>
-        <input id="phoneNumber" type="username" pInputText [(ngModel)]="phoneNumber" />
-      </div>
-      <div class="p-field">
-        <label class="label block" for="phoneNumber">Password</label>
-        <input id="password" type="username" pInputText [(ngModel)]="password" />
-      </div>
-    </div>
-    <div class="col-12 mt-3 centered">
-      <p-button styleClass="see-more" label="Create"></p-button>
+      <form action="" (ngSubmit)="onSignup(signupForm)" #signupForm="ngForm">
+        <div class="p-field mb-4">
+          <label class="label block" for="fullName">Your Full Name<span class="required">*</span></label>
+          <input id="fullName" name="fullName" type="username" pInputText [(ngModel)]="fullName" />
+        </div>
+        <div class="p-field mb-4">
+          <label class="label block" for="streetAddress">Street Address<span class="required">*</span></label>
+          <input id="streetAddress" name="streetAddress" type="username" pInputText [(ngModel)]="streetAddress" />
+        </div>
+        <div class="p-field mb-4">
+          <label class="label block" for="aptOrUnit">Apt or Unit</label>
+          <input id="aptOrUnit" name="aptOrUnit" type="username" pInputText [(ngModel)]="aptOrUnit" />
+        </div>
+        <div class="p-field mb-4">
+          <label class="label block" for="city">City<span class="required">*</span></label>
+          <input id="city" name="city" type="username" pInputText [(ngModel)]="city" />
+        </div>
+        <div class="p-field mb-4">
+          <label class="label block" for="zipCode">Zip Code<span class="required">*</span></label>
+          <input id="zipCode" name="zipCode" type="username" pInputText [(ngModel)]="zipCode" />
+        </div>
+        <div class="p-field mb-4">
+          <label class="label block" for="phoneNumber">Phone Number<span class="required">*</span></label>
+          <p-inputMask mask="9999999999" [(ngModel)]="phoneNumber" name="phoneNumber" placeholder="##########">
+          </p-inputMask>
+          <!--  <input id="phoneNumber" type="username" pInputText [(ngModel)]="phoneNumber" /> -->
+          <small id="phoneNumber-help" class="block">Numbers only.</small>
+        </div>
+        <div class="p-field">
+          <label class="label block" for="phoneNumber">Password<span class="required">*</span></label>
+          <input id="password" name="password" type="username" pInputText [(ngModel)]="password" />
+        </div>
+
+        <div class="col-12 mt-3 centered">
+          <p-button styleClass="see-more" label="Create" type="submit"></p-button>
+        </div>
+      </form>
     </div>
   </div>
 </section>

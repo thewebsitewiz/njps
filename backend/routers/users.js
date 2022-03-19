@@ -5,11 +5,11 @@ const express = require('express');
 const router = express.Router();
 //require('dotenv/config');
 require('dotenv').config()
-const bcrypt = require('bcryptjs');
+//const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 router.get(`/`, async (req, res) => {
-    const userList = await User.find().select('-passwordHash');
+    const userList = await User.find(); //.select('-passwordHash');
 
     if (!userList) {
         res.status(500).json({
@@ -20,7 +20,7 @@ router.get(`/`, async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-    const user = await User.findById(req.params.id).select('-passwordHash');
+    const user = await User.findById(req.params.id); // .select('-passwordHash');
 
     if (!user) {
         res.status(500).json({
@@ -31,21 +31,21 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const saltRounds = parseInt(process.env.PG_SALT, 10);
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+    //const saltRounds = parseInt(process.env.PG_SALT, 10);
+    //const salt = bcrypt.genSaltSync(saltRounds);
+    //const hashedPassword = bcrypt.hashSync(req.body.password, salt);
     let user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        passwordHash: hashedPassword,
-        phone: req.body.phone,
-        isAdmin: req.body.isAdmin,
-        street: req.body.street,
-        apartment: req.body.apartment,
-        zip: req.body.zip,
-        city: req.body.city,
-        country: req.body.country,
-    })
+        fullName: req.body.fullName,
+        password: req.body.password,
+        phoneNumber: req.body.phoneNumber,
+        isAdmin: false,
+        streetAddress: req.body.streetAddress,
+        aptOrUnit: req.body.aptOrUnit,
+        zipCode: req.body.zipCode,
+        city: req.body.city
+    });
+
+    console.log('user: ', user)
     user = await user.save();
 
     if (!user)
@@ -59,23 +59,21 @@ router.put('/:id', async (req, res) => {
     const userExist = await User.findById(req.params.id);
     let newPassword
     if (req.body.password) {
-        newPassword = bcrypt.hashSync(req.body.password, 10)
+        newPassword = req.body.password; //bcrypt.hashSync(req.body.password, 10)
     } else {
-        newPassword = userExist.passwordHash;
+        newPassword = req.body.password; //userExist.passwordHash;
     }
 
     const user = await User.findByIdAndUpdate(
         req.params.id, {
-            name: req.body.name,
-            email: req.body.email,
-            passwordHash: newPassword,
-            phone: req.body.phone,
+            name: req.body.fullName,
+            password: newPassword,
+            phoneNumber: req.body.phoneNumber,
             isAdmin: req.body.isAdmin,
-            street: req.body.street,
-            apartment: req.body.apartment,
-            zip: req.body.zip,
-            city: req.body.city,
-            country: req.body.country,
+            streetAddress: req.body.streetAddress,
+            aptOrUnit: req.body.aptOrUnit,
+            zipCode: req.body.zipCode,
+            city: req.body.city
         }, {
             new: true
         }
@@ -89,14 +87,14 @@ router.put('/:id', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const user = await User.findOne({
-        email: req.body.email
+        phone: req.body.phone
     })
     const secret = process.env.PG_JWT;
     if (!user) {
         return res.status(400).send('The user not found');
     }
 
-    if (user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+    if (user && req.body.password === user.password) {
         const token = jwt.sign({
                 userId: user.id,
                 isAdmin: user.isAdmin
@@ -121,15 +119,13 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     let user = new User({
         name: req.body.name,
-        email: req.body.email,
-        passwordHash: bcrypt.hashSync(req.body.password, 10),
-        phone: req.body.phone,
-        isAdmin: req.body.isAdmin,
-        street: req.body.street,
-        apartment: req.body.apartment,
-        zip: req.body.zip,
-        city: req.body.city,
-        country: req.body.country,
+        password: req.body.password,
+        phoneNumber: req.body.phoneNumber,
+        isAdmin: false,
+        streetAddress: req.body.streetAddress,
+        aptOrUnit: req.body.aptOrUnit,
+        zipCode: req.body.zipCode,
+        city: req.body.city
     })
     user = await user.save();
 

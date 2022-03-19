@@ -1,14 +1,12 @@
 export interface User {
-  id?: string;
-  name?: string;
-  password?: string;
-  email: string;
-  phone?: string;
+  id: string;
+  fullName: string;
+  password: string;
+  phoneNumber: number;
   token?: string;
-  isAdmin?: true;
-  street?: string;
-  apartment?: string;
-  zip?: string;
-  city?: string;
-  country?: string;
+  isAdmin: boolean;
+  streetAddress: string;
+  aptOrUnit?: string;
+  zipCode: number;
+  city: string;
 }

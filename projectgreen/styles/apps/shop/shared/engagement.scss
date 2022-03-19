@@ -7,3 +7,18 @@
   }
 
 }
+
+label {
+  color: $brown;
+}
+
+.label.block {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.p-inputtext.p-component.p-element {
+  border-radius: 3px;
+  border: 1px solid $dark-green;
+}

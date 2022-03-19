@@ -1,19 +1,15 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    name: {
+    fullName: {
         type: String,
         required: true,
     },
-    email: {
+    password: {
         type: String,
         required: true,
     },
-    passwordHash: {
-        type: String,
-        required: true,
-    },
-    phone: {
+    phoneNumber: {
         type: String,
         required: true,
     },
@@ -21,15 +17,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    street: {
+    streetAddress: {
         type: String,
         default: ''
     },
-    apartment: {
+    aptOrUnit: {
         type: String,
         default: ''
     },
-    zip: {
+    zipCode: {
         type: String,
         default: ''
     },
@@ -37,11 +33,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    country: {
+    token: {
         type: String,
         default: ''
     }
-
 });
 
 userSchema.virtual('id').get(function () {

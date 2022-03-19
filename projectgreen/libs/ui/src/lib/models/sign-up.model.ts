@@ -1,5 +1,9 @@
 export interface SignUpData {
-    name: string;
-    phoneNumber: string;
-    password: string;
+  fullName: string;
+  streetAddress: string;
+  aptOrUnit?: string;
+  city: string;
+  zipCode: number;
+  phoneNumber: number;
+  password: string;
 }

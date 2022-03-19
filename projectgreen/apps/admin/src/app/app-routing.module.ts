@@ -22,7 +22,7 @@ const routes: Routes = [
   {
     path: '',
     component: ShellComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -113,7 +113,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled' })],
+  imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled', enableTracing: false })],
   exports: [RouterModule],
   declarations: [],
   providers: []

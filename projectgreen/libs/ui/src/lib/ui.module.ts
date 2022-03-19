@@ -8,14 +8,15 @@ import { EngagementComponent } from './components/engagement/engagement.componen
 import { SignupComponent } from './components/signup/signup.component';
 import { LoginComponent } from './components/login/login.component';
 import { InputTextModule } from 'primeng/inputtext';
-
+import { InputMaskModule } from 'primeng/inputmask';
 
 @NgModule({
   imports: [
     CommonModule,
     ButtonModule,
     FormsModule,
-    InputTextModule
+    InputTextModule,
+    InputMaskModule
   ],
   declarations: [
     BannerComponent,

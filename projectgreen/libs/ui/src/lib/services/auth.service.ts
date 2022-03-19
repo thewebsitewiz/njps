@@ -7,7 +7,7 @@ import { environment } from "@env/environment";
 import { Values, UserData, LoginData } from "../models/user-data.model";
 import { SignUpData } from "../models/sign-up.model";
 
-const BACKEND_URL = `${environment.apiUrl}/users`;
+const BACKEND_URL = `${environment.apiUrl}users`;
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -94,9 +94,27 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
-  createUser(name: string, phoneNumber: string, password: string) {
-    const signUpData: SignUpData = { name: name, phoneNumber: phoneNumber, password: password };
-    this.http.post(BACKEND_URL + "/signup", signUpData).subscribe(
+  createUser(fullName: string,
+    streetAddress: string,
+    aptOrUnit: string,
+    city: string,
+    zipCode: number,
+    phoneNumber: number,
+    password: string) {
+
+    const signUpData: SignUpData = {
+      fullName: fullName,
+      streetAddress: streetAddress,
+      aptOrUnit: aptOrUnit,
+      city: city,
+      zipCode: zipCode,
+      phoneNumber: phoneNumber,
+      password: password
+    };
+
+    console.log(signUpData)
+
+    this.http.post(BACKEND_URL + "/", signUpData).subscribe(
       () => {
         this.router.navigate(["/"]);
       },

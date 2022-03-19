@@ -16,10 +16,10 @@ export class AuthService {
     private http: HttpClient,
     private token: LocalstorageService,
     private router: Router
-  ) {}
+  ) { }
 
-  login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiURLUsers}/login`, { email, password });
+  login(phone: string, password: string): Observable<User> {
+    return this.http.post<User>(`${this.apiURLUsers}/login`, { phone, password });
   }
 
   logout() {

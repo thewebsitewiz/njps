@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   private _initLoginForm() {
     this.loginFormGroup = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required]],
       password: ['', Validators.required]
     });
   }
@@ -39,8 +39,9 @@ export class LoginComponent implements OnInit {
 
     if (this.loginFormGroup.invalid) return;
 
-    this.auth.login(this.loginForm['email'].value, this.loginForm['password'].value).subscribe(
+    this.auth.login(this.loginForm['phone'].value, this.loginForm['password'].value).subscribe(
       (user) => {
+        console.log(user)
         this.authError = false;
         this.localstorageService.setToken(user.token);
         this.router.navigate(['/']);

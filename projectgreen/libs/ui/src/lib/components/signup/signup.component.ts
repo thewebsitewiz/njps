@@ -3,7 +3,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -18,6 +17,10 @@ export class SignupComponent implements OnInit, OnDestroy {
   public signUpProblems!: string | null;
 
   fullName!: string;
+  streetAddress!: string;
+  aptOrUnit!: string;
+  city!: string;
+  zipCode!: string;
   phoneNumber!: string;
   password!: string;
 
@@ -33,11 +36,40 @@ export class SignupComponent implements OnInit, OnDestroy {
 
 
   onSignup(form: NgForm) {
+
+    console.log(form.value.fullName,
+      form.value.streetAddress,
+      form.value.aptOrUnit,
+      form.value.city,
+      form.value.zipCode,
+      form.value.phoneNumber,
+      form.value.password);
+
+
     if (form.invalid) {
+      console.log('nope: ', form.invalid)
       return;
     }
     this.isLoading = true;
-    this.authService.createUser(form.value.name, form.value.signUpPhoneNumber, form.value.signUpPassword);
+
+    /*
+        this.authService.createUser(form.value.fullName,
+          form.value.streetAddress,
+          form.value.aptOrUnit,
+          form.value.city,
+          form.value.zipCode,
+          form.value.phoneNumber,
+          form.value.password);
+      }
+     */
+
+    this.authService.createUser('Dennis Luken',
+      '19 Andre Hill',
+      '#2',
+      'Tappan',
+      10983,
+      1234567890,
+      'password');
   }
 
   ngOnDestroy() {
