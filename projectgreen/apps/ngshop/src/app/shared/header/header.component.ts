@@ -8,7 +8,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngshop-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styles: []
 })
 export class HeaderComponent {
 
