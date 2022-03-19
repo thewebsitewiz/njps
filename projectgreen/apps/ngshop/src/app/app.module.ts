@@ -29,7 +29,7 @@ const routes: Routes = [{ path: '', component: HomePageComponent }];
 @NgModule({
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { useHash: true, anchorScrolling: 'enabled' }),
     HttpClientModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
