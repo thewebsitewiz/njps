@@ -10,17 +10,17 @@ const errorHandler = require('./helpers/error-handler');
 
 const ip = '105.168.1.155'
 
-const allowedOrigins = ['http://localhost:3000',
-    'http://108.41.249.98', 'http://192.168.1.217:4200'
-];
-
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-app.options('*', cors());
+// app.options('*', cors());
 
+app.use(cors({
+    origin: ['http://www.njpotshop.com'],
+    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
+}));
 
 //middleware
 app.use(bodyParser.json());

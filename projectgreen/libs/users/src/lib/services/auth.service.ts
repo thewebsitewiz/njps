@@ -18,8 +18,8 @@ export class AuthService {
     private router: Router
   ) { }
 
-  login(phone: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiURLUsers}/login`, { phone, password });
+  login(phoneNumber: string, password: string): Observable<User> {
+    return this.http.post<User>(`${this.apiURLUsers}/login`, { phoneNumber, password });
   }
 
   logout() {
