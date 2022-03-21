@@ -8,17 +8,16 @@ require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
 
-const ip = '105.168.1.155'
-
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-// app.options('*', cors());
+
+const domain = 'http://www.njpotshop.com';
 
 app.use(cors({
-    origin: ['http://www.njpotshop.com'],
+    origin: [domain],
     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
 
@@ -26,7 +25,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(authJwt());
-// app.use('/', express.static(__dirname + '/public'));
+
 app.use(express.static(__dirname + '/public'));
 app.use(errorHandler);
 
@@ -61,6 +60,7 @@ mongoose.connect(process.env.PG_CONN, {
     })
 
 //Server
+const port = 3000;
 app.listen(3000, () => {
-    console.log('server is running http://localhost:3000');
+    console.log(`Server is running ${domain}:${port}`);
 })
