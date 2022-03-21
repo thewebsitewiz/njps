@@ -17,7 +17,7 @@ app.use(function (req, res, next) {
 const domain = 'http://www.njpotshop.com';
 
 app.use(cors({
-    origin: [domain],
+    origin: ['http://localhost:4201', 'http://localhost:4200'],
     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
 
@@ -62,5 +62,5 @@ mongoose.connect(process.env.PG_CONN, {
 //Server
 const port = 3000;
 app.listen(3000, () => {
-    console.log(`Server is running ${domain}:${port}`);
+    console.log(`Server is running on  ${port}`);
 })

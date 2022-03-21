@@ -86,8 +86,10 @@ router.put('/:id', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
+
+    console.log(req.body)
     const user = await User.findOne({
-        phoneNumber: req.body.phone
+        phoneNumber: req.body.phoneNumber
     })
     const secret = process.env.PG_JWT;
     if (!user) {
