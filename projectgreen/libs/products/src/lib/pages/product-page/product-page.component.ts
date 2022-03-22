@@ -138,6 +138,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
               }
             }
             if (name !== '' && name !== undefined) {
+              console.log(pr)
               this.prices.push({ name: name, code: `${priceInfo[pr].name}:${priceInfo[pr].amount}:${priceInfo[pr].price}`, unavailable: inactive })
               inactive = false;
             }

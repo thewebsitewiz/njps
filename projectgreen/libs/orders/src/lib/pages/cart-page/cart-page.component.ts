@@ -39,8 +39,10 @@ export class CartPageComponent implements OnInit, OnDestroy {
       if (respCart.items !== undefined) {
         // this.cartCount = respCart.items.length ?? 0;
         respCart.items.forEach((cartItem) => {
+          console.log(cartItem);
           if (cartItem.productId !== undefined) {
             this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
+              console.log(respProduct);
               respProduct.image = `${environment.imageUrl}${respProduct.image}`;
               if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
                 this.cartCount++;

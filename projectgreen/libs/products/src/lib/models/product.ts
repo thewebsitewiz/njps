@@ -29,6 +29,7 @@ export interface Product {
 
 export interface Price {
   name: string;
+  displayName?: string;
   amount: number;
   type: string;
   price: number;

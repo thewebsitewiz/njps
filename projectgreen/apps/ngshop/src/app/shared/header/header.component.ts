@@ -66,15 +66,15 @@ export class HeaderComponent {
       this.items = [
         { label: 'Home', icon: 'icon product-icon', routerLink: ['/'] },
         { label: 'Flower', icon: 'icon product-icon', routerLink: [`/category/${this.categories['Flower'].id}`] },
-        { label: 'Designer Flower', icon: 'icon product-icon', routerLink: [`/category/${this.categories['Designer Flower'].id}`] },
-        { label: 'Pre Rolls', icon: 'icon product-icon', routerLink: ['/category/' + this.categories['Pre Rolls'].id] },
-        { label: 'Edibles', icon: 'icon product-icon', routerLink: ['/category/' + this.categories['Edibles'].id] },
-        { label: 'Concentrates', icon: 'icon specials-icon', routerLink: ['/category/' + this.categories['Concentrates'].id] },
-        { label: 'Carts', icon: 'icon specials-icon', routerLink: ['/category/' + this.categories['Carts'].id] },
+        { label: 'Designer Flower', icon: 'icon designer-icon', routerLink: [`/category/${this.categories['Designer Flower'].id}`] },
+        { label: 'Pre Rolls', icon: 'icon pre-roll-icon', routerLink: ['/category/' + this.categories['Pre Rolls'].id] },
+        { label: 'Edibles', icon: 'icon edible-icon', routerLink: ['/category/' + this.categories['Edibles'].id] },
+        { label: 'Concentrates', icon: 'icon concentrate-icon', routerLink: ['/category/' + this.categories['Concentrates'].id] },
+        { label: 'Carts', icon: 'icon cartridge-icon', routerLink: ['/category/' + this.categories['Carts'].id] },
         { label: 'FAQ', icon: 'icon faq-icon', routerLink: ['/faq'] },
         { label: 'Contact', icon: 'icon contact-icon', routerLink: ['/contact'] },
-        { label: 'Login', icon: 'icon contact-icon', routerLink: ['/login'] },
-        { label: 'Register', icon: 'icon contact-icon', routerLink: ['/register'] },
+        { label: 'Login', icon: 'icon login-icon', routerLink: ['/login'] },
+        { label: 'Register', icon: 'icon register-icon', routerLink: ['/register'] },
       ];
     });
   }
