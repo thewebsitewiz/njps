@@ -23,7 +23,8 @@
         </td>
         <td class="cart-item-cell cart-item-cell-left">{{cartItemsDetailed.name}}</td>
         <td class="cart-item-cell cart-item-cell-left">{{cartItemsDetailed.amountName}}</td>
-        <td class="cart-item-cell cart-item-cell-right">{{cartItemsDetailed.subTotal | currency}}</td>
+        <td class="cart-item-cell cart-item-cell-right">
+          {{cartItemsDetailed.subTotal | currency:'USD':'symbol-narrow':'1.0-0'}}</td>
       </tr>
     </ng-template>
   </p-table>

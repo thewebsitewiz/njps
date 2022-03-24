@@ -4,7 +4,7 @@ import { CartItem, CartService } from '@projectgreen/orders';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Product } from '../../models/product';
-import { FLOWER_AMOUNTS } from '../../products.constants';
+import { FLOWER_AMOUNTS, FLOWER_DISPLAY } from '../../products.constants';
 import { ProductsService } from '../../services/products.service';
 import { environment } from '@env/environment';
 
@@ -57,7 +57,9 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         // ${pr.name}:${pr.amount}:${pr.type}:${pr.price}
         if (this.selectedAmount !== undefined) {
           const [name, amount, price] = this.selectedAmount.split(':');
-          this.selectedAmountDisplay = `${name} @ $${price}<br/>added to cart`;
+
+          const displayAmt = FLOWER_DISPLAY[name]
+          this.selectedAmountDisplay = `${displayAmt} @ $${price}<br/>added to cart`;
 
           const cartItem: CartItem = {
             productId: this.product.id,
@@ -132,18 +134,23 @@ export class ProductPageComponent implements OnInit, OnDestroy {
             else {
               if (priceInfo[pr].price !== undefined && this.product.countInStock >= priceInfo[pr].amount) {
                 inactive = false;
-                name = `${priceInfo[pr].name}: $${priceInfo[pr].price}`;
+                const displayAmt = FLOWER_DISPLAY[priceInfo[pr].name];
+                name = `${displayAmt}: $${priceInfo[pr].price}`;
               } else {
                 inactive = true;
               }
             }
             if (name !== '' && name !== undefined) {
-              console.log(pr)
+
+
+
               this.prices.push({ name: name, code: `${priceInfo[pr].name}:${priceInfo[pr].amount}:${priceInfo[pr].price}`, unavailable: inactive })
               inactive = false;
             }
           }
         });
+
+        console.log(this.prices);
 
         this.product.images.unshift(this.product.image);
         this.product.images.forEach((image: any) => {

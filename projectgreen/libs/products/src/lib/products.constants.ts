@@ -30,7 +30,7 @@ export const FLOWER_DISPLAY: { [key: string]: string } = {
   'ounce': 'OZ',
   'quarterPound': 'QP',
   'halfPound': 'HP',
-  'pound': 'LBS',
+  'pound': 'LB',
 }
 
 

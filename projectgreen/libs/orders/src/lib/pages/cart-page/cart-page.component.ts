@@ -7,6 +7,14 @@ import { CartService } from '../../services/cart.service';
 import { OrdersService } from '../../services/orders.service';
 import { environment } from '@env/environment';
 
+import {
+  UNIT_TYPES,
+  FLOWER_AMOUNTS,
+  FLOWER_GRAMS,
+  GRAMS,
+  FLOWER_DISPLAY
+} from '@projectgreen/products';
+
 @Component({
   selector: 'orders-cart-page',
   templateUrl: './cart-page.component.html',
@@ -37,7 +45,6 @@ export class CartPageComponent implements OnInit, OnDestroy {
       this.cartItemsDetailed = [];
 
       if (respCart.items !== undefined) {
-        // this.cartCount = respCart.items.length ?? 0;
         respCart.items.forEach((cartItem) => {
           console.log(cartItem);
           if (cartItem.productId !== undefined) {
@@ -46,13 +53,16 @@ export class CartPageComponent implements OnInit, OnDestroy {
               respProduct.image = `${environment.imageUrl}${respProduct.image}`;
               if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
                 this.cartCount++;
-                // console.log('file: cart-page.component.ts ~ line 47 ~ CartPageComponent ~ this.ordersService.getProduct ~ this.cartCount', this.cartCount);
-                this.cartItemsDetailed.push({
-                  image: respProduct.image,
-                  name: respProduct.name,
-                  amountName: cartItem.amountName,
-                  subTotal: cartItem.price
-                });
+                if (cartItem !== undefined &&
+                  cartItem.amountName !== undefined &&
+                  FLOWER_DISPLAY[cartItem.amountName] !== undefined) {
+                  this.cartItemsDetailed.push({
+                    image: respProduct.image,
+                    name: respProduct.name,
+                    amountName: `${FLOWER_DISPLAY[cartItem.amountName]}`,
+                    subTotal: cartItem.price
+                  });
+                }
               }
               else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
                 const unitPrice = respProduct.price ?? 0;
@@ -60,8 +70,6 @@ export class CartPageComponent implements OnInit, OnDestroy {
                 let subTotal = unitPrice * amount;
 
                 this.cartCount += cartItem.amount;
-                // console.log('file: cart-page.component.ts ~ line 61 ~ CartPageComponent ~ this.ordersService.getProduct ~ this.cartCount', this.cartCount);
-
                 this.cartItemsDetailed.push({
                   image: respProduct.image,
                   name: respProduct.name,
@@ -73,7 +81,6 @@ export class CartPageComponent implements OnInit, OnDestroy {
           }
         });
       }
-
     });
   }
 
