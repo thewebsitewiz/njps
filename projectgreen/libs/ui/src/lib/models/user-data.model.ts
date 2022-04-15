@@ -1,18 +1,37 @@
 export interface UserData {
   name?: string | null;
-  phoneNumber?: string | null;
+  phone?: string | null;
   isAdmin?: boolean | null;
-  accountId?: number | null;
+  userId?: string | null;
 }
 
 export interface LoginData {
-  phoneNumber?: string | null;
+  phone?: string | null;
   password?: string | null;
 }
 
 export interface Values {
-  id?: number | null;
-  phoneNumber?: string | null;
+  userId?: string | null;
+  phone?: string | null;
+}
+
+export interface User {
+  userId?: string;
+  name: string;
+  phoneNumber: string;
+  streetAddress: string;
+  aptOrUnit?: string;
+  zipCode: string;
+  city: string;
+  isAdmin: boolean;
+  phone: string;
+  password?: string;
+}
+
+export interface FullUserData extends User {
+  token: string;
+  expiresIn: number;
+  tokenExp: string;
 }
 
 /* name: response.name,

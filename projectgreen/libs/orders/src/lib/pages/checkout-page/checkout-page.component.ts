@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UsersService } from '@projectgreen/users';
+import { User, UsersService } from '@projectgreen/users';
+import { AuthService } from '@projectgreen/ui'
 import { DeliveryService } from '@projectgreen/orders';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Cart } from '../../models/cart';
 import { OrderForm } from '../../models/order';
@@ -19,6 +20,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private usersService: UsersService,
+    private authService: AuthService,
     private deliveryService: DeliveryService,
     private formBuilder: FormBuilder,
     private cartService: CartService,
@@ -37,11 +39,18 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   zip: string = '';
   delivery: any = 'Fee based on location';
 
+
+  private authStatusSub!: Subscription;
+  userData!: User;
+
   ngOnInit(): void {
-    this._initCheckoutForm();
-    //this._autoFillUserData();
-    //this._getCartItems();
-    this._getCartDetails();
+    this.authService.user$.subscribe((user) => {
+      console.log('file: checkout-page.component.ts ~ line 48 ~ CheckoutPageComponent ~ this.authService.user$.subscribe ~ user', user);
+      this._initCheckoutForm();
+      this._autoFillUserData();
+      //this._getCartItems();
+      this._getCartDetails();
+    });
   }
 
   ngOnDestroy() {
@@ -52,6 +61,9 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   }
 
   private _initCheckoutForm() {
+
+    this._autoFillUserData();
+
     this.checkoutFormGroup = this.formBuilder.group({
       name: ['', Validators.required],
       email: ['', [Validators.email, Validators.required]],
@@ -62,36 +74,27 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       apartment: ['']
     });
 
-    this._autoFillUserData();
+
   }
 
   private _autoFillUserData() {
-    /*  this.usersService
-        .observeCurrentUser()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((user) => {
-          if (user && user.id !== undefined) {
-            this.userId = user.id;
-            this.checkoutForm['name'].setValue(user.name);
-            this.checkoutForm['email'].setValue(user.email);
-            this.checkoutForm['phone'].setValue(user.phone);
-            this.checkoutForm['city'].setValue(user.city);
-            this.checkoutForm['street'].setValue(user.street);
-            this.checkoutForm['country'].setValue(user.country);
-            this.checkoutForm['zip'].setValue(user.zip);
-            this.checkoutForm['apartment'].setValue(user.apartment);
-          }
-        }); */
-    if (this.checkoutForm !== undefined) {
-      this.checkoutForm['name'].setValue('John Doe');
-      this.checkoutForm['email'].setValue('jdoe@gmail.com');
-      this.checkoutForm['phone'].setValue('1232343456');
-      this.checkoutForm['city'].setValue('Rockaway');
-      this.checkoutForm['street'].setValue('123 Main St');
-      this.checkoutForm['apartment'].setValue('unit #4');
-    }
-  }
 
+
+
+    /*
+    this.usersService
+      .observeCurrentUser()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((user) => {
+        console.log('file: checkout-page.component.ts ~ line 73 ~ CheckoutPageComponent ~ .subscribe ~ user', user);
+
+      }); */
+    /*     this.authService.autoUserData()
+        const results =
+        console.log('file: checkout-page.component.ts ~ line 87 ~ CheckoutPageComponent ~ _autoFillUserData ~ results', results);
+     */
+
+  }
   private _getCartItems() {
     const cart: Cart = this.cartService.getCart();
     if (cart.items !== undefined) {

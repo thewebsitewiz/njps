@@ -11,5 +11,5 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.usersService.initAppSession();
   }
-  title = 'ngshop';
+  title = 'NJ Pots Shop';
 }

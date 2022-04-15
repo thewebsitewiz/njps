@@ -15,7 +15,7 @@ export class UsersService {
   apiURLUsers = environment.apiUrl + 'users';
 
   constructor(private http: HttpClient, private usersFacade: UsersFacade) {
-    countriesLib.registerLocale(require('i18n-iso-countries/langs/en.json'));
+    /* countriesLib.registerLocale(require('i18n-iso-countries/langs/en.json')); */
   }
 
   getUsers(): Observable<User[]> {
@@ -23,6 +23,8 @@ export class UsersService {
   }
 
   getUser(userId: string): Observable<User> {
+    console.log('file: users.service.ts ~ line 26 ~ UsersService ~ getUser ~ userId', userId);
+
     return this.http.get<User>(`${this.apiURLUsers}/${userId}`);
   }
 
@@ -44,6 +46,23 @@ export class UsersService {
       .pipe(map((objectValue: any) => objectValue.userCount));
   }
 
+  initAppSession() {
+    console.log('in initAppSession')
+    this.usersFacade.buildUserSession();
+  }
+
+  observeCurrentUser() {
+    console.log('this.usersFacade.currentUser$: ', this.usersFacade.currentUser$);
+
+    return this.usersFacade.currentUser$;
+  }
+
+  isCurrentUserAuth() {
+    return this.usersFacade.isAuthenticated$;
+  }
+
+
+  /*
   getCountries(): { id: string; name: string }[] {
     return Object.entries(countriesLib.getNames('en', { select: 'official' })).map((entry) => {
       return {
@@ -56,16 +75,5 @@ export class UsersService {
   getCountry(countryKey: string): string {
     return countriesLib.getName(countryKey, 'en');
   }
-
-  initAppSession() {
-    this.usersFacade.buildUserSession();
-  }
-
-  observeCurrentUser() {
-    return this.usersFacade.currentUser$;
-  }
-
-  isCurrentUserAuth() {
-    return this.usersFacade.isAuthenticated$;
-  }
+ */
 }

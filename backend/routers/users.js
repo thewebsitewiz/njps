@@ -7,6 +7,8 @@ const router = express.Router();
 require('dotenv').config()
 //const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const tokenExp = "4h";
+const expiresIn = 14400;
 
 router.get(`/`, async (req, res) => {
     const userList = await User.find(); //.select('-passwordHash');
@@ -27,6 +29,9 @@ router.get('/:id', async (req, res) => {
             message: 'The user with the given ID was not found.'
         })
     }
+
+    user.password = null;
+    delete user.password;
     res.status(200).send(user);
 })
 
@@ -34,6 +39,8 @@ router.post('/', async (req, res) => {
     //const saltRounds = parseInt(process.env.PG_SALT, 10);
     //const salt = bcrypt.genSaltSync(saltRounds);
     //const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+
+    console.log('/')
     let user = new User({
         fullName: req.body.fullName,
         password: req.body.password,
@@ -86,10 +93,9 @@ router.put('/:id', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-
-    console.log(req.body)
+    console.log('/login');
     const user = await User.findOne({
-        phoneNumber: req.body.phoneNumber
+        phoneNumber: req.body.phone
     })
     const secret = process.env.PG_JWT;
     if (!user) {
@@ -104,19 +110,37 @@ router.post('/login', async (req, res) => {
             secret, {
                 expiresIn: '1d'
             }
-        )
+        );
 
-        res.status(200).send({
-            user: user.email,
-            token: token
-        })
+        const userInfo = {
+            ...user._doc
+        };
+
+        userInfo.token = token;
+        userInfo.expiresIn = expiresIn;
+        userInfo.tokenExp = tokenExp;
+        userInfo.userId = user._id;
+
+        userInfo.password = null;
+
+        console.log('file: users.js ~ line 121~ router.post ~ userInfo', userInfo);
+
+        res.status(200).send(userInfo)
     } else {
         res.status(400).send('password is wrong!');
     }
 
-
+    /* 
+        {
+            userId: user._id,
+            name: user.name,
+            isAdmin: user.isAdmin,
+            token: token,
+            tokenExp: tokenExp,
+            expiresIn: expiresIn,
+        }
+     */
 })
-
 
 router.post('/register', async (req, res) => {
     let user = new User({
@@ -134,9 +158,21 @@ router.post('/register', async (req, res) => {
     if (!user)
         return res.status(400).send('the user cannot be created!')
 
+    const token = jwt.sign({
+            userId: user.id,
+            isAdmin: false
+        },
+        secret, {
+            expiresIn: '1d'
+        });
+
+
+    user.token = token;
+    user.tokenExp = tokenExp;
+    user.expiresIn = expiresIn;
+
     res.send(user);
 })
-
 
 router.delete('/:id', (req, res) => {
     User.findByIdAndRemove(req.params.id).then(user => {
@@ -158,7 +194,6 @@ router.delete('/:id', (req, res) => {
         })
     })
 })
-
 
 router.get('/get/count', async (req, res) => {
     try {

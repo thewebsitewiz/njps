@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 import { environment } from "@env/environment";
-import { Values, UserData, LoginData } from "../models/user-data.model";
+import { Values, LoginData, User, FullUserData } from "../models/user-data.model";
 import { SignUpData } from "../models/sign-up.model";
 
 const BACKEND_URL = `${environment.apiUrl}users`;
@@ -14,13 +14,15 @@ export class AuthService {
   private isAuthenticated = false;
   private token!: string | null;
   private tokenTimer: any;
-  private accountId: number | null = null;
+  private userId: string | null | undefined = null;
   private authStatusListener = new Subject<boolean>();
-  private userDataListener = new Subject<UserData>();
-  private userData!: UserData;
+  private userDataListener = new Subject<User | null>();
+  private userData!: User | null;
   private userIsAdmin: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) { }
+  user$: BehaviorSubject<User | undefined> = new BehaviorSubject(this.autoUserData());
+
 
   getIsAdmin() {
     return this.userIsAdmin;
@@ -31,45 +33,24 @@ export class AuthService {
   }
 
   private isUserAdmin(data: Values) {
-    if (data.id === undefined) {
-      this.accountId = null;
-    }
-    else {
-      this.accountId = data.id;
-    }
-
-    if (data.phoneNumber !== null) {
-      const userData = { phoneNumber: data.phoneNumber };
+    if (data.phone !== null) {
+      const userData = { phone: data.phone };
       this.http
-        .post<{ user: string, phoneNumber: string, isAdmin: boolean }>(
-          BACKEND_URL + "/is-admin",
-          userData
-        ).subscribe((result: any) => {
-
+        .get<User>(`${BACKEND_URL}/phone-number/${data.phone}`).subscribe((result: any) => {
           this.userIsAdmin = result.isAdmin;
-          this.userDataListener.next({
-            name: result.name,
-            phoneNumber: result.phoneNumber,
-            isAdmin: result.userIsAdmin
-          });
-
+          result.password = null;
+          this.userDataListener.next(result);
         });
       return;
     }
 
-    if (data.id !== null) {
-      const userData = { accountId: data.id };
+    if (data.userId !== null) {
+      const userData = { userId: data.userId };
       this.http
-        .post<{ user: string, phoneNumber: string, isAdmin: boolean }>(
-          BACKEND_URL + "/is-admin",
-          userData
-        ).subscribe((result: any) => {
+        .get<User>(`${BACKEND_URL}/user-id/${data.userId}`).subscribe((result: any) => {
           this.userIsAdmin = result.isAdmin;
-          this.userDataListener.next({
-            name: result.name,
-            phoneNumber: result.phoneNumber,
-            isAdmin: result.userIsAdmin
-          });
+          result.password = null;
+          this.userDataListener.next(result);
 
         });
       return;
@@ -86,8 +67,8 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
-  getAccountId() {
-    return this.accountId;
+  getuserId() {
+    return this.userId;
   }
 
   getAuthStatusListener() {
@@ -99,7 +80,7 @@ export class AuthService {
     aptOrUnit: string,
     city: string,
     zipCode: number,
-    phoneNumber: number,
+    phone: number,
     password: string) {
 
     const signUpData: SignUpData = {
@@ -108,7 +89,7 @@ export class AuthService {
       aptOrUnit: aptOrUnit,
       city: city,
       zipCode: zipCode,
-      phoneNumber: phoneNumber,
+      phone: phone,
       password: password
     };
 
@@ -124,31 +105,30 @@ export class AuthService {
     );
   }
 
-  login(phoneNumber: string, password: string) {
-    const authData: LoginData = { phoneNumber: phoneNumber, password: password };
+  login(phone: string, password: string) {
+    const authData: LoginData = { phone: phone, password: password };
     this.http
-      .post<{ token: string; expiresIn: number; accountId: string; isAdmin: boolean; name: string }>(
+      .post<FullUserData>(
         BACKEND_URL + "/login",
         authData
       )
       .subscribe(
-        response => {
-          const token = response.token;
-          this.token = token;
-          if (token) {
+        (response) => {
+
+          if (response.token) {
+            this.token = response.token;
+            this.userId = response.userId;
+
             const expiresInDuration = response.expiresIn;
             this.setAuthTimer(expiresInDuration);
             this.isAuthenticated = true;
-            this.accountId = parseInt(response.accountId, 10);
 
             this.userIsAdmin = response.isAdmin;
 
-            this.userData = {
-              name: response.name,
-              phoneNumber: phoneNumber,
-              isAdmin: response.isAdmin,
-              accountId: this.accountId
-            }
+            response.password = undefined;
+            delete response.password;
+
+            this.userData = response;
 
             this.userDataListener.next(this.userData);
 
@@ -157,15 +137,18 @@ export class AuthService {
             const expirationDate = new Date(
               now.getTime() + expiresInDuration * 1000
             );
-            this.saveAuthData(token, expirationDate, this.accountId);
+
+            if (response.userId !== undefined) {
+              this.saveAuthData(response.token, expirationDate, response.userId);
+            }
+
             this.router.navigate(['/'], { fragment: 'top' });
           }
         },
-        error => {
-          this.userData = {};
+        (e) => {
+          this.userData = null;
           this.authStatusListener.next(false);
-        }
-      );
+        });
   }
 
   autoAuthUser() {
@@ -179,14 +162,15 @@ export class AuthService {
       this.clearAuthData();
       return;
     }
+
     const now = new Date();
     const expiresIn = authInformation.expirationDate!.getTime() - now.getTime();
     if (expiresIn > 0) {
-      const values: Values = { id: authInformation.accountId, phoneNumber: null }
+      const values: Values = { userId: authInformation.userId, phone: null }
       this.isUserAdmin(values);
       this.token = authInformation.token!;
       this.isAuthenticated = true;
-      this.accountId = authInformation.accountId;
+      this.userId = authInformation.userId;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
       return;
@@ -200,13 +184,9 @@ export class AuthService {
     this.token = null;
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
-    this.userDataListener.next({
-      name: null,
-      phoneNumber: null,
-      isAdmin: false
-    });
+    this.userDataListener.next(null);
     this.userIsAdmin = false;
-    this.accountId = null;
+    this.userId = null;
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
     this.router.navigate(["/"]);
@@ -218,95 +198,88 @@ export class AuthService {
     }, duration * 1000);
   }
 
-  private saveAuthData(token: string, expirationDate: Date, accountId: number) {
+  private saveAuthData(token: string, expirationDate: Date, userId: string) {
+    console.log('file: auth.service.ts ~ line 223 ~ AuthService ~ saveAuthData ~ expirationDate', expirationDate);
     localStorage.setItem("token", token);
     localStorage.setItem("expiration", expirationDate.toISOString());
-    localStorage.setItem("accountId", accountId.toString());
+    localStorage.setItem("userId", userId.toString());
   }
 
   private clearAuthData() {
     localStorage.removeItem("token");
     localStorage.removeItem("expiration");
-    localStorage.removeItem("accountId");
+    localStorage.removeItem("userId");
   }
-
 
   getUserData() {
     return this.userData;
   }
 
-  autoUserData() {
-    const accountId = localStorage.getItem("accountId");
+  autoUserData(): User | undefined {
+    const userId = localStorage.getItem("userId");
 
-    if (!accountId) {
-      return;
+    if (!userId) {
+      return undefined;
     }
 
     const data = {
-      accountId: accountId
+      userId: userId
     };
 
     this.http
-      .post<{ name: string, phoneNumber: string, isAdmin: boolean }>(
-        BACKEND_URL + "/user-data",
-        data
-      )
+      .get<User>(`${BACKEND_URL}/${userId}`)
       .subscribe(
-        response => {
+        (response: User) => {
           this.userIsAdmin = response.isAdmin;
-          this.userDataListener.next({
-            name: response.name,
-            phoneNumber: response.phoneNumber,
-            isAdmin: response.isAdmin
-          });
 
-          this.userData = {
-            name: response.name,
-            phoneNumber: response.phoneNumber,
-            isAdmin: response.isAdmin,
-            accountId: this.accountId
-          }
-
+          this.userData = response;
+          this.userDataListener.next(this.userData);
+          return response;
         },
-        error => {
+        (error) => {
           this.userIsAdmin = false;
-          this.userDataListener.next({
-            name: null,
-            phoneNumber: null,
-            isAdmin: false
-          });
+          this.userDataListener.next(null);
+          return undefined;
         }
       );
 
+    return undefined;
   }
 
-
-  private getAuthData(): { token: string | null, expirationDate: Date | null, accountId: number | null } {
+  private getAuthData(): { token: string | null, expirationDate: Date | null, userId: string | null } {
     const token = localStorage.getItem("token");
     const expirationDate = localStorage.getItem("expiration");
-    const accountIdString = localStorage.getItem("accountId");
-    let accountId;
+    const userIdString = localStorage.getItem("userId");
+    let userId;
 
     if (!token || !expirationDate) {
       return {
         token: null,
         expirationDate: null,
-        accountId: null
+        userId: null
       };
     }
 
-    if (accountIdString !== null) {
-      accountId = parseInt(accountIdString, 10);
+    if (userIdString !== null) {
+      userId = userIdString;
     }
     else {
-      accountId = null;
+      userId = null;
     }
 
     return {
       token: token,
       expirationDate: new Date(expirationDate),
-      accountId: accountId
+      userId: userId
     };
   }
+
+  isUserLoggedIn(): boolean {
+    if (!!this.userId) {
+      return true;
+    }
+    return false;
+  }
+
 }
 

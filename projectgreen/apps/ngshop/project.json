@@ -2,7 +2,7 @@
   "projectType": "application",
   "root": "apps/ngshop",
   "sourceRoot": "apps/ngshop/src",
-  "prefix": "ngshop",
+  "prefix": "njps",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",

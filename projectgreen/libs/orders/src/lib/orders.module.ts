@@ -16,6 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { ThankYouComponent } from './pages/thank-you/thank-you.component';
 import { AuthGuard } from '@projectgreen/users';
+
 const routes: Routes = [
   {
     path: 'cart',

@@ -48,9 +48,12 @@ export class HeaderComponent {
     });
 
 
+
+
   }
 
   goToCart() {
+    console.log('cart')
     this.router.navigateByUrl('cart');
   }
 
@@ -73,7 +76,7 @@ export class HeaderComponent {
         { label: 'Carts', icon: 'icon cartridge-icon', routerLink: ['/category/' + this.categories['Carts'].id] },
         { label: 'FAQ', icon: 'icon faq-icon', routerLink: ['/faq'] },
         { label: 'Contact', icon: 'icon contact-icon', routerLink: ['/contact'] },
-        { label: 'Login', icon: 'icon login-icon', routerLink: ['/login'] },
+        { label: 'Login', icon: 'icon login-icon', routerLink: ['/userlogin'] },
         { label: 'Register', icon: 'icon register-icon', routerLink: ['/register'] },
       ];
     });

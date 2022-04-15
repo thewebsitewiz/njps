@@ -1,7 +1,8 @@
 {
     "cSpell.words": [
+        "njps",
         "weedshopadmin"
     ],
     "angular.enable-strict-mode-prompt": false,
-    "sassVariablesHelper.route": "/Users/dennisluken/Documents/Projects/weed/projectgreen/styles/base/colors.scss"
+    "sassVariablesHelper.route": "/Users/dennisluken/Documents/Projects/weed/projectgreen/styles/base/_colors.scss"
 }

@@ -64,12 +64,6 @@ export class UsersListComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(`users/form/${userid}`);
   }
 
-  getCountryName(countryKey: string) {
-    if (countryKey) return this.usersService.getCountry(countryKey);
-
-    return null;
-  }
-
   private _getUsers() {
     this.usersService
       .getUsers()

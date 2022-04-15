@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   styles: []
 })
 export class LoginComponent implements OnInit {
-  phoneNumber!: string;
+  phone!: string;
   password!: string;
 
   isLoading = false;
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.authService.login(form.value.loginPhoneNumber, form.value.password);
+    this.authService.login(form.value.phone, form.value.password);
   }
 
   ngOnDestroy() {
