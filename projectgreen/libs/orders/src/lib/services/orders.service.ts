@@ -23,6 +23,7 @@ export class OrdersService {
   }
 
   createOrder(order: OrderForm): Observable<Order> {
+    console.log('order ');
     return this.http.post<Order>(this.apiURLOrders, order);
   }
 

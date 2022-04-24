@@ -3,8 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { LogoutPageComponent } from './pages/logout-page/logout-page.component';
 import { RegistrationPageComponent } from './pages/registration-page/registration-page.component';
 
+import { ProductsModule } from '@projectgreen/products';
+import { OrdersModule } from '@projectgreen/orders';
 
 const routes: Routes = [
   {
@@ -14,6 +17,10 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegistrationPageComponent
+  },
+  {
+    path: 'logout',
+    component: LogoutPageComponent
   },
   {
     path: '',
@@ -27,7 +34,9 @@ const routes: Routes = [
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled', anchorScrolling: 'enabled', enableTracing: false })],
+  imports: [ProductsModule,
+    OrdersModule,
+    RouterModule.forRoot(routes, { initialNavigation: 'enabled', anchorScrolling: 'enabled', enableTracing: false })],
   exports: [RouterModule],
   declarations: [],
   providers: []

@@ -5,19 +5,20 @@
   </div>
   <div class="summary-price">
     <span>Items Price</span>
-    <span>{{ itemsPrice | currency }}</span>
+    <span>{{ itemsTotal | currency}}</span>
   </div>
   <div class="summary-price">
     <span>Delivery</span>
-    <span class="free" [ngClass]="{'displayMsgAlert' : displayMsgAlert }">{{ deliveryMsg }}</span>
+    <span class="free" *ngIf="!!deliveryFee">{{ deliveryFee | currency }}</span>
+    <span class="free" *ngIf="!!deliveryMsg">{{ deliveryMsg }}</span>
   </div>
   <div class="to-checkout">
     <div class="summary-price">
       <span>Total Price</span>
-      <span>{{ totalPrice | currency }}</span>
+      <span [ngClass]="{'no-checkout-total': !!deliveryMsg}">{{ totalPrice | currency }}</span>
     </div>
     <div class="checkout-button" *ngIf="!isCheckout">
-      <p-button label="Checkout" [ngClass]="{'ready-for-checkout': !displayMsgAlert}" (onClick)="navigateToCheckout()">
+      <p-button label="Checkout" [ngClass]="{'no-checkout-button': !!deliveryMsg}" (onClick)="navigateToCheckout()">
       </p-button>
     </div>
   </div>

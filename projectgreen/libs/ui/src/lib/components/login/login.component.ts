@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-
-import { HttpClient } from '@angular/common/http';
 
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
+import { User } from '../../models/user-data.model';
 
 @Component({
   selector: 'ui-login',
@@ -18,15 +16,25 @@ export class LoginComponent implements OnInit {
 
   isLoading = false;
   private authStatusSub!: Subscription;
+  isAuth: boolean = false;
 
-  constructor(public router: Router,
-    public authService: AuthService,
-    private http: HttpClient) { }
+  private userInfoSub!: Subscription;
+  userInfo!: User | null;
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
       authStatus => {
-        this.isLoading = false;
+        this.isAuth = authStatus;
+
+        if (this.isAuth) {
+          this.userInfoSub = this.authService.getUserDataListener().subscribe(
+            userInfo => {
+              this.userInfo = userInfo;
+            }
+          );
+        }
       }
     );
 
@@ -42,6 +50,10 @@ export class LoginComponent implements OnInit {
 
   ngOnDestroy() {
     this.authStatusSub.unsubscribe();
+
+    if (!!this.userInfoSub) {
+      this.userInfoSub.unsubscribe();
+    }
   }
 
 }

@@ -4,35 +4,31 @@
       <div class="col-6">
         <img src="assets/images/login-photo.png" />
       </div>
-      <div class="col-6 p-p-5">
+      <div class="col-6">
         <h3>Welcome!</h3>
         <h2>Login Page</h2>
         <form [formGroup]="loginFormGroup">
-          <div class="grid p-mt-6">
+          <div class="grid mt-6">
             <div class="col-12">
-              <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
-                <input type="text" formControlName="phone" pInputText placeholder="Phone Number" />
+              <div class="inputgroup">
+                <span class="inputgroup-addon"><i class="pi pi-user"></i></span>
+                <input type="text" formControlName="phoneNumber" pInputText placeholder="#########" />
               </div>
-              <!--               <small *ngIf="loginForm['email'].invalid && isSubmitted" class="p-error"><span
-                  *ngIf="loginForm['email'].errors !== null && loginForm['email'].errors['required'] !== null">email is
-                  required</span>
-                <span *ngIf="loginForm['email'].errors !== null && loginForm['email'].errors['email'] !== null">email is
-                  invalid</span></small> -->
             </div>
             <div class="col-12">
-              <div class="p-inputgroup">
-                <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+              <div class="inputgroup">
+                <span class="inputgrouaddon"><i class="pi pi-lock"></i></span>
                 <input type="password" formControlName="password" pInputText placeholder="Password" />
               </div>
-              <small *ngIf="loginForm['password'].invalid && isSubmitted" class="p-error">Password is required
+              <small *ngIf="loginForm['password'].invalid && isSubmitted" class="error">Password is required
               </small>
             </div>
-            <div class="col-12">
-              <p-button label="Submit" styleClass="full-btn" (onClick)="onSubmit()"></p-button>
+            <div class="col-9">
+              <button pButton label="Submit" class="p-button-success" styleClass="full-btn"
+                (onClick)="onSubmit()"></button>
             </div>
             <div class="col-12" *ngIf="isSubmitted && authError">
-              <small class="p-error">{{ authMessage }}</small>
+              <small class="error">{{ authMessage }}</small>
             </div>
           </div>
         </form>

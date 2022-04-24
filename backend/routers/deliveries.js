@@ -37,7 +37,9 @@ router.get(`/fee/:zip`, async (req, res) => {
     });
 
     if (delivery === null) {
-        res.send(null);
+        res.send({
+            message: 'Delivery not available to your area'
+        });
         return;
     }
     res.send(delivery);

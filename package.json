@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "angular2-text-mask": "^9.0.0",
+    "text-mask-addons": "^3.8.0"
+  }
+}

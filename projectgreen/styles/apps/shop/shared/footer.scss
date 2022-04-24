@@ -4,6 +4,7 @@ footer {
   padding: 10px 25px;
   width: 100%;
   margin-top: 25px;
+  font-family: 'Merriweather Sans ' !important;
 
   .footer-wrapper {
     align-items: center;
@@ -11,6 +12,7 @@ footer {
     .social {
       margin-top: 15px;
       text-align: right;
+
       .nav {
         justify-content: flex-end;
       }

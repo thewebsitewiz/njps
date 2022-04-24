@@ -5,6 +5,8 @@ import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
+import { DeliveryService } from '@projectgreen/orders';
+
 @Component({
   selector: 'ui-signup',
   templateUrl: './signup.component.html',
@@ -24,12 +26,15 @@ export class SignupComponent implements OnInit, OnDestroy {
   phoneNumber!: string;
   password!: string;
 
-  constructor(private authService: AuthService) { }
+  isAuth: boolean = false;
+
+  constructor(private authService: AuthService,
+    private deliveryService: DeliveryService) { }
 
   ngOnInit() {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
       authStatus => {
-        this.isLoading = false;
+        this.isAuth = authStatus;
       }
     );
   }
@@ -52,24 +57,24 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
     this.isLoading = true;
 
-    /*
-        this.authService.createUser(form.value.fullName,
-          form.value.streetAddress,
-          form.value.aptOrUnit,
-          form.value.city,
-          form.value.zipCode,
-          form.value.phoneNumber,
-          form.value.password);
-      }
-     */
 
-    this.authService.createUser('Dennis Luken',
-      '19 Andre Hill',
-      '#2',
-      'Tappan',
-      10983,
-      1234567890,
-      'password');
+    this.authService.createUser(form.value.fullName,
+      form.value.streetAddress,
+      form.value.aptOrUnit,
+      form.value.city,
+      form.value.zipCode,
+      form.value.phoneNumber,
+      form.value.password);
+  }
+
+  onKey(event: any) {
+    if (event.key.match(/[0-9]/)) {
+      this.zipCode += event.key;
+    }
+
+    if (event.key === 'Backspace' && this.zipCode.length > 0) {
+      this.zipCode = this.zipCode.slice(0, -1);
+    }
   }
 
   ngOnDestroy() {

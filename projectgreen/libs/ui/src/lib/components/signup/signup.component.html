@@ -1,28 +1,28 @@
 <!-- Services Section -->
-<section class="page-section" id="signup">
+<section class="page-section" id="signup" *ngIf="isAuth === false">
   <div class="grid">
     <div class="col-12 pl-6 pr-6">
       <h3 class="text-center mt-4 secondary-heading">Create An Account</h3>
       <form action="" (ngSubmit)="onSignup(signupForm)" #signupForm="ngForm">
         <div class="p-field mb-4">
           <label class="label block" for="fullName">Your Full Name<span class="required">*</span></label>
-          <input id="fullName" name="fullName" type="username" pInputText [(ngModel)]="fullName" />
+          <input id="fullName" name="fullName" type="text" pInputText [(ngModel)]="fullName" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="streetAddress">Street Address<span class="required">*</span></label>
-          <input id="streetAddress" name="streetAddress" type="username" pInputText [(ngModel)]="streetAddress" />
+          <input id="streetAddress" name="streetAddress" type="text" pInputText [(ngModel)]="streetAddress" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="aptOrUnit">Apt or Unit</label>
-          <input id="aptOrUnit" name="aptOrUnit" type="username" pInputText [(ngModel)]="aptOrUnit" />
+          <input id="aptOrUnit" name="aptOrUnit" type="text" pInputText [(ngModel)]="aptOrUnit" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="city">City<span class="required">*</span></label>
-          <input id="city" name="city" type="username" pInputText [(ngModel)]="city" />
+          <input id="city" name="city" type="text" pInputText [(ngModel)]="city" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="zipCode">Zip Code<span class="required">*</span></label>
-          <input id="zipCode" name="zipCode" type="username" pInputText [(ngModel)]="zipCode" />
+          <input id="zipCode" name="zipCode" type="text" pInputText [(ngModel)]="zipCode" (keyup)="onKey($event)" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="phoneNumber">Phone Number<span class="required">*</span></label>
@@ -33,7 +33,7 @@
         </div>
         <div class="p-field">
           <label class="label block" for="phoneNumber">Password<span class="required">*</span></label>
-          <input id="password" name="password" type="username" pInputText [(ngModel)]="password" />
+          <input id="password" name="password" type="text" pInputText [(ngModel)]="password" />
         </div>
 
         <div class="col-12 mt-3 centered">

@@ -11,13 +11,13 @@ export interface LoginData {
 }
 
 export interface Values {
-  userId?: string | null;
+  id?: string | null;
   phone?: string | null;
 }
 
 export interface User {
-  userId?: string;
-  name: string;
+  id: string;
+  fullName: string;
   phoneNumber: string;
   streetAddress: string;
   aptOrUnit?: string;
@@ -25,7 +25,6 @@ export interface User {
   city: string;
   isAdmin: boolean;
   phone: string;
-  password?: string;
 }
 
 export interface FullUserData extends User {
@@ -34,7 +33,3 @@ export interface FullUserData extends User {
   tokenExp: string;
 }
 
-/* name: response.name,
-            phoneNumber: response.phoneNumber,
-            isAdmin: response.isAdmin,
-            accountId: this.accountId */

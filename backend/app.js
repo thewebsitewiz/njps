@@ -23,7 +23,7 @@ app.use(cors({
 
 //middleware
 app.use(bodyParser.json());
-app.use(morgan('tiny'));
+app.use(morgan('dev'));
 app.use(authJwt());
 
 app.use(express.static(__dirname + '/public'));
@@ -38,6 +38,13 @@ const deliveryRoutes = require('./routers/deliveries');
 const faqRoutes = require('./routers/faqs');
 
 const api = process.env.API_URL;
+
+app.get('/', function (req, res) {
+    console.log("Root Route")
+    res.json({
+        message: "hello world"
+    });
+});
 
 app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/products`, productsRoutes);

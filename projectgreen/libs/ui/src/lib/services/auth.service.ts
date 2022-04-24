@@ -14,14 +14,14 @@ export class AuthService {
   private isAuthenticated = false;
   private token!: string | null;
   private tokenTimer: any;
-  private userId: string | null | undefined = null;
+  private id: string | null | undefined = null;
   private authStatusListener = new Subject<boolean>();
   private userDataListener = new Subject<User | null>();
   private userData!: User | null;
   private userIsAdmin: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) { }
-  user$: BehaviorSubject<User | undefined> = new BehaviorSubject(this.autoUserData());
+  // user$: BehaviorSubject<User | undefined> = new BehaviorSubject(this.autoUserData());
 
 
   getIsAdmin() {
@@ -35,6 +35,7 @@ export class AuthService {
   private isUserAdmin(data: Values) {
     if (data.phone !== null) {
       const userData = { phone: data.phone };
+
       this.http
         .get<User>(`${BACKEND_URL}/phone-number/${data.phone}`).subscribe((result: any) => {
           this.userIsAdmin = result.isAdmin;
@@ -44,14 +45,14 @@ export class AuthService {
       return;
     }
 
-    if (data.userId !== null) {
-      const userData = { userId: data.userId };
+    if (data.id !== null) {
+      const userData = { id: data.id };
+
       this.http
-        .get<User>(`${BACKEND_URL}/user-id/${data.userId}`).subscribe((result: any) => {
+        .get<User>(`${BACKEND_URL}/${data.id}`).subscribe((result: any) => {
           this.userIsAdmin = result.isAdmin;
           result.password = null;
           this.userDataListener.next(result);
-
         });
       return;
     }
@@ -68,7 +69,7 @@ export class AuthService {
   }
 
   getuserId() {
-    return this.userId;
+    return this.id;
   }
 
   getAuthStatusListener() {
@@ -93,8 +94,6 @@ export class AuthService {
       password: password
     };
 
-    console.log(signUpData)
-
     this.http.post(BACKEND_URL + "/", signUpData).subscribe(
       () => {
         this.router.navigate(["/"]);
@@ -107,6 +106,7 @@ export class AuthService {
 
   login(phone: string, password: string) {
     const authData: LoginData = { phone: phone, password: password };
+
     this.http
       .post<FullUserData>(
         BACKEND_URL + "/login",
@@ -117,29 +117,26 @@ export class AuthService {
 
           if (response.token) {
             this.token = response.token;
-            this.userId = response.userId;
+            this.id = response.id;
 
-            const expiresInDuration = response.expiresIn;
-            this.setAuthTimer(expiresInDuration);
+            this.setAuthTimer(response.expiresIn);
             this.isAuthenticated = true;
 
             this.userIsAdmin = response.isAdmin;
 
-            response.password = undefined;
-            delete response.password;
-
             this.userData = response;
+            console.log('this.userData: ', this.userData);
 
             this.userDataListener.next(this.userData);
 
             this.authStatusListener.next(true);
             const now = new Date();
             const expirationDate = new Date(
-              now.getTime() + expiresInDuration * 1000
+              now.getTime() + response.expiresIn * 1000
             );
 
-            if (response.userId !== undefined) {
-              this.saveAuthData(response.token, expirationDate, response.userId);
+            if (response.id !== undefined) {
+              this.saveAuthData(response.token, expirationDate, response.id);
             }
 
             this.router.navigate(['/'], { fragment: 'top' });
@@ -166,17 +163,15 @@ export class AuthService {
     const now = new Date();
     const expiresIn = authInformation.expirationDate!.getTime() - now.getTime();
     if (expiresIn > 0) {
-      const values: Values = { userId: authInformation.userId, phone: null }
+      const values: Values = { id: authInformation.id, phone: null }
       this.isUserAdmin(values);
       this.token = authInformation.token!;
       this.isAuthenticated = true;
-      this.userId = authInformation.userId;
+      this.id = authInformation.id;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
       return;
     }
-
-    this.clearAuthData();
     return;
   }
 
@@ -186,7 +181,7 @@ export class AuthService {
     this.authStatusListener.next(false);
     this.userDataListener.next(null);
     this.userIsAdmin = false;
-    this.userId = null;
+    this.id = null;
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
     this.router.navigate(["/"]);
@@ -198,87 +193,63 @@ export class AuthService {
     }, duration * 1000);
   }
 
-  private saveAuthData(token: string, expirationDate: Date, userId: string) {
-    console.log('file: auth.service.ts ~ line 223 ~ AuthService ~ saveAuthData ~ expirationDate', expirationDate);
+  private saveAuthData(token: string, expirationDate: Date, id: string) {
     localStorage.setItem("token", token);
     localStorage.setItem("expiration", expirationDate.toISOString());
-    localStorage.setItem("userId", userId.toString());
+    localStorage.setItem("id", id.toString());
   }
 
   private clearAuthData() {
     localStorage.removeItem("token");
     localStorage.removeItem("expiration");
-    localStorage.removeItem("userId");
+    localStorage.removeItem("id");
   }
 
   getUserData() {
     return this.userData;
   }
 
-  autoUserData(): User | undefined {
-    const userId = localStorage.getItem("userId");
-
-    if (!userId) {
-      return undefined;
-    }
-
-    const data = {
-      userId: userId
-    };
-
-    this.http
-      .get<User>(`${BACKEND_URL}/${userId}`)
-      .subscribe(
-        (response: User) => {
-          this.userIsAdmin = response.isAdmin;
-
-          this.userData = response;
-          this.userDataListener.next(this.userData);
-          return response;
-        },
-        (error) => {
-          this.userIsAdmin = false;
-          this.userDataListener.next(null);
-          return undefined;
-        }
-      );
-
-    return undefined;
+  autoUserData(id: string) {
+    return this.http.get<User>(`${BACKEND_URL}/${id}`);
   }
 
-  private getAuthData(): { token: string | null, expirationDate: Date | null, userId: string | null } {
+  private getAuthData(): { token: string | null, expirationDate: Date | null, id: string | null } {
     const token = localStorage.getItem("token");
     const expirationDate = localStorage.getItem("expiration");
-    const userIdString = localStorage.getItem("userId");
-    let userId;
+    const idString = localStorage.getItem("id");
+    let id;
 
     if (!token || !expirationDate) {
       return {
         token: null,
         expirationDate: null,
-        userId: null
+        id: null
       };
     }
 
-    if (userIdString !== null) {
-      userId = userIdString;
+    if (idString !== null) {
+      id = idString;
     }
     else {
-      userId = null;
+      id = null;
     }
 
     return {
       token: token,
       expirationDate: new Date(expirationDate),
-      userId: userId
+      id: id
     };
   }
 
   isUserLoggedIn(): boolean {
-    if (!!this.userId) {
+    if (!!this.id) {
       return true;
     }
     return false;
+  }
+
+  getLocalId() {
+    return localStorage.getItem("id");
   }
 
 }

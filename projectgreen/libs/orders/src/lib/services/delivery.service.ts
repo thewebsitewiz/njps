@@ -33,8 +33,9 @@ export class DeliveryService {
     return this.http.delete<any>(`${this.apiURLDelivery}/${deliveryId}`);
   }
 
-  deliveryFee(zip: string): Observable<any> {
-    return this.http.get<any>(`${this.apiURLDelivery}/fee/${zip}`);
+  deliveryFee(zip: string): Observable<Delivery> {
+    console.log('here')
+    return this.http.get<Delivery>(`${this.apiURLDelivery}/fee/${zip}`);
   }
 
 }

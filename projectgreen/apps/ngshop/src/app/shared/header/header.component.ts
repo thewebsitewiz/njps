@@ -5,6 +5,9 @@ import { CategoriesService, Categories, Category } from '@projectgreen/products'
 
 import { Cart, CartService } from '@projectgreen/orders';
 import { Router } from '@angular/router';
+import { AuthService } from '@projectgreen/ui';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { User } from '@projectgreen/users';
 
 @Component({
   selector: 'ngshop-header',
@@ -20,18 +23,39 @@ export class HeaderComponent {
 
   categories!: { [key: string]: Category };
   categoryName!: string | undefined;
+  itemsLength!: number;
+
+  authStatusSub!: Subscription;
+  userDataSub!: Subscription;
+
+  userIsAuthenticated: boolean = false;
+  isAuth: boolean = false;
+
+  user!: User | null;
 
   constructor(private primengConfig: PrimeNGConfig,
     private categoriesService: CategoriesService,
     private cartService: CartService,
-    private router: Router) { }
+    private router: Router,
+    private authService: AuthService) { }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
+    this.authService.autoAuthUser();
+    const id = this.authService.getLocalId();
+    this.user = this.authService.getUserData();
+    if (!!id && this.user === undefined) {
+      this.authService.autoUserData(id).subscribe(results => {
+        this.user = results;
+        this.authService.autoAuthUser();
+      })
+    }
+
+    this._getCategories();
 
     this.cartService.initCartLocalStorage();
 
-    this._getCategories();
+    this.userIsAuthenticated = this.authService.getIsAuth();
 
     this.cartService.cart$.subscribe((cart) => {
       this.cartCount = 0;
@@ -47,16 +71,23 @@ export class HeaderComponent {
       }
     });
 
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => {
+        this.isAuth = authStatus;
+      }
+    );
 
-
-
+    this.isAuth = this.authService.getIsAuth();
+    this.userDataSub = this.authService.getUserDataListener().subscribe(
+      userData => {
+        this.user = userData;
+      }
+    );
   }
 
   goToCart() {
-    console.log('cart')
     this.router.navigateByUrl('cart');
   }
-
 
   private _getCategories() {
     this.categories = {};
@@ -66,24 +97,51 @@ export class HeaderComponent {
         this.categories[name] = cat;
       });
 
-      this.items = [
-        { label: 'Home', icon: 'icon product-icon', routerLink: ['/'] },
-        { label: 'Flower', icon: 'icon product-icon', routerLink: [`/category/${this.categories['Flower'].id}`] },
-        { label: 'Designer Flower', icon: 'icon designer-icon', routerLink: [`/category/${this.categories['Designer Flower'].id}`] },
-        { label: 'Pre Rolls', icon: 'icon pre-roll-icon', routerLink: ['/category/' + this.categories['Pre Rolls'].id] },
-        { label: 'Edibles', icon: 'icon edible-icon', routerLink: ['/category/' + this.categories['Edibles'].id] },
-        { label: 'Concentrates', icon: 'icon concentrate-icon', routerLink: ['/category/' + this.categories['Concentrates'].id] },
-        { label: 'Carts', icon: 'icon cartridge-icon', routerLink: ['/category/' + this.categories['Carts'].id] },
-        { label: 'FAQ', icon: 'icon faq-icon', routerLink: ['/faq'] },
-        { label: 'Contact', icon: 'icon contact-icon', routerLink: ['/contact'] },
-        { label: 'Login', icon: 'icon login-icon', routerLink: ['/userlogin'] },
-        { label: 'Register', icon: 'icon register-icon', routerLink: ['/register'] },
-      ];
+      this._getMenuItems();
     });
   }
 
+  private _getMenuItems() {
+    this.items = [
+      { label: 'Home', icon: 'icon product-icon', routerLink: ['/'] },
+      { label: 'Flower', icon: 'icon product-icon', routerLink: [`/category/${this.categories['Flower'].id}`] },
+      { label: 'Designer Flower', icon: 'icon designer-icon', routerLink: [`/category/${this.categories['Designer Flower'].id}`] },
+      { label: 'Pre Rolls', icon: 'icon pre-roll-icon', routerLink: ['/category/' + this.categories['Pre Rolls'].id] },
+      { label: 'Edibles', icon: 'icon edible-icon', routerLink: ['/category/' + this.categories['Edibles'].id] },
+      { label: 'Concentrates', icon: 'icon concentrate-icon', routerLink: ['/category/' + this.categories['Concentrates'].id] },
+      { label: 'Carts', icon: 'icon cartridge-icon', routerLink: ['/category/' + this.categories['Carts'].id] },
+      { label: 'FAQ', icon: 'icon faq-icon', routerLink: ['/faq'] },
+      { label: 'Contact', icon: 'icon contact-icon', routerLink: ['/contact'] }
+    ];
 
+    if (this.isAuth) {
+      // remove login and register
+      this.removeItem('Login')
+      this.removeItem('Register')
 
+      // Add Login and Register
+      this.items.push({ label: 'Logout', icon: 'icon logout-icon', routerLink: ['/logout'] });
+    }
+
+    else {
+      // remove logout
+      this.removeItem('Logout')
+
+      // Add Login and Register
+      this.items.push({ label: 'Login', icon: 'icon login-icon', routerLink: ['/login'] });
+      this.items.push({ label: 'Register', icon: 'icon register-icon', routerLink: ['/register'] });
+    }
+  }
+
+  removeItem(targetLabel: string): void {
+    let idx = 0;
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].label === targetLabel) {
+        idx = i;
+      }
+    }
+    this.items.splice(idx, 1);
+  }
 
   update() { }
 

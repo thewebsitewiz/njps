@@ -1,9 +1,12 @@
 .cart-page {
   min-height: 500px;
+  font-family: 'Merriweather Sans ' !important;
+
   button {
     background-color: $primary-color;
     border: 0;
   }
+
   .cart {
     &-shipping {
       color: var(--green-700);
@@ -41,6 +44,7 @@
 
       &-subtotal {
         font-weight: 600;
+
         &-value {
           color: var(--green-600);
         }

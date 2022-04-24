@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+:host {
+  ::ng-deep .p-component {
+    font-family: "Merriweather Sans" !important;
+  }
+
+
+  body .p-component {
+    font-family: "Merriweather Sans" !important;
+  }
+
+  .ngshop-root div .orders-cart-page div .p-table div div table thead tr th {
+    font-family: "Merriweather Sans" !important;
+  }
+}

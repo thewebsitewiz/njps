@@ -14,7 +14,7 @@ router.get(`/`, async (req, res) => {
     const userList = await User.find(); //.select('-passwordHash');
 
     if (!userList) {
-        res.status(500).json({
+        res.status(400).json({
             success: false
         })
     }
@@ -22,17 +22,25 @@ router.get(`/`, async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-    const user = await User.findById(req.params.id); // .select('-passwordHash');
+    console.log(`req.params.id: |${req.params.id}|`)
+    if (req.params.id !== null) {
+        console.log('here');
+        const user = await User.findById(req.params.id); // .select('-passwordHash');
 
-    if (!user) {
-        res.status(500).json({
-            message: 'The user with the given ID was not found.'
+        if (!user) {
+            res.status(400).json({
+                message: 'The user with the given ID was not found.'
+            })
+        }
+
+        user.password = null;
+        delete user.password;
+        res.status(200).send(user);
+    } else {
+        res.status(400).json({
+            message: 'No ID was passed with the request.'
         })
     }
-
-    user.password = null;
-    delete user.password;
-    res.status(200).send(user);
 })
 
 router.post('/', async (req, res) => {
@@ -104,7 +112,7 @@ router.post('/login', async (req, res) => {
 
     if (user && req.body.password === user.password) {
         const token = jwt.sign({
-                userId: user.id,
+                id: user.id,
                 isAdmin: user.isAdmin
             },
             secret, {
@@ -119,27 +127,14 @@ router.post('/login', async (req, res) => {
         userInfo.token = token;
         userInfo.expiresIn = expiresIn;
         userInfo.tokenExp = tokenExp;
-        userInfo.userId = user._id;
+        userInfo.id = user._id;
 
         userInfo.password = null;
-
-        console.log('file: users.js ~ line 121~ router.post ~ userInfo', userInfo);
 
         res.status(200).send(userInfo)
     } else {
         res.status(400).send('password is wrong!');
     }
-
-    /* 
-        {
-            userId: user._id,
-            name: user.name,
-            isAdmin: user.isAdmin,
-            token: token,
-            tokenExp: tokenExp,
-            expiresIn: expiresIn,
-        }
-     */
 })
 
 router.post('/register', async (req, res) => {

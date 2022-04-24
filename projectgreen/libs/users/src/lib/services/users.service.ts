@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User } from '../models/user';
+import { User, UserData } from '../models/user';
 import { environment } from '@env/environment';
 import * as countriesLib from 'i18n-iso-countries';
 import { UsersFacade } from '../state/users.facade';
@@ -22,10 +22,8 @@ export class UsersService {
     return this.http.get<User[]>(this.apiURLUsers);
   }
 
-  getUser(userId: string): Observable<User> {
-    console.log('file: users.service.ts ~ line 26 ~ UsersService ~ getUser ~ userId', userId);
-
-    return this.http.get<User>(`${this.apiURLUsers}/${userId}`);
+  getUser(userId: string): Observable<UserData> {
+    return this.http.get<UserData>(`${this.apiURLUsers}/${userId}`);
   }
 
   createUser(user: User): Observable<User> {
@@ -47,13 +45,10 @@ export class UsersService {
   }
 
   initAppSession() {
-    console.log('in initAppSession')
     this.usersFacade.buildUserSession();
   }
 
   observeCurrentUser() {
-    console.log('this.usersFacade.currentUser$: ', this.usersFacade.currentUser$);
-
     return this.usersFacade.currentUser$;
   }
 

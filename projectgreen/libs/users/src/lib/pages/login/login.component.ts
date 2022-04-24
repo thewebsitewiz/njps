@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/authenticate.service';
 import { LocalstorageService } from '../../services/localstorage.service';
 
 @Component({
@@ -29,19 +29,19 @@ export class LoginComponent implements OnInit {
 
   private _initLoginForm() {
     this.loginFormGroup = this.formBuilder.group({
-      phone: ['', [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
       password: ['', Validators.required]
     });
   }
 
   onSubmit() {
+    console.log('submit');
     this.isSubmitted = true;
 
     if (this.loginFormGroup.invalid) return;
 
-    this.auth.login(this.loginForm['phone'].value, this.loginForm['password'].value).subscribe(
+    this.auth.login(this.loginForm['phoneNumber'].value, this.loginForm['password'].value).subscribe(
       (user) => {
-        console.log(user)
         this.authError = false;
         this.localstorageService.setToken(user.token);
         this.router.navigate(['/']);

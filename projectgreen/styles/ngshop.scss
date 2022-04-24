@@ -35,7 +35,6 @@
 @import './apps/shop/shared/login.scss';
 @import './apps/shop/shared/signup.scss';
 
-
 html {
   max-width: 98%;
 }
@@ -50,4 +49,10 @@ body {
 .container {
   width: 100%;
   margin: 0 auto;
+}
+
+:host {
+  ::ng-deep .p-component {
+    font-family: 'Merriweather Sans' !important;
+  }
 }

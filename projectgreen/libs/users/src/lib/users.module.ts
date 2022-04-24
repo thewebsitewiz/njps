@@ -32,4 +32,4 @@ const routes: Routes = [
   declarations: [LoginComponent],
   providers: [UsersFacade]
 })
-export class UsersModule {}
+export class UsersModule { }

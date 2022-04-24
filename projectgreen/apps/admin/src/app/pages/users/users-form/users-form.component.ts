@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { UsersService, User } from '@projectgreen/users';
+import { UsersService, User, UserData } from '@projectgreen/users';
 import { MessageService } from 'primeng/api';
 import { timer } from 'rxjs';
 
@@ -97,7 +97,7 @@ export class UsersFormComponent implements OnInit {
       if (params.id) {
         this.editmode = true;
         this.currentUserId = params.id;
-        this.usersService.getUser(params.id).subscribe((user) => {
+        this.usersService.getUser(params.id).subscribe((user: UserData) => {
           this.userForm['fullName'].setValue(user.fullName);
           this.userForm['phoneNumber'].setValue(user.phoneNumber);
           this.userForm['isAdmin'].setValue(user.isAdmin);
@@ -117,7 +117,7 @@ export class UsersFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const user: User = {
+    const user: UserData = {
       id: this.currentUserId,
       fullName: this.userForm['fullName'].value,
       password: this.userForm['password'].value,
