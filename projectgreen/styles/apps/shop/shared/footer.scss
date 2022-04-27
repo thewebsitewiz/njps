@@ -4,18 +4,32 @@ footer {
   padding: 10px 25px;
   width: 100%;
   margin-top: 25px;
-  font-family: 'Merriweather Sans ' !important;
+  font-family: "Merriweather Sans", sans-serif !important;
 
   .footer-wrapper {
     align-items: center;
 
-    .social {
-      margin-top: 15px;
-      text-align: right;
 
-      .nav {
-        justify-content: flex-end;
-      }
+    .social {
+      margin-top: 30px;
     }
+
+    div.social-link {
+      font-family: "Merriweather Sans", sans-serif !important;
+      margin-bottom: 15px;
+
+      a.social-link {
+        font-family: "Merriweather Sans", sans-serif !important;
+        font-size: 22px;
+        color: $dark-green;
+
+        i.pi-instagram {
+          font-size: 22px;
+          color: $dark-green;
+        }
+      }
+
+    }
+
   }
 }

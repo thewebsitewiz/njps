@@ -12,7 +12,7 @@ export interface CartItem {
 }
 
 export interface CartItemDetailed {
-  product?: any;
+  productId?: any;
   image?: string;
   name?: string;
   amount?: number;

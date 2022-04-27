@@ -28,6 +28,7 @@ export class OrdersService {
   }
 
   updateOrder(orderStatus: { status: string }, orderId: string): Observable<Order> {
+    console.log('file: orders.service.ts ~ line 31 ~ OrdersService ~ updateOrder ~ orderStatus', orderStatus);
     return this.http.put<Order>(`${this.apiURLOrders}/${orderId}`, orderStatus);
   }
 

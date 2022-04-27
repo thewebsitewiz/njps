@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 import { DeliveryService } from '@projectgreen/orders';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ui-signup',
@@ -29,7 +30,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   isAuth: boolean = false;
 
   constructor(private authService: AuthService,
-    private deliveryService: DeliveryService) { }
+    private deliveryService: DeliveryService,
+    private router: Router) { }
 
   ngOnInit() {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
@@ -57,14 +59,18 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
     this.isLoading = true;
 
-
     this.authService.createUser(form.value.fullName,
       form.value.streetAddress,
       form.value.aptOrUnit,
       form.value.city,
       form.value.zipCode,
       form.value.phoneNumber,
-      form.value.password);
+      form.value.password).subscribe((result) => {
+        if (!!result) {
+          this.authService.login(form.value.phoneNumber, form.value.password);
+          this.router.navigate(['/'], { fragment: 'top' });
+        }
+      });
   }
 
   onKey(event: any) {

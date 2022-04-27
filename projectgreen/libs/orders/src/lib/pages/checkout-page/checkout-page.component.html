@@ -1,50 +1,56 @@
 <div class="checkout-page">
   <div>
-    <p-button label="Back to cart" icon="pi pi-arrow-left" (onClick)="backToCart()"></p-button>
+    <p-button label="Back to cart" icon="pi pi-arrow-left" (click)="backToCart()"></p-button>
   </div>
   <div class="checkout-form">
 
-    <form #signupForm="ngForm">
 
+    <form class="mb-5" [formGroup]="checkoutFormGroup" (ngSubmit)="placeOrder()">
       <div class="p-fluid p-formgrid grid">
         <div class="p-field col-12">
-          <label for="fullName">FullName</label>
-          <input id="fullName" type="text" name="fullName" type="username" pInputText [(ngModel)]="fullName" />
+          <label for="fullName">Full Name</label>
+          <input id="fullName" type="text" name="fullName" type="username" pInputText formControlName="fullName" />
         </div>
       </div>
       <div class="p-fluid p-formgrid grid">
         <div class="p-field col-12">
           <label for="phoneNumber">Phone Number</label><br />
-          <p-inputMask mask="(999) 999-9999" id="phoneNumber" name="phoneNumber" [(ngModel)]="phoneNumber"
-            placeholder="(999) 999-9999"></p-inputMask>
+          <input id="phoneNumber" type="username" name="phoneNumber" pInputText formControlName="phoneNumber" />
         </div>
       </div>
       <div class="p-fluid p-formgrid grid">
         <div class="p-field col-12">
           <label for="streetAddress">Street Address</label>
-          <input id="streetAddress" name="streetAddress" type="username" pInputText [(ngModel)]="streetAddress" />
+          <input id="streetAddress" name="streetAddress" type="username" pInputText formControlName="streetAddress" />
         </div>
       </div>
       <div class="p-fluid p-formgrid grid">
         <div class="p-field col-4">
           <label for="aptOrUnit">Apt or Unit</label>
-          <input id="aptOrUnit" name="aptOrUnit" type="text" pInputText [(ngModel)]="aptOrUnit" />
+          <input id="aptOrUnit" name="aptOrUnit" type="text" pInputText formControlName="aptOrUnit" />
         </div>
         <div class="p-field col-4">
           <label for="city">City</label>
-          <input id="city" name="city" type="text" pInputText [(ngModel)]="city" />
+          <input id="city" name="city" type="text" pInputText formControlName="city" />
         </div>
         <div class="p-field col-4">
           <label for="zipCode">Zip Code</label>
-          <input id="zipCode" name="zipCode" type="text" pInputText [(ngModel)]="zipCode" (keyup)="onKey($event)" />
+          <input id="zipCode" name="zipCode" type="text" pInputText formControlName="zipCode" (keyup)="onKey($event)" />
         </div>
       </div>
     </form>
-
-    <orders-order-summary></orders-order-summary>
+    <orders-order-summary [itemsTotal]="itemsTotal" [deliveryFee]="deliveryFee" [deliveryMsg]="deliveryMsg"
+      [totalPrice]="totalPrice">
+    </orders-order-summary>
     <div class="checkout-button">
-      <p-button label="Place Order" (onClick)="placeOrder()" [ngClass]="{'ready-for-checkout': readyForCheckout}">
+      <p-button class="checkout-button" type="submit" label="Place Order" [ngClass]="{'ready-for-checkout': true}"
+        (click)="placeOrder()">
       </p-button>
     </div>
+    <!-- <p-dialog [(visible)]="displayPasswordDialog" [breakpoints]="{'960px': '75vw', '640px': '75vw'}"
+      [style]="{width: '50vw'}">
+      Content
+    </p-dialog> -->
+
   </div>
 </div>

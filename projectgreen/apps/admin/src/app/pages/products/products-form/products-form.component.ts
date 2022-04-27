@@ -239,7 +239,6 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-
   categoryChanged(event: HTMLInputElement) {
     if (this.categories[event.value]?.name === 'Flower' || this.categories[event.value]?.name === 'Designer Flower') {
       this.unitTypes = [{ label: 'Gram', value: 'gram' }];
@@ -249,7 +248,6 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
       this._mapUnitType();
     }
   }
-
 
   updateAmt(type: string): void {
     let amt: number = Number(this.prodForm[type].value);
@@ -387,7 +385,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     }
 
     const priceData: { name: string, amount: number, price: number }[] = [];
-    if (this.prodForm['prices'].value !== undefined) {
+    if (this.prodForm['prices']?.value !== undefined) {
       const prices = this.prodForm['prices'].value;
 
       FLOWER_AMOUNTS.forEach(name => {

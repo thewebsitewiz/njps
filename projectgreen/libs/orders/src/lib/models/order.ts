@@ -3,16 +3,16 @@ import { OrderItem } from './order-item';
 export interface Order {
   id: string;
   orderItems: OrderItem[];
-  name: string;
-  shippingAddress1?: string;
-  shippingAddress2?: string;
+  fullName: string;
+  streetAddress?: string;
+  aptOrUnit?: string;
   city?: string;
-  zip?: string;
+  zipCode?: string;
   email?: string;
-  phone?: string;
+  phoneNumber?: string;
   status: number;
-  totalPrice?: string;
-  delivery?: number;
+  totalPrice?: number;
+  delivery?: number | null;
   user?: any;
   dateOrdered?: string;
 }
@@ -20,16 +20,16 @@ export interface Order {
 export interface OrderForm {
   id?: string;
   orderItems?: OrderItem[];
-  name: string;
-  shippingAddress1?: string;
-  shippingAddress2?: string;
+  fullName: string;
+  streetAddress?: string;
+  aptOrUnit?: string;
   city?: string;
-  zip?: string;
+  zipCode?: string;
   email?: string;
-  phone?: string;
+  phoneNumber?: string;
   status?: number;
-  delivery?: number;
-  totalPrice?: string;
+  delivery?: number | null;
+  totalPrice?: number;
   user?: any;
   dateOrdered?: string;
 }

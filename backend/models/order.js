@@ -6,22 +6,22 @@ const orderSchema = mongoose.Schema({
         ref: 'OrderItem',
         required: true
     }],
-    shippingAddress1: {
+    streetAddress: {
         type: String,
         required: true,
     },
-    shippingAddress2: {
+    aptOrUnit: {
         type: String,
     },
     city: {
         type: String,
         required: true,
     },
-    zip: {
+    zipCode: {
         type: String,
         required: true,
     },
-    phone: {
+    phoneNumber: {
         type: String,
         required: true,
     },
@@ -33,7 +33,7 @@ const orderSchema = mongoose.Schema({
     delivery: {
         type: Number,
     },
-    name: {
+    fullName: {
         type: String,
     },
     totalPrice: {

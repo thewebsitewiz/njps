@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
 import { User } from '../../models/user-data.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ui-login',
@@ -11,7 +12,8 @@ import { User } from '../../models/user-data.model';
   styles: []
 })
 export class LoginComponent implements OnInit {
-  phone!: string;
+
+  phoneNumber!: string;
   password!: string;
 
   isLoading = false;
@@ -21,7 +23,9 @@ export class LoginComponent implements OnInit {
   private userInfoSub!: Subscription;
   userInfo!: User | null;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+    private router: Router) {
+  }
 
   ngOnInit() {
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
@@ -45,7 +49,9 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.authService.login(form.value.phone, form.value.password);
+    this.authService.login(form.value.phoneNumber, form.value.password);
+
+    this.router.navigate(['/'], { fragment: 'top' });
   }
 
   ngOnDestroy() {

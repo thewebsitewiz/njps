@@ -6,11 +6,11 @@
       <form action="" (ngSubmit)="onSignup(signupForm)" #signupForm="ngForm">
         <div class="p-field mb-4">
           <label class="label block" for="fullName">Your Full Name<span class="required">*</span></label>
-          <input id="fullName" name="fullName" type="text" pInputText [(ngModel)]="fullName" />
+          <input id="fullName" name="fullName" required type="text" pInputText [(ngModel)]="fullName" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="streetAddress">Street Address<span class="required">*</span></label>
-          <input id="streetAddress" name="streetAddress" type="text" pInputText [(ngModel)]="streetAddress" />
+          <input id="streetAddress" name="streetAddress" required type="text" pInputText [(ngModel)]="streetAddress" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="aptOrUnit">Apt or Unit</label>
@@ -18,26 +18,28 @@
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="city">City<span class="required">*</span></label>
-          <input id="city" name="city" type="text" pInputText [(ngModel)]="city" />
+          <input id="city" name="city" type="text" required pInputText [(ngModel)]="city" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="zipCode">Zip Code<span class="required">*</span></label>
-          <input id="zipCode" name="zipCode" type="text" pInputText [(ngModel)]="zipCode" (keyup)="onKey($event)" />
+          <input id="zipCode" name="zipCode" type="text" required minlength="5" maxlength="5" pattern="^\d*$" pInputText
+            [(ngModel)]="zipCode" />
         </div>
         <div class="p-field mb-4">
           <label class="label block" for="phoneNumber">Phone Number<span class="required">*</span></label>
-          <p-inputMask mask="9999999999" [(ngModel)]="phoneNumber" name="phoneNumber" placeholder="##########">
+          <p-inputMask mask="(999) 999-9999" [required]="true" [minlength]="10" [maxlength]="10" pattern="^\d*$"
+            [(ngModel)]="phoneNumber" name="phoneNumber">
           </p-inputMask>
           <!--  <input id="phoneNumber" type="username" pInputText [(ngModel)]="phoneNumber" /> -->
           <small id="phoneNumber-help" class="block">Numbers only.</small>
         </div>
         <div class="p-field">
           <label class="label block" for="phoneNumber">Password<span class="required">*</span></label>
-          <input id="password" name="password" type="text" pInputText [(ngModel)]="password" />
+          <input id="password" name="password" type="text" required pInputText [(ngModel)]="password" />
         </div>
 
         <div class="col-12 mt-3 centered">
-          <p-button styleClass="see-more" label="Create" type="submit"></p-button>
+          <p-button styleClass="see-more" [disabled]="!signupForm.valid" label="Create" type="submit"></p-button>
         </div>
       </form>
     </div>

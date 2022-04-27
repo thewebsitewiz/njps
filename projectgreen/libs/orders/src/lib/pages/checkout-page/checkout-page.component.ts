@@ -2,13 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '@projectgreen/users';
 import { AuthService } from '@projectgreen/ui'
-import { Delivery, DeliveryService } from '@projectgreen/orders';
-import { Subject, Subscription } from 'rxjs';
+import { Delivery, DeliveryService, OrderForm } from '@projectgreen/orders';
+import { Subject, Subscription, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Cart } from '../../models/cart';
-import { OrderForm } from '../../models/order';
+import { CartItemDetailed } from '../../models/cart';
 import { CartService } from '../../services/cart.service';
 import { OrdersService } from '../../services/orders.service';
+
+import { FLOWER_DISPLAY, FLOWER_GRAMS } from '@projectgreen/products';
+import { environment } from '@env/environment';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'orders-checkout-page',
@@ -23,27 +27,28 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     private ordersService: OrdersService
   ) { }
 
-  isSubmitted = false;
-  orderItems: any[] = [];  // OrderItem[] = [];
-  id!: string;
-  countries: { id: string; name: string }[] = [];
-  unsubscribe$: Subject<any> = new Subject();
+  cartItemsDetailed: CartItemDetailed[] = [];
+  cartCount = 0;
+  cartDetailsSub!: Subscription | undefined;
   endSubs$: Subject<any> = new Subject();
-  userDataSub!: Subscription | undefined;
-  readyForCheckout: boolean = false;
+
   user!: User | null;
-
-  zip: string = '';
-  delivery: any = 'Fee based on location';
-
+  userDataSub!: Subscription | undefined;
+  notRegistered: boolean = false;
+  displayPasswordDialog: boolean = false;
 
   itemsTotal: number = 0;
+  totalPrice: number = 0;
   deliveryFee!: number | null;
   deliveryMsg!: string | null;
 
-  private authStatusSub!: Subscription;
-  userData!: User;
+  delivery = null;
+  readyForCheckout = false
 
+  isSubmitted = false;
+
+  formBuilder!: FormBuilder;
+  checkoutFormGroup!: FormGroup;
 
   fullName!: string;
   streetAddress!: string;
@@ -53,13 +58,77 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   phoneNumber!: string;
   password!: string;
 
+  orderItems: any[] = [];
+
   ngOnInit() {
+    this._initCheckoutForm();
+    this._getCartDetails();
+  }
+
+  private _getCartDetails(): void {
+    this.cartDetailsSub = this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
+      this.cartItemsDetailed = [];
+      if (respCart.items !== undefined) {
+        respCart.items.forEach((cartItem) => {
+          if (cartItem.productId !== undefined) {
+            this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
+              respProduct.image = `${environment.imageUrl}${respProduct.image}`;
+              if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
+                this.cartCount++;
+                if (cartItem !== undefined &&
+                  cartItem.amountName !== undefined &&
+                  FLOWER_DISPLAY[cartItem.amountName] !== undefined) {
+                  this.cartItemsDetailed.push({
+                    productId: cartItem.productId,
+                    image: respProduct.image,
+                    name: respProduct.name,
+                    amountName: `${FLOWER_DISPLAY[cartItem.amountName]}`,
+                    subTotal: cartItem.price
+                  });
+                  this.orderItems.push({ product: cartItem.productId, amount: `${FLOWER_GRAMS[cartItem.amountName]}` })
+                  this.itemsTotal = this.itemsTotal + cartItem.price!;
+                }
+              }
+              else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
+                const unitPrice = respProduct.price ?? 0;
+                const amount = cartItem.amount ?? 0;
+                let subTotal = unitPrice * amount;
+
+                this.cartCount += cartItem.amount;
+                this.cartItemsDetailed.push({
+                  productId: cartItem.productId,
+                  image: respProduct.image,
+                  name: respProduct.name,
+                  amountName: cartItem.amount,
+                  subTotal: subTotal
+                });
+                this.orderItems.push({ product: cartItem.productId, amount: amount })
+                this.itemsTotal = this.itemsTotal + subTotal;
+              }
+
+              this._getDeliveryCost();
+            });
+          }
+        });
+      }
+
+    });
+  }
+
+  private _getDeliveryCost(zipChanged = false) {
     const id = this.authService.getLocalId();
     if (!!id) {
       this.user = this.authService.getUserData();
       this.authService.autoAuthUser();
       this.userDataSub = this.authService.autoUserData(id).subscribe(results => {
         this.user = results;
+        if (!!results && !zipChanged) {
+          this._autoFillUserData(results);
+        }
+        else {
+          console.log('notRegistered = true')
+          this.notRegistered = true;
+        }
 
         if (!!this.user && !!this.user.zipCode) {
           this.deliveryService.deliveryFee(this.user.zipCode).subscribe((results: Delivery) => {
@@ -71,102 +140,62 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
               this.deliveryFee = null;
               this.deliveryMsg = results.message;
             }
+            this._orderSummaryTotals()
           });
-        } else {
-          this.deliveryFee = null;
-          this.deliveryMsg = 'Based on location'
         }
-
-        console.log(this.deliveryFee, this.deliveryMsg);
       });
+    }
+    else {
+      this.deliveryFee = null;
+      this.deliveryMsg = 'Based on location';
+      this._orderSummaryTotals()
     }
   }
 
-
-
-
-
-
-
-
-  ngOnDestroy() {
-    this.unsubscribe$.next(null);
-    this.unsubscribe$.complete();
-    this.endSubs$.next(null);
-    this.endSubs$.complete();
+  private _orderSummaryTotals() {
+    if (!!this.deliveryMsg) {
+      this.totalPrice = this.itemsTotal;
+    }
+    else {
+      this.totalPrice = this.itemsTotal + this.deliveryFee!;
+    }
   }
 
   private _initCheckoutForm() {
-    /*  this.checkoutFormGroup = this.formBuilder.group({
-       fullName: [this.user.fullName, Validators.required],
-       phoneNumber: [this.user.phoneNumber, Validators.required],
-       city: [this.user.city, Validators.required],
-       zipCode: [this.user.zipCode, [Validators.required, Validators.pattern("^[0-9]{5}$")]],
-       streetAddress: [this.user.streetAddress, Validators.required],
-       aptOrUnit: [this.user.aptOrUnit]
-     }); */
-
-    this.cartService.initCartLocalStorage();
-
-  }
-
-  private _autoFillUserData() {
-
-
-
-
-  }
-
-
-  private _getCartItems() {
-    const cart: Cart = this.cartService.getCart();
-    if (cart.items !== undefined) {
-      this.orderItems = cart.items.map((item) => {
-        return {
-          product: item.productId,
-          amount: item.amount,
-          amountName: item.amountName,
-          unitType: item.unitType,
-          price: item.price
-        };
-      });
-    }
-  }
-
-  private async _getCartDetails() {
-    this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
-      this.orderItems = [];
-
-      if (respCart.items !== undefined) {
-        respCart.items.forEach((cartItem) => {
-          if (cartItem.productId !== undefined) {
-            this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
-              this.orderItems.push({
-                product: cartItem.productId,
-                amount: cartItem.amount
-              });
-            });
-          }
-        });
-      }
+    this.checkoutFormGroup = new FormGroup({
+      fullName: new FormControl('', Validators.required),
+      phoneNumber: new FormControl('', Validators.required),
+      city: new FormControl('', Validators.required),
+      zipCode: new FormControl('', [Validators.required, Validators.pattern("^0-9]{5}$")]),
+      streetAddress: new FormControl('', Validators.required),
+      aptOrUnit: new FormControl('')
     });
+
+    this.checkoutFormGroup.controls['zipCode'].valueChanges.subscribe(value => {
+      this._getDeliveryCost(true);
+    });
+
+    this.checkoutFormGroup.statusChanges.subscribe((status) => {
+      //status will be "VALID", "INVALID", "PENDING" or "DISABLED"
+      if (status === 'VALID' && this.notRegistered) {
+        this._autoRegister();
+      }
+    })
+
   }
 
-  /*   if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
-      this.orderItems.push({
-        productId: cartItem.productId,
-        amount: cartItem.amount
-      });
-    }
-    else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
-      const unitPrice = respProduct.price ?? 0;
-      const amount = cartItem.amount ?? 0;
+  private _autoRegister() {
+    this.displayPasswordDialog = true;
+  }
 
-      this.orderItems.push({
-        productId: cartItem.productId,
-        amount: cartItem.amount
-      });
-    } */
+  private _autoFillUserData(user: any) {
+    this.checkoutForm['fullName'].setValue(user['fullName']!);
+    this.checkoutForm['phoneNumber'].setValue(user['phoneNumber']!);
+    this.checkoutForm['city'].setValue(user['city']!);
+    this.checkoutForm['streetAddress'].setValue(user['streetAddress']!);
+    this.checkoutForm['zipCode'].setValue(user['zipCode']!);
+    this.checkoutForm['aptOrUnit'].setValue(user['aptOrUnit']!);
+  }
 
 
   backToCart() {
@@ -176,17 +205,17 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
 
   onKey(event: any) {
     if (event.key.match(/[0-9]/)) {
-      this.zip += event.key;
+      this.zipCode += event.key;
     }
 
-    if (event.key === 'Backspace' && this.zip.length > 0) {
-      this.zip = this.zip.slice(0, -1);
+    if (event.key === 'Backspace' && this.zipCode.length > 0) {
+      this.zipCode = this.zipCode.slice(0, -1);
     }
 
-    if (this.zip.length === 5) {
-      this.deliveryService.deliveryFee(this.zip).subscribe((res: any) => {
+    if (this.zipCode.length === 5) {
+      this.deliveryService.deliveryFee(this.zipCode).subscribe((res: any) => {
         if (res === null) {
-          this.delivery = '';
+          this.delivery = null;
           this.readyForCheckout = false
         }
         else {
@@ -197,27 +226,41 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   placeOrder() {
-
     this.isSubmitted = true;
-    /*  if (this.checkoutFormGroup.invalid && this.readyForCheckout !== true) {
-       return;
-     } */
+    /* if (this.notRegistered === true) {
+      console.log('msg service');
 
-    /* const order: OrderForm = {
+      this.displayPasswordDialog = true;
+    } */
+
+    console.log('foo',
+      this.checkoutForm['fullName'].value,
+      this.checkoutForm['phoneNumber'].value,
+      this.checkoutForm['city'].value,
+      this.checkoutForm['streetAddress'].value,
+      this.checkoutForm['zipCode'].value,
+      this.checkoutForm['aptOrUnit'].value);
+    /*    if (this.checkoutFormGroup.invalid) {
+         return;
+       } */
+
+    const order: OrderForm = {
       orderItems: this.orderItems,
-      name: this.checkoutForm['name'].value,
-      shippingAddress1: this.checkoutForm['street'].value,
-      shippingAddress2: this.checkoutForm['apartment'].value,
+      fullName: this.checkoutForm['fullName'].value,
+      streetAddress: this.checkoutForm['streetAddress'].value,
+      aptOrUnit: this.checkoutForm['aptOrUnit'].value,
       city: this.checkoutForm['city'].value,
-      zip: this.checkoutForm['zip'].value,
-      phone: this.checkoutForm['phone'].value,
+      zipCode: this.checkoutForm['zipCode'].value,
+      phoneNumber: this.checkoutForm['phoneNumber'].value,
+      delivery: this.deliveryFee,
       status: 0,
-      delivery: this.delivery,
+      totalPrice: this.totalPrice,
       dateOrdered: `${Date.now()}`
-    }; */
+    };
 
-    /* this.ordersService.createOrder(order).subscribe(
+    this.ordersService.createOrder(order).subscribe(
       () => {
         //redirect to thank you page // payment
         this.cartService.emptyCart();
@@ -226,10 +269,17 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       () => {
         //display some message to user
       }
-    ); */
+    );
   }
 
-  /* get checkoutForm() {
+  get checkoutForm() {
     return this.checkoutFormGroup.controls;
-  } */
+  }
+
+
+  ngOnDestroy() {
+    if (!!this.userDataSub) this.userDataSub.unsubscribe();
+    if (!!this.cartDetailsSub) this.cartDetailsSub.unsubscribe();
+  }
+
 }

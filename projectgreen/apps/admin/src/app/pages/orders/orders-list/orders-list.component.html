@@ -2,8 +2,8 @@
   <div class="orders">
     <div class="order-item" *ngFor="let order of orders">
       <div class="order-row">
-        <div class="order-info order-date">{{ order.dateOrdered | date: 'M/d/yy'}}<br />{{ order.name }}</div>
-        <div class="order-info order-location">{{ order.city }}<br />{{ order.zip }}</div>
+        <div class="order-info order-date">{{ order.dateOrdered | date: 'M/d/yy'}}<br />{{ order.fullName }}</div>
+        <div class="order-info order-location">{{ order.city }}<br />{{ order.zipCode }}</div>
         <div class="order-info order-prices">{{ order.totalPrice | currency }}<br />{{ order.delivery | currency  }}
         </div>
         <div class="order-info order-status">

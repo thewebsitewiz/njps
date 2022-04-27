@@ -4,6 +4,6 @@ export interface SignUpData {
   aptOrUnit?: string;
   city: string;
   zipCode: number;
-  phone: number;
+  phoneNumber: string;
   password: string;
 }

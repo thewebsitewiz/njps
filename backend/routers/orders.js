@@ -54,39 +54,39 @@ router.post('/', async (req, res) => {
     }))
     const orderItemsIdsResolved = await orderItemsIds;
 
-    const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
-        const orderItem = await OrderItem.findById(orderItemId).populate('product').exec();
+    /*     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
+            const orderItem = await OrderItem.findById(orderItemId).populate('product').exec();
 
-        let totalPrice = 0;
-        if (orderItem.product.unitType === 'gram' && orderItem.product.price === '') {
-            const prices = {};
-            orderItem.product.prices.forEach(pr => {
-                prices[pr.amount] = pr.price;
-            });
+            let totalPrice = 0;
+            if (orderItem.product.unitType === 'gram' && orderItem.product.price === '') {
+                const prices = {};
+                orderItem.product.prices.forEach(pr => {
+                    prices[pr.amount] = pr.price;
+                });
 
-            totalPrice += prices[orderItem.amount]
+                totalPrice += prices[orderItem.amount]
 
-        } else {
-            totalPrice += orderItem.product.price * orderItem.amount;
-        }
+            } else {
+                totalPrice += orderItem.product.price * orderItem.amount;
+            }
 
-        return totalPrice
-    }))
+            return totalPrice
+        })) */
 
 
     const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
 
     let order = new Order({
         orderItems: orderItemsIdsResolved,
-        shippingAddress1: req.body.shippingAddress1,
-        shippingAddress2: req.body.shippingAddress2,
+        streetAddress: req.body.streetAddress,
+        aptOrUnit: req.body.aptOrUnit,
         city: req.body.city,
-        zip: req.body.zip,
+        zipCode: req.body.zipCode,
         delivery: req.body.delivery,
-        phone: req.body.phone,
+        phoneNumber: req.body.phoneNumber,
         status: req.body.status,
-        name: req.body.name,
-        totalPrice: totalPrice,
+        fullName: req.body.fullName,
+        totalPrice: req.body.totalPrice,
         user: req.body.user,
     })
     order = await order.save();
@@ -99,6 +99,9 @@ router.post('/', async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
+
+    console.log(req.body, req.params);
+
     const order = await Order.findByIdAndUpdate(
         req.params.id, {
             status: req.body.status

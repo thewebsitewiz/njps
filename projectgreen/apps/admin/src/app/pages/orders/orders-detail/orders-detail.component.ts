@@ -17,7 +17,7 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
   selectedStatus: any;
   endsubs$: Subject<any> = new Subject();
 
-  name: string = '';
+  fullName: string = '';
   totalPrice: number = 0;
   orderIdDecimal!: number;
 
@@ -54,7 +54,7 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.endsubs$))
           .subscribe((order: Order) => {
             this.order = order;
-            this.name = this.order.name;
+            this.fullName = this.order.fullName;
             this.orderIdDecimal = parseInt(this.order.id, 10);
             this.selectedStatus = order.status;
 
@@ -62,7 +62,7 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
               this.order.orderItems.forEach(item => {
                 const priceRef: any = {};
                 if (item.product.price !== null && item.product.price.toString() !== '') {
-                  this.totalPrice += item.product.price * item.amount;
+                  this.totalPrice = this.totalPrice + (item.product.price * item.amount);
                   item.product.amountName = item.amount.toString();
                 }
                 else if (item.product.prices.length > 0) {
@@ -72,7 +72,7 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
                     priceRef[pr.amount] = { price: pr.price, name: pr.name }
                   });
 
-                  this.totalPrice += priceRef[item.amount].price;
+                  this.totalPrice = this.totalPrice + priceRef[item.amount].price;
 
                   if (item.product.category.name === 'Flower' || item.product.category.name === 'Designer Flower') {
                     item.product.amountName = priceRef[item.amount].name;
@@ -90,10 +90,11 @@ export class OrdersDetailComponent implements OnInit, OnDestroy {
   onStatusChange(event: HTMLInputElement) {
 
     const status = JSON.parse(event.value);
-    this.selectedStatus = status.code
+    console.log('file: orders-detail.component.ts ~ line 93 ~ OrdersDetailComponent ~ onStatusChange ~ status', status);
+    this.selectedStatus = status
 
     this.orderService
-      .updateOrder({ status: status.code }, this.order.id)
+      .updateOrder({ status: this.selectedStatus }, this.order.id)
       .pipe(takeUntil(this.endsubs$))
       .subscribe({
         next: () => {

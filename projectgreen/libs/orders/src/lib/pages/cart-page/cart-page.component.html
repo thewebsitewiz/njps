@@ -15,6 +15,7 @@
         <th class="cart-item-cell cart-item-cell-left">Name</th>
         <th class="cart-item-cell cart-item-cell-left">Amt</th>
         <th class="cart-item-cell cart-item-cell-right">Price</th>
+        <th class="cart-item-cell cart-item-cell-right"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-cartItemsDetailed>
@@ -25,9 +26,14 @@
         <td class="cart-item-cell cart-item-cell-left">{{cartItemsDetailed.amountName}}</td>
         <td class="cart-item-cell cart-item-cell-right">
           {{cartItemsDetailed.subTotal | currency:'USD':'symbol-narrow':'1.0-0'}}</td>
+        <td class="cart-item-cell cart-item-cell-right" (click)="deleteItem(cartItemsDetailed.productId)"><i
+            class="pi pi-trash"></i>
+        </td>
       </tr>
     </ng-template>
   </p-table>
 
-  <orders-order-summary></orders-order-summary>
+  <orders-order-summary [itemsTotal]="itemsTotal" [deliveryFee]="deliveryFee" [deliveryMsg]="deliveryMsg"
+    [totalPrice]="totalPrice">
+  </orders-order-summary>
 </div>

@@ -21,13 +21,14 @@ import { Delivery } from '../../models/delivery';
 export class CartPageComponent implements OnInit, OnDestroy {
   cartItemsDetailed: CartItemDetailed[] = [];
   cartCount = 0;
-
+  cartDetailsSub!: Subscription | undefined;
   endSubs$: Subject<any> = new Subject();
 
   user!: User | null;
   userDataSub!: Subscription | undefined;
 
   itemsTotal: number = 0;
+  totalPrice: number = 0;
   deliveryFee!: number | null;
   deliveryMsg!: string | null;
 
@@ -40,19 +41,17 @@ export class CartPageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-
     this._getCartDetails();
   }
 
   private _getCartDetails(): void {
-    this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
+    this.cartDetailsSub = this.cartService.cart$.pipe(takeUntil(this.endSubs$)).subscribe((respCart) => {
       this.cartItemsDetailed = [];
       let cartTotal = 0;
       if (respCart.items !== undefined) {
         respCart.items.forEach((cartItem) => {
           if (cartItem.productId !== undefined) {
             this.ordersService.getProduct(cartItem.productId).subscribe((respProduct) => {
-              console.log(respProduct);
               respProduct.image = `${environment.imageUrl}${respProduct.image}`;
               if (respProduct.category.name === 'Flower' || respProduct.category.name === 'Designer Flower') {
                 this.cartCount++;
@@ -60,13 +59,13 @@ export class CartPageComponent implements OnInit, OnDestroy {
                   cartItem.amountName !== undefined &&
                   FLOWER_DISPLAY[cartItem.amountName] !== undefined) {
                   this.cartItemsDetailed.push({
+                    productId: cartItem.productId,
                     image: respProduct.image,
                     name: respProduct.name,
                     amountName: `${FLOWER_DISPLAY[cartItem.amountName]}`,
                     subTotal: cartItem.price
                   });
-                  cartTotal = cartTotal + cartItem.price!;
-                  console.log(cartItem.price, cartTotal)
+                  this.itemsTotal = this.itemsTotal + cartItem.price!;
                 }
               }
               else if (respProduct.price !== undefined && cartItem.amount !== undefined) {
@@ -76,24 +75,25 @@ export class CartPageComponent implements OnInit, OnDestroy {
 
                 this.cartCount += cartItem.amount;
                 this.cartItemsDetailed.push({
+                  productId: cartItem.productId,
                   image: respProduct.image,
                   name: respProduct.name,
                   amountName: cartItem.amount,
                   subTotal: subTotal
                 });
-                cartTotal = cartTotal + subTotal;
+                this.itemsTotal = this.itemsTotal + subTotal;
               }
+
+              this._getDeliveryCost();
             });
           }
         });
       }
 
-      this._getDeliveryCost(cartTotal);
     });
   }
 
-
-  private _getDeliveryCost(cartTotal: number): void {
+  private _getDeliveryCost() {
     const id = this.authService.getLocalId();
     if (!!id) {
       this.user = this.authService.getUserData();
@@ -110,7 +110,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
               this.deliveryFee = null;
               this.deliveryMsg = results.message;
             }
-            this.itemsTotal = cartTotal;
+            this._orderSummaryTotals()
           });
         }
       });
@@ -118,20 +118,31 @@ export class CartPageComponent implements OnInit, OnDestroy {
     else {
       this.deliveryFee = null;
       this.deliveryMsg = 'Based on location';
-      this.itemsTotal = cartTotal;
+      this._orderSummaryTotals()
     }
+  }
 
-
+  private _orderSummaryTotals() {
+    if (!!this.deliveryMsg) {
+      this.totalPrice = this.itemsTotal;
+    }
+    else {
+      this.totalPrice = this.itemsTotal + this.deliveryFee!;
+    }
   }
 
   backToShop() {
     this.router.navigate(['/']);
   }
 
+  deleteItem(productId: string): void {
+    this.cartService.deleteCartItem(productId);
+  }
 
-  ngOnDestroy() {/*
-    this.endSubs$.next(null);
-    this.endSubs$.complete(); */
+
+  ngOnDestroy() {
+    if (!!this.userDataSub) this.userDataSub.unsubscribe();
+    if (!!this.cartDetailsSub) this.cartDetailsSub.unsubscribe();
   }
 
 

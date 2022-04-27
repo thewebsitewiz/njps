@@ -51,11 +51,12 @@ export class HeaderComponent {
       })
     }
 
+    this.userIsAuthenticated = this.authService.getIsAuth();
+
     this._getCategories();
 
     this.cartService.initCartLocalStorage();
 
-    this.userIsAuthenticated = this.authService.getIsAuth();
 
     this.cartService.cart$.subscribe((cart) => {
       this.cartCount = 0;
@@ -73,7 +74,9 @@ export class HeaderComponent {
 
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
       authStatus => {
+        console.log('getAuthStatusListener', authStatus)
         this.isAuth = authStatus;
+        this._getCategories()
       }
     );
 

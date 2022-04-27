@@ -81,7 +81,7 @@ router.put('/:id', async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
         req.params.id, {
-            name: req.body.fullName,
+            fullName: req.body.fullName,
             password: newPassword,
             phoneNumber: req.body.phoneNumber,
             isAdmin: req.body.isAdmin,
@@ -139,7 +139,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     let user = new User({
-        name: req.body.name,
+        fullName: req.body.fullName,
         password: req.body.password,
         phoneNumber: req.body.phoneNumber,
         isAdmin: false,
@@ -147,14 +147,20 @@ router.post('/register', async (req, res) => {
         aptOrUnit: req.body.aptOrUnit,
         zipCode: req.body.zipCode,
         city: req.body.city
-    })
-    user = await user.save();
+    });
 
-    if (!user)
+    let userResult = null;
+
+    try {
+        userResult = await user.save();
+    } catch (e) {
+
+    }
+    if (!userResult)
         return res.status(400).send('the user cannot be created!')
 
     const token = jwt.sign({
-            userId: user.id,
+            userId: userResult.id,
             isAdmin: false
         },
         secret, {
@@ -162,11 +168,11 @@ router.post('/register', async (req, res) => {
         });
 
 
-    user.token = token;
-    user.tokenExp = tokenExp;
-    user.expiresIn = expiresIn;
+    userResult.token = token;
+    userResult.tokenExp = tokenExp;
+    userResult.expiresIn = expiresIn;
 
-    res.send(user);
+    res.send(userResult);
 })
 
 router.delete('/:id', (req, res) => {

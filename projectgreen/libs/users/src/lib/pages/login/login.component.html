@@ -20,16 +20,11 @@
                 <span class="inputgrouaddon"><i class="pi pi-lock"></i></span>
                 <input type="password" formControlName="password" pInputText placeholder="Password" />
               </div>
-              <small *ngIf="loginForm['password'].invalid && isSubmitted" class="error">Password is required
-              </small>
             </div>
             <div class="col-9">
-              <button pButton label="Submit" class="p-button-success" styleClass="full-btn"
-                (onClick)="onSubmit()"></button>
+              <button pButton label="Submit" styleClass="full-btn" (click)="onSubmit()"></button>
             </div>
-            <div class="col-12" *ngIf="isSubmitted && authError">
-              <small class="error">{{ authMessage }}</small>
-            </div>
+
           </div>
         </form>
       </div>

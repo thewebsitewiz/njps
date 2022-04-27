@@ -2,46 +2,48 @@
 <div class="admin-page" *ngIf="order">
   <p-card [header]="'View Order'" subheader="You can edit order status here">
     <p-fieldset legend="Order Details" styleClass="p-mb-4" [toggleable]="true">
-      <div class="grid">
-        <div class="col-6">
-          <h5>Order Id</h5>
-          <p>{{ orderIdDecimal }}</p>
-        </div>
-
-        <div class="col-6">
-          <h5>Order Date</h5>
-          <p>{{ order.dateOrdered | date: 'short' }}</p>
-        </div>
-      </div>
-      <div class="grid">
-        <div class="col-6">
-          <h5>Order Total Price</h5>
-          <p>{{ order.totalPrice | currency }}</p>
-        </div>
-
-        <div class="col-6">
-          <h5>Order Delivery Price</h5>
-          <p>{{ order.delivery | currency }}</p>
-        </div>
-      </div>
-      <div class="grid">
-        <div class="col-12">
-          <h5>Order Status</h5>
-          <!-- <p-dropdown [options]="orderStatuses" [(ngModel)]="selectedStatus" optionLabel="name" optionValue="id"
-            (onChange)="onStatusChange($event)">
-          </p-dropdown> -->
-          <div>
-            <p-selectButton [options]="orderStatuses" [(ngModel)]="selectedStatus" optionLabel="name" optionValue="code"
-              (onChange)="onStatusChange($event)" styleClass="order-status"></p-selectButton>
+      <ng-container *ngIf="order">
+        <div class="grid">
+          <div class="col-6">
+            <h5>Order Id</h5>
+            <p>{{ orderIdDecimal }}</p>
           </div>
 
-          <!--           <div class="button-row">
+          <div class="col-6">
+            <h5>Order Date</h5>
+            <p>{{ order.dateOrdered | date: 'short' }}</p>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="col-6">
+            <h5>Order Total Price</h5>
+            <p>{{ totalPrice | currency }}</p>
+          </div>
+
+          <div class="col-6">
+            <h5>Order Delivery Price</h5>
+            <p>{{ order.delivery | currency }}</p>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="col-12">
+            <h5>Order Status</h5>
+            <!-- <p-dropdown [options]="orderStatuses" [(ngModel)]="selectedStatus" optionLabel="name" optionValue="id"
+            (onChange)="onStatusChange($event)">
+          </p-dropdown> -->
+            <div>
+              <p-selectButton [options]="orderStatuses" [(ngModel)]="selectedStatus" optionLabel="name"
+                optionValue="code" (onChange)="onStatusChange($event)" styleClass="order-status"></p-selectButton>
+            </div>
+
+            <!--           <div class="button-row">
             <button class="status-button" *ngFor="let status of orderStatuses">
               <span>{{ status.name }}</span>
             </button>
           </div> -->
+          </div>
         </div>
-      </div>
+      </ng-container>
     </p-fieldset>
     <p-fieldset legend="Order Items" styleClass="p-mb-4" [toggleable]="true">
       <div class="order-item mb-3" *ngFor="let orderItem of order.orderItems">
@@ -88,8 +90,8 @@
         <div class="col-6 detail-header">Contact Info</div>
       </div>
       <div class="grid">
-        <div class="col-6">{{ name }}</div>
-        <div class="col-6">{{ order.phone }}</div>
+        <div class="col-6">{{ fullName }}</div>
+        <div class="col-6">{{ order.phoneNumber }}</div>
       </div>
 
       <div class="grid">
@@ -98,9 +100,9 @@
       </div>
       <div class="grid">
         <div class="col-12">
-          {{ order.shippingAddress1 }}<br />
-          <span *ngIf="order.shippingAddress2">{{ order.shippingAddress2 }}<br /></span>
-          {{ order.city }}, NJ {{ order.zip }}</div>
+          {{ order.streetAddress }}<br />
+          <span *ngIf="order.aptOrUnit">{{ order.aptOrUnit }}<br /></span>
+          {{ order.city }}, NJ {{ order.zipCode }}</div>
       </div>
 
     </p-fieldset>

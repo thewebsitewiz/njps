@@ -54,15 +54,14 @@ export class HeaderComponent {
     this.router.navigateByUrl('cart');
   }
 
-
   private _getMenu() {
     this.items = [
       { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/'] },
       { label: 'Products', icon: 'pi pi-briefcase', routerLink: ['/products'] },
-      { label: 'Categories', icon: 'pi pi-list', routerLink: ['/categories'] },
+      // { label: 'Categories', icon: 'pi pi-list', routerLink: ['/categories'] },
       { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: ['/orders'] },
       { label: 'Delivery', icon: 'pi pi-compass', routerLink: ['/delivery'] },
-      { label: 'Inventory', icon: 'pi pi-briefcase', routerLink: ['/inventory'] },
+      // { label: 'Inventory', icon: 'pi pi-briefcase', routerLink: ['/inventory'] },
       { label: 'Users', icon: 'pi pi-users', routerLink: ['/users'] },
       { label: 'FAQ', icon: 'pi pi-question-circle', routerLink: ['/faq'] },
       { label: 'Contact', icon: 'pi pi-phone', routerLink: ['/contact'] },

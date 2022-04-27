@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { BehaviorSubject, Subject } from "rxjs";
+import { Subject } from "rxjs";
 
 import { environment } from "@env/environment";
 import { Values, LoginData, User, FullUserData } from "../models/user-data.model";
@@ -81,7 +81,7 @@ export class AuthService {
     aptOrUnit: string,
     city: string,
     zipCode: number,
-    phone: number,
+    phoneNumber: string,
     password: string) {
 
     const signUpData: SignUpData = {
@@ -90,18 +90,11 @@ export class AuthService {
       aptOrUnit: aptOrUnit,
       city: city,
       zipCode: zipCode,
-      phone: phone,
+      phoneNumber: phoneNumber,
       password: password
     };
 
-    this.http.post(BACKEND_URL + "/", signUpData).subscribe(
-      () => {
-        this.router.navigate(["/"]);
-      },
-      error => {
-        this.authStatusListener.next(false);
-      }
-    );
+    return this.http.post(BACKEND_URL + "/", signUpData);
   }
 
   login(phone: string, password: string) {
@@ -139,6 +132,7 @@ export class AuthService {
               this.saveAuthData(response.token, expirationDate, response.id);
             }
 
+            console.log('about to navigate')
             this.router.navigate(['/'], { fragment: 'top' });
           }
         },
@@ -252,5 +246,9 @@ export class AuthService {
     return localStorage.getItem("id");
   }
 
+}
+
+function asObservable(arg0: boolean): void {
+  throw new Error("Function not implemented.");
 }
 

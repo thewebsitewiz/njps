@@ -14,10 +14,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-const domain = 'http://www.njpotshop.com';
+const domain = 'https://www.njpotshop.com';
 
 app.use(cors({
-    origin: ['http://localhost:4201', 'http://localhost:4200'],
+    origin: [domain, 'http://localhost:4201', 'http://localhost:4200'],
     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
 

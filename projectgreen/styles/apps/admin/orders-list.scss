@@ -37,6 +37,8 @@
       & .order-status {
         text-align: right;
 
+        cursor: pointer;
+
         & p-badge {
           border-radius: 30px !important;
           height: 30px !important;

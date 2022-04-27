@@ -6,14 +6,13 @@
       <form action="" (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
         <div class="p-field mb-4">
           <label class="label block" for="phoneNumber">Phone Number</label>
-          <p-inputMask name="phone" mask="9999999999" [(ngModel)]="phone" placeholder="##########">
-          </p-inputMask>
-          <!--  <input id="phoneNumber" type="username" pInputText [(ngModel)]="phoneNumber" /> -->
+          <input name="phoneNumber" pInputText [required]="true" [minlength]="10" [maxlength]="10"
+            [(ngModel)]="phoneNumber" />
           <small id="phoneHelp" class="block">Numbers only.</small>
         </div>
         <div class="p-field">
           <label class="label block" for="phoneNumber">Password</label>
-          <input id="password" name="password" type="username" pInputText [(ngModel)]="password" />
+          <input id="password" name="password" [required]="true" type="password" pInputText [(ngModel)]="password" />
         </div>
 
         <div class="col-12 mt-3 centered">

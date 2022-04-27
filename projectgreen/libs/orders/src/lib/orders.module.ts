@@ -13,9 +13,11 @@ import { CheckoutPageComponent } from './pages/checkout-page/checkout-page.compo
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { DropdownModule } from 'primeng/dropdown';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { ThankYouComponent } from './pages/thank-you/thank-you.component';
 import { AuthGuard } from '@projectgreen/users';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   {
@@ -44,9 +46,13 @@ const routes: Routes = [
     InputTextModule,
     InputMaskModule,
     TableModule,
-    DropdownModule
+    DropdownModule,
+    DialogModule
   ],
-  providers: [],
+  providers: [
+    ConfirmationService,
+    MessageService
+  ],
   declarations: [
     CartIconComponent,
     CartPageComponent,

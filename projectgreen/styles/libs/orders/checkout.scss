@@ -3,11 +3,16 @@
   min-height: 500px;
 
   button {
-    background-color: $med-green;
+    background-color: $dark-green !important;
     border: 0;
   }
 
-  .ready-for-checkout button {
+  p-button.checkout-button {
+    color: white !important;
+    color: rgba(255, 255, 255, 1.0) !important;
+  }
+
+  .ready-for-checkout {
     background-color: $dark-green !important;
   }
 
