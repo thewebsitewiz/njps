@@ -11,6 +11,6 @@ export const environment = {
   host: 'www.njpotshop.com:3000/',
   apiPath: 'api/v1/',
   apiUrl: `${protocol}${host}${apiPath}`,
-  imageUrl: `${protocol}${host}`,// 'http://localhost:3000/api/v1/',
+  imageUrl: `${protocol}${host}`
 };
 

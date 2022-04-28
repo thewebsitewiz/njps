@@ -33,6 +33,3 @@ export class CategoriesBannerComponent implements OnInit, OnDestroy {
     this.endSubs$.complete();
   }
 }
-
-
-// http://localhost:3000/public/uploads/TESCOMA-ULTIMA-7.5l-Pressure-cooker-1604699047217.png

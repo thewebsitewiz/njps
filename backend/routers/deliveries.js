@@ -6,43 +6,62 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 router.get(`/`, async (req, res) => {
-    let filter = {};
+    try {
+        let filter = {};
 
-    const zipCodeList = await Delivery.find({});
+        const zipCodeList = await Delivery.find({});
 
-    if (!zipCodeList) {
-        res.status(500).json({
-            success: false
+        if (!zipCodeList) {
+            return res.status(500).json({
+                success: false
+            });
+        }
+        return res.send(zipCodeList);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
-    res.send(zipCodeList);
 });
 
 
 
 router.get(`/:id`, async (req, res) => {
-    const delivery = await Delivery.findById(req.params.id);
+    try {
+        const delivery = await Delivery.findById(req.params.id);
 
-    if (delivery === null) {
-        res.send(null);
-        return;
+        if (delivery === null) {
+            return res.send(null);
+        }
+        return res.send(delivery);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
     }
-    res.send(delivery);
 });
 
 
 router.get(`/fee/:zip`, async (req, res) => {
-    const delivery = await Delivery.findOne({
-        zipCode: req.params.zip
-    });
-
-    if (delivery === null) {
-        res.send({
-            message: 'Delivery not available to your area'
+    try {
+        const delivery = await Delivery.findOne({
+            zipCode: req.params.zip
         });
-        return;
+
+        if (delivery === null) {
+            return res.send({
+                message: 'Delivery not available to your area'
+            });
+        }
+        return res.send(delivery);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
     }
-    res.send(delivery);
 });
 
 

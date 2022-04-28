@@ -6,50 +6,71 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 router.get(`/`, async (req, res) => {
-    const faqList = await FAQ.find({});
+    try {
+        const faqList = await FAQ.find({});
 
-    if (!faqList) {
-        res.status(500).json({
-            success: false
+        if (!faqList) {
+            return res.status(500).json({
+                success: false
+            });
+        }
+        return res.send(faqList);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
-    res.send(faqList);
 });
 
 
 router.post('/', async (req, res) => {
-    const faqs = await FAQ.find({});
-    const newOrder = faqs.length + 1;
+    try {
+        const faqs = await FAQ.find({});
+        const newOrder = faqs.length + 1;
 
-    const faq = new FAQ({
-        question: req.body.question,
-        answer: req.body.answer,
-        order: newOrder
-    });
+        const faq = new FAQ({
+            question: req.body.question,
+            answer: req.body.answer,
+            order: newOrder
+        });
 
-    const newFaq = await faq.save();
+        const newFaq = await faq.save();
 
-    if (!newFaq) return res.status(500).send('The FAQ cannot be created', newFaq);
+        if (!newFaq) return res.status(500).send('The FAQ cannot be created', newFaq);
 
-    res.send(newFaq);
+        return res.send(newFaq);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
+    }
 });
 
 
 router.post('/reorder', async (req, res) => {
-    await FAQ.deleteMany({});
+    try {
+        await FAQ.deleteMany({});
 
-    const newfaqs = [];
-    req.body.forEach(async (faq) => {
+        const newfaqs = [];
+        req.body.forEach(async (faq) => {
 
-        newfaqs.push({
-            question: faq.question,
-            answer: faq.answer
+            newfaqs.push({
+                question: faq.question,
+                answer: faq.answer
+            });
         });
-    });
 
-    const FAQs = await FAQ.insertMany(newfaqs);
+        const FAQs = await FAQ.insertMany(newfaqs);
 
-    res.send(FAQs);
+        return res.send(FAQs);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
+    }
 
 });
 

@@ -28,6 +28,9 @@ const FLOWER_AMOUNTS = [
 
 
 const imgPathUtils = require('../helpers/imagePathUtils');
+const {
+    createCipheriv
+} = require('crypto');
 
 const FILE_TYPE_MAP = {
     'image/png': 'png',
@@ -60,32 +63,54 @@ const uploadOptions = multer({
 });
 
 router.get(`/`, async (req, res) => {
-    let filter = {};
-    if (req.query.categories) {
-        filter = {
-            category: req.query.categories.split(',')
-        };
+    let productList;
+
+    try {
+        let filter = {};
+        if (req.query.categories) {
+            filter = {
+                category: req.query.categories.split(',')
+            };
+        }
+
+        productList = await Product.find(filter).populate('category');
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
     }
 
-    const productList = await Product.find(filter).populate('category');
-
     if (!productList) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false
         });
     }
-    res.send(productList);
+    return res.send(productList);
+
 });
 
 router.get(`/:id`, async (req, res) => {
-    const product = await Product.findById(req.params.id).populate('category');
+    let product;
+    try {
+        product = await Product.findById(req.params.id).populate('category');
 
-    if (!product) {
-        res.status(500).json({
-            success: false
+        if (!product) {
+            return res.status(400).json({
+                success: false,
+                message: `Product ${req.params.id} not found: ${e}`
+            });
+        } else {
+            return res.send(product);
+        }
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
-    res.send(product);
 });
 
 router.post(`/`, uploadOptions.single('image'), async (req, res) => {
@@ -97,76 +122,91 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
 
     const dirPath = imgPathUtils.getNewDirPath();
     const fileName = file.filename;
+    try {
+        let product = new Product({
+            name: req.body.name,
+            description: req.body.description,
+            richDescription: req.body.richDescription,
+            image: `${dirPath}${fileName}`,
+            brand: req.body.brand,
+            price: req.body.price,
+            category: req.body.category,
+            countInStock: req.body.countInStock,
+            rating: req.body.rating,
+            numReviews: req.body.numReviews,
+            isFeatured: req.body.isFeatured,
+            prices: req.body.prices
+        });
 
-    let product = new Product({
-        name: req.body.name,
-        description: req.body.description,
-        richDescription: req.body.richDescription,
-        image: `${dirPath}${fileName}`,
-        brand: req.body.brand,
-        price: req.body.price,
-        category: req.body.category,
-        countInStock: req.body.countInStock,
-        rating: req.body.rating,
-        numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured,
-        prices: req.body.prices
-    });
+        product = await product.save();
 
-    product = await product.save();
+        if (!product) return res.status(400).send('The product cannot be created');
 
-    if (!product) return res.status(500).send('The product cannot be created');
-
-    res.send(product);
+        return res.send(product);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
+    }
 });
 
 router.put('/:id', uploadOptions.single('image'), async (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id)) {
         return res.status(400).send('Invalid Product Id');
     }
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send('Invalid Category');
 
-    const product = await Product.findById(req.params.id);
-    if (!product) return res.status(400).send('Invalid Product!');
+    try {
+        const category = await Category.findById(req.body.category);
+        if (!category) return res.status(400).send('Invalid Category');
 
-    const file = req.file;
-    const dirFilePath = imgPathUtils.getNewDirPath();
+        const product = await Product.findById(req.params.id);
+        if (!product) return res.status(400).send('Invalid Product!');
 
-    const dirPath = dirFilePath.match(/.*?(images\/.*)$/)[1];
-    let imagePath;
-    if (file) {
-        const fileName = file.filename;
-        imagePath = `${dirPath}/${fileName}`;
-    } else {
-        imagePath = product.image;
-    }
+        const file = req.file;
+        const dirFilePath = imgPathUtils.getNewDirPath();
 
-    const payload = {
-        name: req.body.name,
-        description: req.body.description,
-        richDescription: req.body.richDescription,
-        image: imagePath,
-        brand: req.body.brand,
-        price: req.body.price,
-        category: req.body.category,
-        countInStock: req.body.countInStock,
-        rating: req.body.rating,
-        numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured,
-        unitType: req.body.unitType,
-        prices: req.body.prices
-    }
-
-    const updatedProduct = await Product.findByIdAndUpdate(
-        req.params.id, payload, {
-            new: true
+        const dirPath = dirFilePath.match(/.*?(images\/.*)$/)[1];
+        let imagePath;
+        if (file) {
+            const fileName = file.filename;
+            imagePath = `${dirPath}/${fileName}`;
+        } else {
+            imagePath = product.image;
         }
-    );
 
-    if (!updatedProduct) return res.status(500).send('the product cannot be updated!');
+        const payload = {
+            name: req.body.name,
+            description: req.body.description,
+            richDescription: req.body.richDescription,
+            image: imagePath,
+            brand: req.body.brand,
+            price: req.body.price,
+            category: req.body.category,
+            countInStock: req.body.countInStock,
+            rating: req.body.rating,
+            numReviews: req.body.numReviews,
+            isFeatured: req.body.isFeatured,
+            unitType: req.body.unitType,
+            prices: req.body.prices
+        }
 
-    res.send(updatedProduct);
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id, payload, {
+                new: true
+            }
+        );
+
+        if (!updatedProduct) return res.status(500).send('the product cannot be updated!');
+
+        res.send(updatedProduct);
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
+    }
 });
 
 router.delete('/:id', (req, res) => {
@@ -184,10 +224,10 @@ router.delete('/:id', (req, res) => {
                 });
             }
         })
-        .catch((err) => {
+        .catch((e) => {
             return res.status(500).json({
                 success: false,
-                error: err
+                message: `error in catch: ${e}`
             });
         });
 });
@@ -200,44 +240,63 @@ router.get('/get/count', async (req, res) => {
         res.send({
             productCount: productCount
         });
-    } catch (err) {
+    } catch (e) {
         res.status(500).json({
-            success: false
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
 });
 
 
 router.get(`/get/featured/:count`, async (req, res) => {
-    const count = req.params.count ? req.params.count : 0;
-    const products = await Product.find({
-        isFeatured: true
-    }).limit(+count);
+    try {
+        const count = req.params.count ? req.params.count : 0;
+        const products = await Product.find({
+            isFeatured: true
+        }).limit(+count);
 
-    if (!products) {
-        res.status(500).json({
-            success: false
+        if (!products) {
+            return res.status(400).json({
+                success: false,
+                message: `featured products not found`
+            });
+        }
+        return res.send(products);
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
-    res.send(products);
 });
+
 
 router.get(`/get/pricelist/:category`, async (req, res) => {
     const category = decodeURI(req.params.category);
+    if (!category) return res.status(400).send('Invalid Category!');
+    try {
+        const prices = await ProductSize.find({
+            productType: category
+        }).sort({
+            'sortOrder': 1
+        });
 
-    const prices = await ProductSize.find({
-        productType: category
-    }).sort({
-        'sortOrder': 1
-    });
+        if (!prices) {
+            return res.status(400).json({
+                success: false
+            });
+        }
 
-    if (!prices) {
-        res.status(500).json({
-            success: false
+        return res.send(prices);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
 
-    res.send(prices);
 });
 
 router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req, res) => {
@@ -245,27 +304,34 @@ router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req,
         return res.status(400).send('Invalid Product Id');
     }
 
-    const dirPath = getNewDirPath();
-    const files = req.files;
-    let imagesPaths = [];
+    try {
+        const dirPath = getNewDirPath();
+        const files = req.files;
+        let imagesPaths = [];
 
-    if (files) {
-        files.map((file) => {
-            imagesPaths.push(`${dirPath}${file.filename}`);
+        if (files) {
+            files.map((file) => {
+                imagesPaths.push(`${dirPath}${file.filename}`);
+            });
+        }
+
+        const product = await Product.findByIdAndUpdate(
+            req.params.id, {
+                images: imagesPaths
+            }, {
+                new: true
+            }
+        );
+
+        if (!product) return res.status(500).send('the gallery cannot be updated!');
+
+        res.send(product);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
     }
-
-    const product = await Product.findByIdAndUpdate(
-        req.params.id, {
-            images: imagesPaths
-        }, {
-            new: true
-        }
-    );
-
-    if (!product) return res.status(500).send('the gallery cannot be updated!');
-
-    res.send(product);
 });
 
 module.exports = router;

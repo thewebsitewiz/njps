@@ -10,110 +10,136 @@ const router = express.Router();
 totalOrderCount = 0;
 
 router.get(`/`, async (req, res) => {
-    const orderList = await Order.find().populate('user', 'name').sort({
-        'dateOrdered': -1
-    });
+    try {
+        const orderList = await Order.find().populate('user', 'name').sort({
+            'dateOrdered': -1
+        });
 
-    if (!orderList) {
-        res.status(500).json({
-            success: false
-        })
+        if (!orderList) {
+            return res.status(500).json({
+                success: false
+            })
+        }
+        return res.send(orderList);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
     }
-    res.send(orderList);
-})
+});
 
 router.get(`/:id`, async (req, res) => {
-    const order = await Order.findById(req.params.id)
-        .populate('user', 'name')
-        .populate({
-            path: 'orderItems',
-            populate: {
-                path: 'product',
-                populate: 'category'
-            }
-        });
+    try {
+        const order = await Order.findById(req.params.id)
+            .populate('user', 'name')
+            .populate({
+                path: 'orderItems',
+                populate: {
+                    path: 'product',
+                    populate: 'category'
+                }
+            });
 
-    if (!order) {
-        res.status(500).json({
-            success: false
-        })
+        if (!order) {
+            res.status(500).json({
+                success: false
+            })
+        }
+        res.send(order);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
     }
-    res.send(order);
-})
+});
 
 router.post('/', async (req, res) => {
-    const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) => {
-        let newOrderItem = new OrderItem({
-            amount: orderItem.amount,
-            product: orderItem.product
+    try {
+        const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) => {
+            let newOrderItem = new OrderItem({
+                amount: orderItem.amount,
+                product: orderItem.product
+            });
+
+            newOrderItem = await newOrderItem.save();
+
+            // return newOrderItem._id;
+        }));
+
+        const orderItemsIdsResolved = await orderItemsIds;
+
+        /*     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
+                const orderItem = await OrderItem.findById(orderItemId).populate('product').exec();
+
+                let totalPrice = 0;
+                if (orderItem.product.unitType === 'gram' && orderItem.product.price === '') {
+                    const prices = {};
+                    orderItem.product.prices.forEach(pr => {
+                        prices[pr.amount] = pr.price;
+                    });
+
+                    totalPrice += prices[orderItem.amount]
+
+                } else {
+                    totalPrice += orderItem.product.price * orderItem.amount;
+                }
+
+                return totalPrice
+            })) */
+
+
+        const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
+
+        let order = new Order({
+            orderItems: orderItemsIdsResolved,
+            streetAddress: req.body.streetAddress,
+            aptOrUnit: req.body.aptOrUnit,
+            city: req.body.city,
+            zipCode: req.body.zipCode,
+            delivery: req.body.delivery,
+            phoneNumber: req.body.phoneNumber,
+            status: req.body.status,
+            fullName: req.body.fullName,
+            totalPrice: req.body.totalPrice,
+            user: req.body.user,
+        })
+        order = await order.save();
+
+        if (!order)
+            return res.status(400).send('the order cannot be created!');
+
+        return res.send(order)
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
         });
-
-        newOrderItem = await newOrderItem.save();
-
-        return newOrderItem._id;
-    }))
-    const orderItemsIdsResolved = await orderItemsIds;
-
-    /*     const totalPrices = await Promise.all(orderItemsIdsResolved.map(async (orderItemId) => {
-            const orderItem = await OrderItem.findById(orderItemId).populate('product').exec();
-
-            let totalPrice = 0;
-            if (orderItem.product.unitType === 'gram' && orderItem.product.price === '') {
-                const prices = {};
-                orderItem.product.prices.forEach(pr => {
-                    prices[pr.amount] = pr.price;
-                });
-
-                totalPrice += prices[orderItem.amount]
-
-            } else {
-                totalPrice += orderItem.product.price * orderItem.amount;
-            }
-
-            return totalPrice
-        })) */
-
-
-    const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
-
-    let order = new Order({
-        orderItems: orderItemsIdsResolved,
-        streetAddress: req.body.streetAddress,
-        aptOrUnit: req.body.aptOrUnit,
-        city: req.body.city,
-        zipCode: req.body.zipCode,
-        delivery: req.body.delivery,
-        phoneNumber: req.body.phoneNumber,
-        status: req.body.status,
-        fullName: req.body.fullName,
-        totalPrice: req.body.totalPrice,
-        user: req.body.user,
-    })
-    order = await order.save();
-
-    if (!order)
-        return res.status(400).send('the order cannot be created!');
-
-    res.send(order);
+    }
 })
 
 
 router.put('/:id', async (req, res) => {
+    try {
+        const order = await Order.findByIdAndUpdate(
+            req.params.id, {
+                status: req.body.status
+            }, {
+                new: true
+            }
+        )
 
-    console.log(req.body, req.params);
+        if (!order)
+            return res.status(400).send('the order cannot be updated!')
 
-    const order = await Order.findByIdAndUpdate(
-        req.params.id, {
-            status: req.body.status
-        }, {
-            new: true
-        }
-    )
-
-    if (!order)
-        return res.status(400).send('the order cannot be updated!')
-
-    res.send(order);
+        return res.send(order);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
+    }
 })
 
 
@@ -143,7 +169,8 @@ router.delete('/:id', (req, res) => {
 
 router.get('/get/totalsales', async (req, res) => {
     if (totalOrderCount === 0) {
-        res.send({
+
+        return res.status(200).send({
             totalsales: 0
         })
     } else {
@@ -157,7 +184,7 @@ router.get('/get/totalsales', async (req, res) => {
                 }
             }]);
 
-            res.send({
+            return res.stqtus(200).send({
                 totalsales: totalsales[0].total
             })
         } catch (err) {
@@ -171,11 +198,10 @@ router.get('/get/count', async (req, res) => {
     try {
         const orderCount = await Order.countDocuments();
         totalOrderCount = orderCount;
-        res.send({
+        return res.status(200).send({
             orderCount: orderCount
         });
     } catch (err) {
-        console.log('orderCount Error: ', err)
         res.status(500).json({
             success: false
         });
@@ -184,24 +210,31 @@ router.get('/get/count', async (req, res) => {
 
 
 router.get(`/get/userorders/:userid`, async (req, res) => {
-    const userOrderList = await Order.find({
-        user: req.params.userid
-    }).populate({
-        path: 'orderItems',
-        populate: {
-            path: 'product',
-            populate: 'category'
-        }
-    }).sort({
-        'dateOrdered': -1
-    });
+    try {
+        const userOrderList = await Order.find({
+            user: req.params.userid
+        }).populate({
+            path: 'orderItems',
+            populate: {
+                path: 'product',
+                populate: 'category'
+            }
+        }).sort({
+            'dateOrdered': -1
+        });
 
-    if (!userOrderList) {
-        res.status(500).json({
-            success: false
-        })
+        if (!userOrderList) {
+            return res.status(500).json({
+                success: false
+            })
+        }
+        return res.send(userOrderList);
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: `error in catch: ${e}`
+        });
     }
-    res.send(userOrderList);
 })
 
 
