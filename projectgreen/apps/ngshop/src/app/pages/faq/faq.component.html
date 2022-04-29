@@ -1,0 +1,14 @@
+<div class="faq-wrapper">
+  <h1>FAQs</h1>
+  <ng-container *ngIf="faqs">
+    <div class="faq" *ngFor="let faq of faqs">
+      <div class="question">{{ faq.question }}</div>
+      <div class="answer">{{ faq.answer }}</div>
+    </div>
+  </ng-container>
+
+  <div class="bottom-info">If you have any other questions not answered here, please either call us at <a
+      href="tel:8624625979" class="link-emphasis">(862) 462-5979</a>
+    or email us at <a href="mailto:info@njpotshop.com" class="link-emphasis">info@njpotshop.com</a></div>
+
+</div>

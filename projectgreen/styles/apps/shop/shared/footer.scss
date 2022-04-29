@@ -4,7 +4,7 @@ footer {
   padding: 10px 25px;
   width: 100%;
   margin-top: 25px;
-  font-family: "Merriweather Sans", sans-serif !important;
+  font-family: Poppins, sans-serif !important;
 
   .footer-wrapper {
     align-items: center;
@@ -15,11 +15,11 @@ footer {
     }
 
     div.social-link {
-      font-family: "Merriweather Sans", sans-serif !important;
-      margin-bottom: 15px;
+      font-family: Poppins, sans-serif !important;
+      margin-bottom: 30px;
 
       a.social-link {
-        font-family: "Merriweather Sans", sans-serif !important;
+        font-family: Poppins, sans-serif !important;
         font-size: 22px;
         color: $dark-green;
 
@@ -27,7 +27,24 @@ footer {
           font-size: 22px;
           color: $dark-green;
         }
+
+
       }
+
+      a.smaller {
+        font-size: 16px;
+      }
+
+    }
+
+
+    div.social-link:first-of-type {
+      margin-top: 5px;
+    }
+
+    div.social-link:last-of-type {
+      margin-top: 10px;
+      margin-bottom: 0;
 
     }
 

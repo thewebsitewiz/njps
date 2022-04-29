@@ -11,8 +11,3 @@ export const environment = {
   apiUrl: `${protocol}${host}${apiPath}`,
   imageUrl: `${protocol}${host}`
 }
-
-
-
-
-

@@ -1,0 +1,30 @@
+.faq-wrapper {
+  margin-right: 20px;
+  margin-left: 20px;
+
+  .question {
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .answer {
+    margin-bottom: 30px;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .bottom-info {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.2;
+    font-style: italic;
+  }
+
+  .link-emphasis {
+    font-size: 20px;
+    font-weight: 500;
+  }
+}

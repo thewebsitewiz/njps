@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
-
-import { CategoriesService, Categories, Category } from '@projectgreen/products';
-
-import { Cart, CartService } from '@projectgreen/orders';
-import { Router } from '@angular/router';
-import { AuthService } from '@projectgreen/ui';
 import { Subscription } from 'rxjs/internal/Subscription';
+
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Cart, CartService } from '@projectgreen/orders';
+import { Categories, CategoriesService, Category } from '@projectgreen/products';
+import { AuthService } from '@projectgreen/ui';
 import { User } from '@projectgreen/users';
 
 @Component({
@@ -114,7 +113,7 @@ export class HeaderComponent {
       { label: 'Concentrates', icon: 'icon concentrate-icon', routerLink: ['/category/' + this.categories['Concentrates'].id] },
       { label: 'Carts', icon: 'icon cartridge-icon', routerLink: ['/category/' + this.categories['Carts'].id] },
       { label: 'FAQ', icon: 'icon faq-icon', routerLink: ['/faq'] },
-      { label: 'Contact', icon: 'icon contact-icon', routerLink: ['/contact'] }
+      //{ label: 'Contact', icon: 'icon contact-icon', routerLink: ['/contact'] }
     ];
 
     if (this.isAuth) {
