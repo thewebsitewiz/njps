@@ -23,7 +23,7 @@ app.use(cors({
 
 //middleware
 app.use(bodyParser.json());
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(authJwt());
 
 app.use(express.static(__dirname + '/public'));

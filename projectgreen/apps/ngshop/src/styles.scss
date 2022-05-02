@@ -1,15 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 :host {
-  ::ng-deep .p-component {
-    font-family: Poppins !important;
-  }
 
-
-  body .p-component {
-    font-family: Poppins !important;
+  ::ng-deep .p-component,
+  ::ng-deep p-button,
+  ::ng-deep p-button-label {
+    font-family: Poppins, sans-serif !important;
   }
+}
 
-  .ngshop-root div .orders-cart-page div .p-table div div table thead tr th {
-    font-family: Poppins !important;
-  }
+body .p-component {
+  font-family: Poppins, sans-serif !important;
+}
+
+.ngshop-root div .orders-cart-page div .p-table div div table thead tr th {
+  font-family: Poppins, sans-serif !important;
+}
 }

@@ -42,6 +42,8 @@ html {
 }
 
 body {
+  font-family: 'Poppins', Helvetica, Arial, sans-serif !important;
+
   @media screen and (max-width: 500px) {
     max-width: 100%;
   }
@@ -53,8 +55,23 @@ body {
   margin: 0 auto;
 }
 
-:host {
-  ::ng-deep .p-component {
-    font-family: 'Merriweather Sans' !important;
-  }
+
+
+:host ::ng-deep .p-component,
+:host ::ng-deep .p-button,
+:host ::ng-deep .p-element,
+:host ::ng-deep .p-button-label,
+:host ::ng-deep .see-more,
+:host ::ng-deep body,
+body {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+:host ::ng-deep .p-component {
+  color: red;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.p-button-text {
+  font-family: 'Poppins', sans-serif !important;
 }
