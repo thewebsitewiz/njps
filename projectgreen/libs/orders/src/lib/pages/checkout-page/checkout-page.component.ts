@@ -1,18 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { User } from '@projectgreen/users';
-import { AuthService } from '@projectgreen/ui'
-import { Delivery, DeliveryService, OrderForm } from '@projectgreen/orders';
+import { DialogModule } from 'primeng/dialog';
 import { Subject, Subscription, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { environment } from '@env/environment';
+import { Delivery, DeliveryService, OrderForm } from '@projectgreen/orders';
+import { FLOWER_DISPLAY, FLOWER_GRAMS } from '@projectgreen/products';
+import { AuthService } from '@projectgreen/ui';
+import { User } from '@projectgreen/users';
+
 import { CartItemDetailed } from '../../models/cart';
 import { CartService } from '../../services/cart.service';
 import { OrdersService } from '../../services/orders.service';
-
-import { FLOWER_DISPLAY, FLOWER_GRAMS } from '@projectgreen/products';
-import { environment } from '@env/environment';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'orders-checkout-page',
@@ -106,11 +107,13 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 this.itemsTotal = this.itemsTotal + subTotal;
               }
 
-              this._getDeliveryCost();
+
             });
           }
         });
       }
+
+      this._getDeliveryCost();
 
     });
   }

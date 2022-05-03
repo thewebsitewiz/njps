@@ -5,8 +5,34 @@ const express = require('express');
 const {
     OrderItem
 } = require('../models/order-item');
+
+const nodemailer = require("nodemailer");
+const dateTime = require("date-and-time");
+
 const router = express.Router();
 
+const mons = {
+    "01": "Jan",
+    "02": "Feb",
+    "03": "Mar",
+    "04": "Apr",
+    "05": "May",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Aug",
+    "09": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec",
+};
+
+const pad = (num, size) => {
+    let s = num + "";
+    while (s.length < size) {
+        s = "0" + s;
+    }
+    return s;
+};
 totalOrderCount = 0;
 
 router.get(`/`, async (req, res) => {
@@ -110,6 +136,8 @@ router.post('/', async (req, res) => {
         if (!order)
             return res.status(400).send('the order cannot be created!');
 
+
+        emailOrder(order);
         return res.send(order)
     } catch (e) {
         return res.status(500).json({
@@ -141,7 +169,6 @@ router.put('/:id', async (req, res) => {
         });
     }
 })
-
 
 router.delete('/:id', (req, res) => {
     Order.findByIdAndRemove(req.params.id).then(async order => {
@@ -193,7 +220,6 @@ router.get('/get/totalsales', async (req, res) => {
     }
 });
 
-
 router.get('/get/count', async (req, res) => {
     try {
         const orderCount = await Order.countDocuments();
@@ -207,7 +233,6 @@ router.get('/get/count', async (req, res) => {
         });
     }
 });
-
 
 router.get(`/get/userorders/:userid`, async (req, res) => {
     try {
@@ -237,6 +262,60 @@ router.get(`/get/userorders/:userid`, async (req, res) => {
     }
 })
 
+function emailOrder(order) {
+
+    const timestamp = getTimestamp();
+    const subject = `${order.fullName} - ${order.zipCode} - ${order.totalPrice} ${timestamp}`
+
+    const mailConfig = {
+        to: 'orders@njpotshop.com',
+        subject: subject,
+        text: order
+    };
+
+    sendViaSMTP(mailConfig);
+}
+
+async function sendViaSMTP(mailConfig) {
+    const transporter = nodemailer.createTransport({
+        host: "mail.njpotshop.com",
+        port: 465, // 587
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: "orders@njpotshop.com",
+            pass: "d@=L(T?Sv7b!",
+        },
+        tls: {
+            rejectUnauthorized: false,
+        },
+    });
+    // setup email data with unicode symbols
+    const mailOptions = {
+        from: "NJ Potshop <orders@njpotshop.com>", // sender address
+        to: mailConfig.to,
+        bcc: 'edplunk@gmail.com',
+        subject: mailConfig.subject,
+        text: mailConfig.text
+    };
+
+    // send mail with defined transport object
+    const info = await transporter.sendMail(mailOptions);
+}
+
+function getTimestamp() {
+
+    const thisYear = Number(newDate.getFullYear());
+    const thisMonth = pad(newDate.getMonth() + 1, 2);
+    let thisDOM = pad(newDate.getDate(), 2);
+
+    const thisDate = thisYear + "-" + thisMonth + "-" + thisDOM;
+
+    const thisHour = pad(newDate.getHours(), 2);
+    const thisMinute = pad(newDate.getMinutes(), 2);
+
+    const timestamp = `${thisDate} ${thisHour}:${thisMinute}`
+    return timestamp;
+};
 
 
 module.exports = router;
