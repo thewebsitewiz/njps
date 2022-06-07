@@ -1,11 +1,9 @@
-import { Component } from '@angular/core';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 
-import { CategoriesService, Category } from '@projectgreen/products';
-import { Categories } from '@projectgreen/products';
-
-import { Cart, CartService } from '@projectgreen/orders';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Cart, CartService } from '@projectgreen/orders';
+import { Categories, CategoriesService, Category } from '@projectgreen/products';
 
 @Component({
   selector: 'admin-header',
@@ -58,10 +56,11 @@ export class HeaderComponent {
     this.items = [
       { label: 'Dashboard', icon: 'pi pi-home', routerLink: ['/'] },
       { label: 'Products', icon: 'pi pi-briefcase', routerLink: ['/products'] },
+      { label: 'Check In', icon: 'pi pi-check-square', routerLink: ['/checkin'] },
+      { label: 'Inventory', icon: 'pi pi-book', routerLink: ['/inventory'] },
       // { label: 'Categories', icon: 'pi pi-list', routerLink: ['/categories'] },
       { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: ['/orders'] },
       { label: 'Delivery', icon: 'pi pi-compass', routerLink: ['/delivery'] },
-      // { label: 'Inventory', icon: 'pi pi-briefcase', routerLink: ['/inventory'] },
       { label: 'Users', icon: 'pi pi-users', routerLink: ['/users'] },
       { label: 'FAQ', icon: 'pi pi-question-circle', routerLink: ['/faq'] },
       { label: 'Contact', icon: 'pi pi-phone', routerLink: ['/contact'] },

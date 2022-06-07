@@ -47,12 +47,12 @@ p-button {
 
 // Dropdown customizations
 .p-dropdown {
-  background-color: $dark-green !important;
+  // background-color: $dark-green !important;
   border-radius: 3px;
 }
 
 .p-dropdown-label.p-placeholder {
-  color: $med-grey !important;
+  //color: $med-grey !important;
 }
 
 .p-dropdown-trigger-icon {
@@ -60,3 +60,20 @@ p-button {
 }
 
 // Input Number Customizations
+
+
+// custom buttons
+.clear-button {
+  background-color: $med-grey !important;
+  border-radius: 5px;
+  color: $tan;
+
+  font-size: 9px;
+  font-weight: 500;
+
+  padding: 5px;
+
+  margin-left: 30px;
+
+  cursor: pointer;
+}

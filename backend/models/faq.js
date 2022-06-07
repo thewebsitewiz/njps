@@ -9,7 +9,10 @@ const faqSchema = mongoose.Schema({
         type: String,
         required: true
     }
-})
+
+}, {
+    timestamps: true
+});
 
 faqSchema.virtual('id').get(function () {
     return this._id.toHexString();

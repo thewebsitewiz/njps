@@ -4,7 +4,7 @@ export interface Strain { label: string, value: string };
 
 export interface Strains extends Array<Strain> { }
 
-export interface Product {
+export interface CheckIn {
   id: string;
   name?: string;
   description?: string;
@@ -23,11 +23,6 @@ export interface Product {
   numReviews?: number;
   isFeatured?: boolean;
   dateCreated?: string;
-  displayCount?: {
-    pounds?: number;
-    ounces?: number,
-    grams?: number
-  }
   cost?: string
 }
 

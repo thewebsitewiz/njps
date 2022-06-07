@@ -13,14 +13,15 @@ import {
 } from '@projectgreen/products';
 
 @Component({
-  selector: 'admin-products-form',
-  templateUrl: './products-form.component.html',
+  selector: 'admin-checkin-form',
+  templateUrl: './checkIn-form.component.html',
   styles: []
 })
-export class ProductsFormComponent implements OnInit, OnDestroy {
+export class CheckinFormComponent implements OnInit, OnDestroy {
   editmode = false;
   productForm!: FormGroup;
   isSubmitted = false;
+  newProduct: boolean = false;
 
   categories: { [key: string]: Category } = {};
   categoryList!: Categories;
@@ -45,11 +46,12 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
   amtPrices: { [key: string]: number } = {};
 
   product!: Product;
+  productList!: any;
 
   priceList: { name: string, displayName: string }[] = [];
   priceLists: { [key: string]: { name: string, displayName: string }[] } = {};
   strains!: any[]; //Strains;
-  selectedStrain: string | undefined = '';
+  selectedStrain!: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -134,6 +136,10 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
 
       });
+  }
+
+  nameChanged(event: any) {
+
   }
 
   private _addProduct(productData: FormData) {
@@ -427,7 +433,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
   clearStrain(): void {
     console.log(this.selectedStrain);
-    this.selectedStrain = undefined;
+    this.selectedStrain = {};
   }
   /*
     clear(field: string): void {

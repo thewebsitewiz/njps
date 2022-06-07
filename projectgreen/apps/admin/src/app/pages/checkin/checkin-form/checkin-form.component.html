@@ -1,7 +1,6 @@
 <p-toast></p-toast>
 <div class="admin-page">
-  <p-card class="main-card" [header]="editmode ? 'Edit Product' : 'Add Product'"
-    subheader="You can add or edit products here">
+  <p-card class="main-card" [subheader]="editmode ? 'Edit Check In' : 'Check In'" header="Check In">
     <div class="grid p-mb-5">
       <div class="col-12">
         <p-toolbar>
@@ -56,7 +55,7 @@
                 class="clear-button small ml-2">clear</span>
               <p-selectButton [options]="strains" (onOptionClick)="strainSelected($event)" optionLabel="label"
                 optionValue="value">
-              </p-selectButton><br /> selected: {{selectedStrain}} - {{productForm.controls['flavor'].value}}
+              </p-selectButton><br /> selected: {{selectedStrain}}
             </div>
           </div>
           <div class="grid">

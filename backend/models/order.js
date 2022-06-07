@@ -46,8 +46,11 @@ const orderSchema = mongoose.Schema({
     dateOrdered: {
         type: Date,
         default: Date.now,
-    },
-})
+    }
+
+}, {
+    timestamps: true
+});
 
 orderSchema.virtual('id').get(function () {
     return this._id.toHexString();

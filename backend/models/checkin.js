@@ -6,14 +6,14 @@ const price = mongoose.Schema({
     price: Number,
 });
 
-const productSchema = mongoose.Schema({
+const checkInSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
     },
     description: {
         type: String,
-        required: true
+        default: ''
     },
     richDescription: {
         type: String,
@@ -26,6 +26,10 @@ const productSchema = mongoose.Schema({
     images: [{
         type: String
     }],
+    cost: {
+        type: Number,
+        required: true
+    },
     price: {
         type: String,
         default: ''
@@ -54,7 +58,7 @@ const productSchema = mongoose.Schema({
         ref: 'Category',
         required: true
     },
-    countInStock: {
+    countReceived: {
         type: Number,
         required: true,
         min: 0
@@ -63,12 +67,9 @@ const productSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    dateCreated: {
+    dateReceived: {
         type: Date,
         default: Date.now,
-    },
-    lastInventoriedDate: {
-        type: Date
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -82,13 +83,15 @@ const productSchema = mongoose.Schema({
     timestamps: true
 });
 
-productSchema.virtual('id').get(function () {
+
+
+checkInSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
-productSchema.set('toJSON', {
+checkInSchema.set('toJSON', {
     virtuals: true,
 });
 
 
-exports.Product = mongoose.model('Product', productSchema);
+exports.CheckIn = mongoose.model('CheckIn', checkInSchema);

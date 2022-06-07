@@ -1,15 +1,13 @@
 const {
+    CheckIn
+} = require('../models/checkIn');
+const {
     Product
 } = require('../models/product');
 const {
-    ProductSize
-} = require('../models/productSize');
-const {
     Category
 } = require('../models/category');
-const {
-    FAQ
-} = require('../models/faq');
+
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -73,7 +71,7 @@ router.get(`/`, async (req, res) => {
             };
         }
 
-        productList = await Product.find(filter).populate('category');
+        productList = await CheckIn.find(filter).populate('category');
 
     } catch (e) {
         return res.status(500).json({
@@ -92,17 +90,17 @@ router.get(`/`, async (req, res) => {
 });
 
 router.get(`/:id`, async (req, res) => {
-    let product;
+    let checkIn;
     try {
-        product = await Product.findById(req.params.id).populate('category');
+        checkIn = await CheckIn.findById(req.params.id).populate('category');
 
-        if (!product) {
+        if (!checkIn) {
             return res.status(400).json({
                 success: false,
-                message: `Product ${req.params.id} not found: ${e}`
+                message: `checkIn ${req.params.id} not found: ${e}`
             });
         } else {
-            return res.send(product);
+            return res.send(checkIn);
         }
 
     } catch (e) {
@@ -123,31 +121,48 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
     const dirPath = imgPathUtils.getNewDirPath();
     const fileName = file.filename;
     try {
-        let product = new Product({
+        let checkIn = new CheckIn({
             name: req.body.name,
             description: req.body.description,
             richDescription: req.body.richDescription,
             image: `${dirPath}${fileName}`,
-            brand: req.body.brand,
+            cost: req.body.cost,
             price: req.body.price,
+            prices: req.body.prices,
+            brand: req.body.brand,
+            flavor: req.body.flavor,
             strain: req.body.strain,
             unitType: req.body.unitType,
-            flavor: req.body.flavor,
             category: req.body.category,
-            countInStock: req.body.countInStock,
+            countReceived: req.body.countReceived,
             isFeatured: req.body.isFeatured,
-            prices: req.body.prices,
-            dateCreated: req.body.dateCreated,
-            lastInventoriedDate: req.body.lastInventoriedDate,
+            dateReceived: req.body.dateReceived,
             user: req.body.user,
-            userName: req.body.userName,
+            userName: req.body.userName
         });
 
-        product = await product.save();
+        checkIn = await checkIn.save();
 
-        if (!product) return res.status(400).send('The product cannot be created');
+        if (!checkIn) return res.status(400).send('The checkIn cannot be created');
 
-        return res.send(product);
+        const products = await Product.find({
+            name: req.body.name
+        });
+
+        const product = products[0];
+
+        console.log(products)
+        console.log(product)
+
+        product.countInStock += checkIn.countReceived;
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            product.id, product, {
+                new: true
+            }
+        );
+
+        return res.send(updatedProduct);
     } catch (e) {
         return res.status(500).json({
             success: false,
@@ -165,8 +180,8 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         const category = await Category.findById(req.body.category);
         if (!category) return res.status(400).send('Invalid Category');
 
-        const product = await Product.findById(req.params.id);
-        if (!product) return res.status(400).send('Invalid Product!');
+        const checkIn = await CheckIn.findById(req.params.id);
+        if (!checkIn) return res.status(400).send('Invalid CheckIn!');
 
         const file = req.file;
         const dirFilePath = imgPathUtils.getNewDirPath();
@@ -185,23 +200,44 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
             description: req.body.description,
             richDescription: req.body.richDescription,
             image: imagePath,
-            brand: req.body.brand,
+            cost: req.body.cost,
             price: req.body.price,
             prices: req.body.prices,
-            strain: req.body.strain,
+            brand: req.body.brand,
             flavor: req.body.flavor,
-            category: req.body.category,
-            countInStock: req.body.countInStock,
-            isFeatured: req.body.isFeatured,
+            strain: req.body.strain,
             unitType: req.body.unitType,
-            dateCreated: req.body.dateCreated,
-            lastInventoriedDate: req.body.lastInventoriedDate,
+            category: req.body.category,
+            countReceived: req.body.countReceived,
+            isFeatured: req.body.isFeatured,
+            dateReceived: req.body.dateReceived,
             user: req.body.user,
-            userName: req.body.userName,
+            userName: req.body.userName
+        }
+
+        const products = await Product.find({
+            name: req.body.name
+        });
+
+        const product = products[0];
+
+        if (req.body.countReceived !== undefined) {
+            const checkIns = await CheckIn.find({
+                name: req.body.name
+            }).sort({
+                'sortOrder': 1
+            });
+
+            const lastCheckIn = checkIns[-1];
+
+            if (req.body.countReceived !== lastCheckIn.countReceived) {
+                product.countInStock -= lastCheckIn.countReceived;
+                product.countInStock += checkIn.countReceived;
+            }
         }
 
         const updatedProduct = await Product.findByIdAndUpdate(
-            req.params.id, payload, {
+            req.params.id, product, {
                 new: true
             }
         );
@@ -219,7 +255,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-    Product.findByIdAndRemove(req.params.id)
+    CheckIn.findByIdAndRemove(req.params.id)
         .then((product) => {
             if (product) {
                 return res.status(200).json({
@@ -241,9 +277,11 @@ router.delete('/:id', (req, res) => {
         });
 });
 
+
+
 router.get('/get/count', async (req, res) => {
     try {
-        const productCount = await Product.countDocuments();
+        const productCount = await CheckIn.countDocuments();
         res.send({
             productCount: productCount
         });
@@ -255,10 +293,11 @@ router.get('/get/count', async (req, res) => {
     }
 });
 
+
 router.get(`/get/featured/:count`, async (req, res) => {
     try {
         const count = req.params.count ? req.params.count : 0;
-        const products = await Product.find({
+        const products = await CheckIn.find({
             isFeatured: true
         }).limit(+count);
 
@@ -277,6 +316,7 @@ router.get(`/get/featured/:count`, async (req, res) => {
         });
     }
 });
+
 
 router.get(`/get/pricelist/:category`, async (req, res) => {
     const category = decodeURI(req.params.category);
@@ -320,7 +360,7 @@ router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req,
             });
         }
 
-        const product = await Product.findByIdAndUpdate(
+        const product = await CheckIn.findByIdAndUpdate(
             req.params.id, {
                 images: imagesPaths
             }, {

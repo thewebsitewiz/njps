@@ -8,6 +8,9 @@ const orderItemSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
     }
-})
+
+}, {
+    timestamps: true
+});
 
 exports.OrderItem = mongoose.model('OrderItem', orderItemSchema);

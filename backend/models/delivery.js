@@ -14,7 +14,10 @@ const deliverySchema = mongoose.Schema({
         default: 0,
         required: true
     }
-})
+
+}, {
+    timestamps: true
+});
 
 deliverySchema.virtual('id').get(function () {
     return this._id.toHexString();

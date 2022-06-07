@@ -1,0 +1,69 @@
+<p-toast></p-toast>
+<div class="admin-page">
+  <p-card class="main-card" header="Inventory" subheader="">
+
+    <div class="grid">
+      <div class="col-12">
+        <p-table [paginator]="true" [totalRecords]="totalRecords" [(first)]="first" [rows]="10" [value]="products"
+          styleClass="p-datatable-gridlines" [globalFilterFields]="['name','category.name','isFeatured','countInStock']"
+          paginatorPosition="bottom">
+          <ng-template pTemplate="caption">
+            <div class="flex">
+              <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
+                  placeholder="Search keyword" />
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th [pSortableColumn]="'category.name'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Category <p-sortIcon field="category.nam"></p-sortIcon>
+                  <p-columnFilter type="text" field="category.name" display="menu"></p-columnFilter>
+                </div>
+              </th>
+              <th [pSortableColumn]="'name'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Name <p-sortIcon field="name"></p-sortIcon>
+                  <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+                </div>
+              </th>
+              <th>Stock</th>
+              <th [pSortableColumn]="'unitType'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Unit Type<p-sortIcon field="unitType"></p-sortIcon>
+                  <p-columnFilter type="text" field="unitType" display="menu"></p-columnFilter>
+                </div>
+              </th>
+              <th [pSortableColumn]="'category.lastInventoriedDate'">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Last inventoried<p-sortIcon field="category.lastInventoriedDate"></p-sortIcon>
+                  <p-columnFilter type="text" field="category.lastInventoriedDate" display="menu"></p-columnFilter>
+                </div>
+              </th>
+              <th></th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-product>
+            <tr>
+              <td>{{ product.category.name }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.countInStock }}</td>
+              <td>{{ product.unitType }}</td>
+              <td>{{ product.lastInventoriedDate | date: 'short' }}</td>
+              <td>
+                <p-button (click)="updateProduct(product.id)" styleClass="p-button-success" icon="pi pi-pencil">
+                </p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </p-card>
+</div>
+<p-confirmDialog [style]="{ width: '50vw' }" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
+</p-confirmDialog>
