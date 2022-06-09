@@ -219,7 +219,7 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
               this.selectedStrain = product.strain;
 
-              this.totalInGrams = product.countInStock;
+              if (!!product.countInStock) this.totalInGrams = product.countInStock;
 
               this.imageDisplay = `${environment.imageUrl}${product.image}`;
               this.productForm.controls['image'].setValidators([]);

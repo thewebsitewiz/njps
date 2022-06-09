@@ -9,28 +9,27 @@ export interface Product {
   name?: string;
   description?: string;
   richDescription?: string;
-  image: string;
-  images: string[];
+  image?: string;
+  images?: string[];
   brand?: string;
   flavor?: string;
   strain?: string;
-  price: number | undefined;
-  prices: Price[] | undefined;
+  price?: number | undefined;
+  prices?: Price[] | undefined;
   category?: Category;
-  countInStock: number;
-  unitType: string;
-  rating?: number;
-  numReviews?: number;
+  countInStock?: number;
+  unitType?: string;
   isFeatured?: boolean;
   dateCreated?: string;
-  displayCount?: {
-    pounds?: number;
-    ounces?: number,
-    grams?: number
-  }
-  cost?: string
+  displayCost?: string;
+  displayCount?: DisplayCount;
 }
 
+interface DisplayCount {
+  pounds?: number;
+  grams?: number;
+  ounces?: number;
+}
 
 export interface Price {
   name: string;

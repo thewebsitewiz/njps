@@ -18,16 +18,25 @@
       <div class="col-12">
         <form [formGroup]="productForm">
           <div class="grid">
-            <div class="p-field col-12 md:col-5">
-              <label class="label" for="name">Name<span class="required">*</span></label>
-              <input formControlName="name" id="name" type="text" class="inputfield w-full" pInputText />
-              <small *ngIf="prodForm['name'].invalid && isSubmitted" class="p-error">Name is required</small>
-            </div>
             <div class="p-field  col-12 md:col-3">
               <label class="label" for="category">Category<span class="required">*</span></label><br />
               <p-dropdown [options]="categoryList" formControlName="category" optionLabel="name" optionValue="id"
                 (onChange)="categoryChanged($event)" placeholder="Select a Category"></p-dropdown>
               <small *ngIf="prodForm['category'].invalid && isSubmitted" class="p-error">Category is required</small>
+            </div>
+            <div class="p-field col-12 md:col-5">
+              <label class="label" for="name">Name<span class="required">*</span></label>
+              <p-selectButton [options]="productNameTypes" (onOptionClick)="productNameTypeSelected($event)"
+                optionLabel="label" optionValue="value" styleClass="product-type-button">
+              </p-selectButton>
+              <br />
+              <p-dropdown *ngIf="productNameType === 'existing'" [options]="productNames" name="selectedName"
+                formControlName="selectedName" optionLabel="name" optionValue="id" placeholder="Select a Product">
+              </p-dropdown>
+              <input *ngIf="productNameType === 'new'" formControlName="enteredName" id="name" type="text"
+                class="inputfield w-full" pInputText />
+              <small *ngIf="(prodForm['selectedName'].invalid || prodForm['enteredName'].invalid) && isSubmitted"
+                class="p-error">Name is required</small>
             </div>
             <div class="p-field  col-12 md:col-2">
               <label class="label" for="unitType">Unit Type<span class="required">*</span></label><br />
@@ -51,16 +60,17 @@
               <input formControlName="flavor" id="flavor" type="text" class="inputfield w-full" pInputText />
             </div>
             <div class="p-field col-12 md:col-4">
-              <label class="label" for="flavor">Strain</label><span (click)="clearStrain()"
-                class="clear-button small ml-2">clear</span>
+              <label class="label" for="flavor">Strain</label>
+              <!-- <span (click)="clearStrain()"
+                class="clear-button small ml-2">clear</span> -->
               <p-selectButton [options]="strains" (onOptionClick)="strainSelected($event)" optionLabel="label"
-                optionValue="value">
-              </p-selectButton><br /> selected: {{selectedStrain}}
+                optionValue="value" styleClass="strain-button">
+              </p-selectButton>
             </div>
           </div>
           <div class="grid">
-            <div class="p-field  col-12 md:col-4" *ngIf="inStockSimple">
-              <label class="label" for="countInStock">Count In Stock<span class="required">*</span></label><br />
+            <div class="p-field  col-12 md:col-6" *ngIf="inStockSimple">
+              <label class="label" for="countInStock">Count Received<span class="required">*</span></label><br />
               <p-inputNumber formControlName="countInStock" mode="decimal" [useGrouping]="false">
               </p-inputNumber>
 
@@ -99,6 +109,12 @@
               <div class="totalInGrams"> <span style="font-weight: 700;">Total in grams:</span> {{(+totalInGrams)}}g
               </div>
             </div>
+            <div class="p-field col-12 md:col-3">
+              <label class="label" for="price">Cost<span class="required">*</span></label><br />
+              <p-inputNumber formControlName="cost" mode="decimal" [useGrouping]="false" class="inputfield w-full">
+              </p-inputNumber>
+              <small *ngIf="prodForm['cost']?.invalid && isSubmitted" class="p-error">Cost is required</small>
+            </div>
             <div class="p-field col-12 md:col-3" *ngIf="priceField === true">
               <label class="label" for="price">Price<span class="required">*</span></label><br />
               <p-inputNumber formControlName="price" mode="decimal" [useGrouping]="false" class="inputfield w-full">
@@ -119,7 +135,7 @@
               </div>
             </div>
             <div class="grid">
-              <div class="p-field col-12">
+              <div class="p-field col-9">
                 <label class="label" for="description">Description<span class="required">*</span></label><br />
                 <textarea pInputTextarea formControlName="description" [rows]="7" [cols]="60"></textarea>
                 <small *ngIf="prodForm['description'].invalid && isSubmitted" class="p-error">Description is

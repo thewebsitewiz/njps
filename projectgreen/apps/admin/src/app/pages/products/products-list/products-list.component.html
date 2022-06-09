@@ -61,7 +61,7 @@
               <td><img [src]="product.image" style="max-width: 75px" alt="" /></td>
               <td>
                 <div *ngIf="product.price !== undefined">{{ product.price }}</div>
-                <div *ngIf="product.price === undefined" innerHTML="{{ product.cost }}"></div>
+                <div *ngIf="product.price === undefined" innerHTML="{{ product.displayCost }}"></div>
               </td>
               <td>
                 <span *ngIf="product.displayCount?.pounds > 0 ||

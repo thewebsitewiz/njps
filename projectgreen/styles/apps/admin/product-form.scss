@@ -52,6 +52,29 @@
     }
   }
 
+  .strain-button {
+    >.p-button {
+      padding: 10px;
 
+      >.p-button-label {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .product-type-button {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    margin-left: 10px;
+
+    >.p-button {
+      padding: 5px 10px;
+
+      >.p-button-label {
+        font-size: 16px;
+      }
+    }
+  }
 
 }

@@ -53,6 +53,13 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
   strains!: any[]; //Strains;
   selectedStrain!: any;
 
+  selectedName!: string;
+  showProductDropdown: boolean = true;
+  productNames: Product[] = [];
+
+  productNameTypes!: any;
+  productNameType!: string;
+
   constructor(
     private formBuilder: FormBuilder,
     private productsService: ProductsService,
@@ -61,17 +68,22 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
     private location: Location,
     private route: ActivatedRoute,
     private primeNGConfig: PrimeNGConfig
-  ) {
+  ) { }
+
+  ngOnInit(): void {
+    this.primeNGConfig.ripple = true;
+    this.productNameTypes = [
+      { label: 'Existing', value: 'existing' },
+      { label: 'New', value: 'new' }
+    ];
 
     this.strains = [
       { label: 'Indica', value: 'Indica' },
       { label: 'Sativa', value: 'Sativa' },
-      { label: 'Hybrid', value: 'Hybrid' }
+      { label: 'Hybrid', value: 'Hybrid' },
+      { label: 'N/A', value: 'NA' }
     ];
-  }
 
-  ngOnInit(): void {
-    this.primeNGConfig.ripple = true;
 
     this._getCategories();
     this._mapUnitType();
@@ -86,8 +98,9 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
 
   private _initForm() {
     this.productForm = this.formBuilder.group({
-      name: ['', Validators.required],
       category: ['', Validators.required],
+      selectedName: [''],
+      enteredName: [''],
       unitType: ['', Validators.required],
       isFeatured: [false],
       brand: ['',],
@@ -225,7 +238,7 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
 
               this.selectedStrain = product.strain;
 
-              this.totalInGrams = product.countInStock;
+              if (!!product.countInStock) this.totalInGrams = product.countInStock;
 
               this.imageDisplay = `${environment.imageUrl}${product.image}`;
               this.productForm.controls['image'].setValidators([]);
@@ -269,8 +282,14 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
   }
 
   categoryChanged(event: HTMLInputElement) {
-
     const categoryName = this.categories[event.value]?.name;
+
+    this.productsService.getProducts([categoryName]).subscribe((results: Product[]) => {
+      results.forEach((product: Product) => {
+        this.productNames.push(product);
+      });
+
+    });
 
     this.priceFormatChanged(event);
     this.countInStockChange(categoryName);
@@ -433,7 +452,7 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
 
   clearStrain(): void {
     console.log(this.selectedStrain);
-    this.selectedStrain = {};
+    this.selectedStrain = '';
   }
   /*
     clear(field: string): void {
@@ -442,6 +461,9 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
         formField.setValue('');
       }
     } */
+  productNameTypeSelected(event: any) {
+    this.productNameType = event.option.value;
+  }
 
   onCancel() {
     this.location.back();

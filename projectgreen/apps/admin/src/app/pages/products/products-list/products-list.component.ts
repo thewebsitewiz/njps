@@ -1,11 +1,12 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { ProductsService, Product, GRAMS } from '@projectgreen/products';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Table } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Table } from 'primeng/table';
+
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { environment } from '@env/environment';
+import { GRAMS, Product, ProductsService } from '@projectgreen/products';
 
 @Component({
   selector: 'admin-products-list',
@@ -46,7 +47,7 @@ export class ProductsListComponent implements OnInit, OnDestroy {
         products.forEach((product: Product) => {
           product.image = `${environment.imageUrl}${product.image}`;
           if (product.unitType === 'Gram' && (product.category?.name == 'Flower' || product.category?.name == 'Designer Flower')) {
-            product.displayCount = this.convertFromGrams(product.countInStock);
+            if (!!product.countInStock) product.displayCount = this.convertFromGrams(product.countInStock);
             product.price = undefined;
             let prices: string = '';
             if (product.prices !== undefined) {
@@ -55,7 +56,8 @@ export class ProductsListComponent implements OnInit, OnDestroy {
                   prices += (`${pr.name}: $${pr.price}<br/>`)
               })
             }
-            product.cost = prices;
+            product.displayCost = prices;
+
           }
           this.products.push(product);
         })
