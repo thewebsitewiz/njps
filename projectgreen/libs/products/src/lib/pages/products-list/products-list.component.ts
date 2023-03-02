@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Category } from '../../models/category';
-import { Categories } from '../../models/category';
+import { environment } from '@env/environment';
+
+import { Categories, Category } from '../../models/category';
 import { Product } from '../../models/product';
 import { CategoriesService } from '../../services/categories.service';
 import { ProductsService } from '../../services/products.service';
-import { environment } from '@env/environment';
 
 @Component({
   selector: 'products-list',
@@ -15,7 +15,7 @@ import { environment } from '@env/environment';
 export class ProductsListComponent implements OnInit {
   products: Product[] = [];
   categoryId!: string;
-  categories!: { [key: string]: Category };
+  categories: { [key: string]: Partial<Category> } = {};
   categoryName!: string | undefined;
 
   constructor(
@@ -29,22 +29,24 @@ export class ProductsListComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.categoryId = params['categoryid'];
       this.categoryId ? this._getProducts([this.categoryId]) : this._getProducts();
-      this._getCategory(this.categoryId);
+      this._getCategory();
     });
 
   }
 
   private _getProducts(categoriesFilter?: string[]) {
+    console.log('categoriesFilter: ', categoriesFilter);
     this.prodService.getProducts(categoriesFilter).subscribe((results) => {
       this.products = [];
       results.forEach((product: any) => {
         product.image = `${environment.imageUrl}${product.image}`;
+        console.log(product)
         this.products.push(product);
       })
     });
   }
 
-  private _getCategory(categoryId: string) {
+  private _getCategory(): void {
     this.catService.getCategories().subscribe((results) => {
       results.forEach((cat: Category) => {
         this.categories[cat.id] = cat;

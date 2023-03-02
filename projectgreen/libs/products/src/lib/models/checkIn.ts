@@ -1,8 +1,5 @@
 import { Category } from './category';
-
-export interface Strain { label: string, value: string };
-
-export interface Strains extends Array<Strain> { }
+import { Price, ProductPrices, Strain, Strains } from './product';
 
 export interface CheckIn {
   id: string;
@@ -24,20 +21,4 @@ export interface CheckIn {
   isFeatured?: boolean;
   dateCreated?: string;
   cost?: string
-}
-
-
-export interface Price {
-  name: string;
-  displayName?: string;
-  amount: number;
-  type: string;
-  price: number;
-}
-
-export interface ProductPrices {
-  _id: string;
-  name: string;
-  amount: number;
-  price: number;
 }

@@ -29,7 +29,7 @@ const routes: Routes = [
   {
     path: '',
     component: ShellComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -88,7 +88,7 @@ const routes: Routes = [
         component: CheckinListComponent
       },
       {
-        path: 'checkin',
+        path: 'checkin/form',
         component: CheckinFormComponent
       },
       {

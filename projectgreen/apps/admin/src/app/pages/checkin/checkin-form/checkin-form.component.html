@@ -26,29 +26,19 @@
             </div>
             <div class="p-field col-12 md:col-5">
               <label class="label" for="name">Name<span class="required">*</span></label>
-              <p-selectButton [options]="productNameTypes" (onOptionClick)="productNameTypeSelected($event)"
-                optionLabel="label" optionValue="value" styleClass="product-type-button">
-              </p-selectButton>
-              <br />
+              <p-selectButton [options]="productNameTypes" formControlName="productNameType" optionLabel="label"
+                optionValue="value" styleClass="product-type-button" (onChange)="productNameTypeSelected($event)">
+              </p-selectButton><br />
               <p-dropdown *ngIf="productNameType === 'existing'" [options]="productNames" name="selectedName"
-                formControlName="selectedName" optionLabel="name" optionValue="id" placeholder="Select a Product">
+                formControlName="selectedName" (onChange)="existingProductSelected($event)" optionLabel="name"
+                optionValue="id" placeholder="Select a Product">
               </p-dropdown>
               <input *ngIf="productNameType === 'new'" formControlName="enteredName" id="name" type="text"
                 class="inputfield w-full" pInputText />
               <small *ngIf="(prodForm['selectedName'].invalid || prodForm['enteredName'].invalid) && isSubmitted"
                 class="p-error">Name is required</small>
             </div>
-            <div class="p-field  col-12 md:col-2">
-              <label class="label" for="unitType">Unit Type<span class="required">*</span></label><br />
-              <p-dropdown [options]="unitTypes" formControlName="unitType" optionLabel="label" optionValue="value">
-              </p-dropdown>
-              <small *ngIf="prodForm['unitType'].invalid && isSubmitted" class="p-error">Unit Type is
-                required</small>
-            </div>
-            <div class="p-field  col-12 md:col-2">
-              <label class="label" for="isFeatured">Is Featured</label><br />
-              <p-inputSwitch formControlName="isFeatured"></p-inputSwitch>
-            </div>
+
           </div>
           <div class="grid">
             <div class="p-field col-12 md:col-4">
@@ -61,10 +51,8 @@
             </div>
             <div class="p-field col-12 md:col-4">
               <label class="label" for="flavor">Strain</label>
-              <!-- <span (click)="clearStrain()"
-                class="clear-button small ml-2">clear</span> -->
-              <p-selectButton [options]="strains" (onOptionClick)="strainSelected($event)" optionLabel="label"
-                optionValue="value" styleClass="strain-button">
+              <p-selectButton [options]="strains" formControlName="strain" (onChange)="strainSelected($event)"
+                optionLabel="label" optionValue="value" styleClass="strain-button">
               </p-selectButton>
             </div>
           </div>

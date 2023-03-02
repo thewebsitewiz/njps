@@ -8,8 +8,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '@env/environment';
 import {
-    Categories, CategoriesService, Category, FLOWER_AMOUNTS, FLOWER_GRAMS, GRAMS, Product,
-    ProductsService, Strain, Strains, UNIT_TYPES
+    Categories, CategoriesService, Category, CheckIn, CheckInService, FLOWER_AMOUNTS, FLOWER_GRAMS,
+    GRAMS, Product, ProductsService, Strain, Strains, UNIT_TYPES
 } from '@projectgreen/products';
 
 @Component({
@@ -25,6 +25,7 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
 
   categories: { [key: string]: Category } = {};
   categoryList!: Categories;
+  categoryMap: { [key: string]: string } = {};
   selectedCategory: string = '';
 
   inStockSimple: boolean = true;
@@ -36,7 +37,7 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
   enteredGms: number = 0;
 
   imageDisplay!: string | ArrayBuffer | null | undefined;
-  currentProductId!: string;
+  currentCheckInId!: string;
   endsubs$: Subject<any> = new Subject();
   unitTypes!: { label: string, value: string }[];
 
@@ -57,12 +58,13 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
   showProductDropdown: boolean = true;
   productNames: Product[] = [];
 
-  productNameTypes!: any;
-  productNameType!: string;
+  productNameTypes: any = [];
+  productNameType: string = 'new';
 
   constructor(
     private formBuilder: FormBuilder,
     private productsService: ProductsService,
+    private checkInService: CheckInService,
     private categoriesService: CategoriesService,
     private messageService: MessageService,
     private location: Location,
@@ -72,9 +74,10 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.primeNGConfig.ripple = true;
+
     this.productNameTypes = [
-      { label: 'Existing', value: 'existing' },
-      { label: 'New', value: 'new' }
+      { label: 'New', value: 'new' },
+      { label: 'Existing', value: 'existing' }
     ];
 
     this.strains = [
@@ -84,36 +87,74 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
       { label: 'N/A', value: 'NA' }
     ];
 
-
     this._getCategories();
     this._mapUnitType();
     this._initForm();
     this._checkEditMode();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.endsubs$.next(null);
     this.endsubs$.complete();
   }
 
-  private _initForm() {
+  /*   private _initFormDev() {
+      this.productNameType = 'new';
+      this.selectedStrain = 'Sativa';
+
+      this.productForm = this.formBuilder.group({
+        category: ['', Validators.required],
+        selectedName: [''],
+        enteredName: ['Blue Gelato'],
+        unitType: ['Gram', Validators.required],
+        isFeatured: [true],
+        brand: ['Smuckers',],
+        flavor: ['Strawberry'],
+        countInStock: ['452'],
+        cost: ['1500'],
+        price: ['', Validators.required],
+        description: ['Blue Gelato, also known as Blue Gelato #41, is a deliciously sweet hybrid marijuana strain made by crossing DJ Shorts old school Blueberry with GSC and Sherbert. With so many delicious strains at play, Blue Gelato puts out a smooth earthy, citrus, and fruity terpene profile that tastes as good as it smells. As for the high, you can expect to feel lofty and free in a state of euphoric bliss. Blue Gelato was originally bred by Barnys Farm.', Validators.required],
+        richDescription: [''],
+        image: [''],
+        eighth: ['25'],
+        quarter: ['50'],
+        half: ['100'],
+        ounce: ['200'],
+        quarterPound: ['800'],
+        halfPound: ['1600'],
+        pound: ['3200']
+      });
+    } */
+
+  private _initForm(): void {
+
     this.productForm = this.formBuilder.group({
-      category: ['', Validators.required],
+      category: ['', [Validators.required]],
+      productNameType: ['new', [Validators.required]],
       selectedName: [''],
       enteredName: [''],
-      unitType: ['', Validators.required],
-      isFeatured: [false],
+      unitType: ['', [Validators.required]],
+      isFeatured: [],
       brand: ['',],
       flavor: [''],
+      strain: [''],
       countInStock: [''],
-      price: ['', Validators.required],
-      description: ['', Validators.required],
+      cost: [''],
+      price: ['', [Validators.required]],
+      description: ['', [Validators.required]],
       richDescription: [''],
       image: [''],
+      eighth: [''],
+      quarter: [''],
+      half: [''],
+      ounce: [''],
+      quarterPound: [''],
+      halfPound: [''],
+      pound: ['']
     });
   }
 
-  private _mapUnitType() {
+  private _mapUnitType(): void {
     this.unitTypes = Object.keys(UNIT_TYPES).map((key) => {
       return {
         label: UNIT_TYPES[key].label,
@@ -122,7 +163,7 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _getCategories() {
+  private _getCategories(): void {
     this.categoriesService
       .getCategories()
       .pipe(takeUntil(this.endsubs$))
@@ -135,6 +176,7 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
             order: cat.order,
             image: cat.image,
           };
+          this.categoryMap[cat.name] = cat.id;
 
           this.productsService.getCategoryPriceList(cat.name).subscribe(results => {
             results.forEach((price: any) => {
@@ -145,75 +187,14 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
             });
           });
         });
-
-
-
       });
   }
 
-  nameChanged(event: any) {
-
-  }
-
-  private _addProduct(productData: FormData) {
-    this.productsService
-      .createProduct(productData)
-      .pipe(takeUntil(this.endsubs$))
-      .subscribe(
-        (product: Product) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: `Product ${product.name} is created!`
-          });
-          timer(2000)
-            .toPromise()
-            .then(() => {
-              this.location.back();
-            });
-        },
-        () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Product is not created!'
-          });
-        }
-      );
-  }
-
-  private _updateProduct(productFormData: FormData) {
-    this.productsService
-      .updateProduct(productFormData, this.currentProductId)
-      .pipe(takeUntil(this.endsubs$))
-      .subscribe(
-        () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Product is updated!'
-          });
-          timer(2000)
-            .toPromise()
-            .then(() => {
-              this.location.back();
-            });
-        },
-        () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Product is not updated!'
-          });
-        }
-      );
-  }
-
-  private _checkEditMode() {
+  private _checkEditMode(): void {
     this.route.params.pipe(takeUntil(this.endsubs$)).subscribe((params) => {
       if (params['id']) {
         this.editmode = true;
-        this.currentProductId = params['id'];
+        this.currentCheckInId = params['id'];
         this.productsService
           .getProduct(params['id'])
           .pipe(takeUntil(this.endsubs$))
@@ -229,18 +210,27 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
                 brand: product.brand,
                 flavor: product.flavor,
                 unitType: product.unitType,
-                price: product.price,
                 countInStock: product.countInStock,
                 isFeatured: product.isFeatured,
                 description: product.description,
                 richDescription: product.richDescription,
+
               });
+
+              if (product.category?.name === 'Flower' ||
+                product.category?.name === 'Designer Flower') {
+                this.productForm.patchValue({ prices: product.prices });
+                if (!!product.countInStock) this.totalInGrams = product.countInStock;
+                this.countInStockChange(product.category?.name);
+              }
+              else {
+                this.productForm.patchValue({ price: product.price });
+              }
 
               this.selectedStrain = product.strain;
 
-              if (!!product.countInStock) this.totalInGrams = product.countInStock;
-
               this.imageDisplay = `${environment.imageUrl}${product.image}`;
+              this.productForm.patchValue({ image: this.imageDisplay });
               this.productForm.controls['image'].setValidators([]);
               this.productForm.controls['image'].updateValueAndValidity();
             }
@@ -281,38 +271,46 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  categoryChanged(event: HTMLInputElement) {
+  categoryChanged(event: HTMLInputElement): void {
     const categoryName = this.categories[event.value]?.name;
 
-    this.productsService.getProducts([categoryName]).subscribe((results: Product[]) => {
+    this.productsService.getProducts([this.categoryMap[categoryName]]).subscribe((results: Product[]) => {
       results.forEach((product: Product) => {
         this.productNames.push(product);
       });
 
+      this.priceFormatChanged(event);
+      this.countInStockChange(categoryName);
+
+      if (categoryName === 'Flower' || categoryName === 'Designer Flower') {
+        this.unitTypes = [{ label: 'Gram', value: 'Gram' }];
+
+        this.inStockSimple = false;
+        this.inStockPounds = true;
+
+      }
+      else {
+        this.inStockSimple = true;
+        this.inStockPounds = false;
+        this._mapUnitType();
+      }
+
     });
+  }
 
-    this.priceFormatChanged(event);
-    this.countInStockChange(categoryName);
+  existingProductSelected(event: HTMLInputElement): void {
+    this.productsService.getProduct(event.value).subscribe((productInfo: Product) => {
+      this.patchForm(productInfo)
+    })
+  }
 
-    if (categoryName === 'Flower' || categoryName === 'Designer Flower') {
-      this.unitTypes = [{ label: 'Gram', value: 'gram' }];
-
-      this.inStockSimple = false;
-      this.inStockPounds = true;
-
-    }
-    else {
-      this.inStockSimple = true;
-      this.inStockPounds = false;
-      this._mapUnitType();
-    }
+  patchForm(productInfo: Product): void {
 
   }
 
+
   updateAmt(type: string): void {
     let amt: number = Number(this.prodForm[type].value);
-
-    console.log(`type: ${type}  amt: ${amt}`)
 
     if (type === 'pounds') {
       if (amt !== this.enteredLbs) {
@@ -404,65 +402,115 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
         this.productForm.removeControl(amtName);
       });
 
-
       this.priceField = true;
       this.pricesField = false;
 
-      this.productForm.addControl('price', this.formBuilder.control('', Validators.required));
-
+      this.productForm.addControl('price', this.formBuilder.control(''));
     }
+  }
+
+  strainSelected(event: any): void {
+    this.selectedStrain = event.value;
+  }
+
+  productNameTypeSelected(event: any) {
+    this.productNameType = event.value;
   }
 
   onSubmit() {
     this.isSubmitted = true;
     if (this.productForm.invalid) return;
 
-    const productFormData: any = {};
+    if (!(this.prodForm['selectedName'].value || this.prodForm['enteredName'].value)) {
+      return;
+    }
 
-    productFormData['strain'] = this.selectedStrain;
+    // const productFormData: any = {};
+    const productFormData = new FormData();
+    const skipFields = ['prices', 'selectedName', 'enteredName', 'pounds', 'ounces', 'grams'];
 
-    for (const field in this.prodForm) {
-      if (field !== 'prices') {
-        productFormData[field] = this.prodForm[field].value;
+    for (const field in this.productForm.controls) {
+      if (!skipFields.includes(field) && this.prodForm[field] !== undefined) {
+        console.log(field);
+        productFormData.append(field, this.prodForm[field].value);
       }
     }
+
+    productFormData.append('countReceived', this.totalInGrams.toString());
+    productFormData.append('strain', this.selectedStrain);
+    productFormData.append('name', this.prodForm['selectedName'].value || this.prodForm['enteredName'].value);
 
     const priceData: { name: string, amount: number, price: number }[] = [];
-    if (this.prodForm['prices']?.value !== undefined) {
-      const prices = this.prodForm['prices'].value;
 
-      FLOWER_AMOUNTS.forEach(name => {
-        console.log('price: ', name, prices[name])
-        priceData.push({ name: name, amount: FLOWER_GRAMS[name], price: prices[name] })
-      });
 
-      productFormData['prices'] = priceData;
-    }
-
-    if (this.editmode) {
-      this._updateProduct(productFormData);
-    } else {
-      this._addProduct(productFormData);
-    }
-  }
-
-  strainSelected(event: any): void {
-    this.selectedStrain = event.option.value;
-  }
-
-  clearStrain(): void {
-    console.log(this.selectedStrain);
-    this.selectedStrain = '';
-  }
-  /*
-    clear(field: string): void {
-      if (this.productForm.contains(field)) {
-        const formField = this.productForm.get(field) as FormControl;
-        formField.setValue('');
+    FLOWER_AMOUNTS.forEach(name => {
+      if (!!this.prodForm[name]?.value) {
+        priceData.push({ name: name, amount: FLOWER_GRAMS[name], price: this.prodForm[name]?.value })
       }
-    } */
-  productNameTypeSelected(event: any) {
-    this.productNameType = event.option.value;
+    });
+
+    productFormData.append('prices', JSON.stringify(priceData));
+
+    console.log(productFormData)
+    if (this.editmode) {
+      this._updateCheckIn(productFormData);
+    } else {
+      this._addCheckIn(productFormData);
+    }
+  }
+
+  private _addCheckIn(checkInData: FormData) {
+    this.checkInService
+      .createCheckIn(checkInData)
+      .pipe(takeUntil(this.endsubs$))
+      .subscribe(
+        (checkIn: CheckIn) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `CheckIn ${checkIn.name} is created!`
+          });
+          timer(10000)
+            .toPromise()
+            .then(() => {
+              this.location.back();
+            });
+        },
+        (e) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: `Success: ${e.success}`,
+            detail: `CheckIn is not created!\n${e.message}`
+          });
+        }
+      );
+  }
+
+  private _updateCheckIn(productFormData: FormData) {
+    this.checkInService
+      .updateCheckIn(productFormData, this.currentCheckInId)
+      .pipe(takeUntil(this.endsubs$))
+      .subscribe(
+        () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'CheckIn is updated!'
+          });
+          timer(2000)
+            .toPromise()
+            .then(() => {
+              this.location.back();
+            });
+        },
+        () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'CheckIn is not updated!'
+          });
+        }
+      );
   }
 
   onCancel() {
@@ -471,17 +519,24 @@ export class CheckinFormComponent implements OnInit, OnDestroy {
 
   onImageUpload(event: any) {
     const file = event.target.files[0];
+    console.log('file: ', file);
     if (file && this.productForm !== null) {
+      console.log('in here')
       this.productForm.patchValue({ image: file });
       if (this.productForm.get('image')) {
+        console.log('in here 2')
         this.productForm.get('image')!.updateValueAndValidity();
       }
 
       const fileReader = new FileReader();
       fileReader.onload = () => {
+
+        console.log('in here 3')
         this.imageDisplay = fileReader.result;
       };
       fileReader.readAsDataURL(file);
+
+      console.log('in here 2')
     }
   }
 

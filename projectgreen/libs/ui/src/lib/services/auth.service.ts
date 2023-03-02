@@ -1,11 +1,12 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs';
 
-import { environment } from "@env/environment";
-import { Values, LoginData, User, FullUserData } from "../models/user-data.model";
-import { SignUpData } from "../models/sign-up.model";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { environment } from '@env/environment';
+
+import { SignUpData } from '../models/sign-up.model';
+import { FullUserData, LoginData, User, Values } from '../models/user-data.model';
 
 const BACKEND_URL = `${environment.apiUrl}users`;
 
@@ -118,7 +119,6 @@ export class AuthService {
             this.userIsAdmin = response.isAdmin;
 
             this.userData = response;
-            console.log('this.userData: ', this.userData);
 
             this.userDataListener.next(this.userData);
 
@@ -132,7 +132,6 @@ export class AuthService {
               this.saveAuthData(response.token, expirationDate, response.id);
             }
 
-            console.log('about to navigate')
             this.router.navigate(['/'], { fragment: 'top' });
           }
         },

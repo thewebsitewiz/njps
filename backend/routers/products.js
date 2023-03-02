@@ -7,9 +7,7 @@ const {
 const {
     Category
 } = require('../models/category');
-const {
-    FAQ
-} = require('../models/faq');
+
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -65,6 +63,8 @@ const uploadOptions = multer({
 router.get(`/`, async (req, res) => {
     let productList;
 
+    console.log('*req.query.categories: ', req.query.categories)
+
     try {
         let filter = {};
         if (req.query.categories) {
@@ -73,9 +73,14 @@ router.get(`/`, async (req, res) => {
             };
         }
 
+        console.log('*filter: ', filter)
+
         productList = await Product.find(filter).populate('category');
 
+        console.log('productList:  ', productList)
+
     } catch (e) {
+        console.log('ERROR (): ', e)
         return res.status(500).json({
             success: false,
             message: `error in catch: ${e}`

@@ -396,11 +396,14 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
 
     productFormData['strain'] = this.selectedStrain;
 
+    const skipFields = ['prices', 'selectedName', 'enteredName', 'pounds', 'ounces', 'grams'];
     for (const field in this.prodForm) {
-      if (field !== 'prices') {
+      if (!skipFields.includes(field) && this.prodForm[field] !== undefined) {
         productFormData[field] = this.prodForm[field].value;
       }
     }
+
+    productFormData.append('countInStock', this.totalInGrams.toString());
 
     const priceData: { name: string, amount: number, price: number }[] = [];
     if (this.prodForm['prices']?.value !== undefined) {
@@ -429,13 +432,6 @@ export class ProductsFormComponent implements OnInit, OnDestroy {
     console.log(this.selectedStrain);
     this.selectedStrain = undefined;
   }
-  /*
-    clear(field: string): void {
-      if (this.productForm.contains(field)) {
-        const formField = this.productForm.get(field) as FormControl;
-        formField.setValue('');
-      }
-    } */
 
   onCancel() {
     this.location.back();

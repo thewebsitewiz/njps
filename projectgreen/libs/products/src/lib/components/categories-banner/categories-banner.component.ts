@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { environment } from '@env/environment';
+
 import { Category } from '../../models/category';
 import { CategoriesService } from '../../services/categories.service';
-import { environment } from '@env/environment';
 
 @Component({
   selector: 'products-categories-banner',
@@ -22,9 +24,11 @@ export class CategoriesBannerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.endSubs$))
       .subscribe((results) => {
         results.forEach((category: any) => {
-          category.image = `${environment.imageUrl}${category.image}`;
-          this.categories.push(category)
-        })
+          category.image = `${environment.imageUrl}/${category.image}`;
+          this.categories.push(category);
+        });
+
+        console.log(this.categories)
       });
   }
 

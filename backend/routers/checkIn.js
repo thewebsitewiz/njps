@@ -112,6 +112,8 @@ router.get(`/:id`, async (req, res) => {
 });
 
 router.post(`/`, uploadOptions.single('image'), async (req, res) => {
+    // console.log('req: ', req.body, req.file)
+
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).send('Invalid Category');
 
@@ -120,7 +122,12 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
 
     const dirPath = imgPathUtils.getNewDirPath();
     const fileName = file.filename;
+
+    console.log(req.body.prices);
+    const prices = JSON.parse(req.body.prices);
+    console.log(prices);
     try {
+
         let checkIn = new CheckIn({
             name: req.body.name,
             description: req.body.description,
@@ -128,7 +135,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
             image: `${dirPath}${fileName}`,
             cost: req.body.cost,
             price: req.body.price,
-            prices: req.body.prices,
+            prices: prices,
             brand: req.body.brand,
             flavor: req.body.flavor,
             strain: req.body.strain,
@@ -141,9 +148,14 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
             userName: req.body.userName
         });
 
+        console.log('checkIn: ', checkIn);
+
         checkIn = await checkIn.save();
 
-        if (!checkIn) return res.status(400).send('The checkIn cannot be created');
+        if (!checkIn) {
+            console.log('checkIn: ', checkIn)
+            return res.status(400).send('The checkIn cannot be created');
+        }
 
         const products = await Product.find({
             name: req.body.name
@@ -152,18 +164,41 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
         const product = products[0];
 
         console.log(products)
-        console.log(product)
+        console.log(product);
+        let updatedProduct;
 
-        product.countInStock += checkIn.countReceived;
+        if (product) {
+            product.countInStock += checkIn.countReceived;
 
-        const updatedProduct = await Product.findByIdAndUpdate(
-            product.id, product, {
-                new: true
-            }
-        );
+            updatedProduct = await Product.findByIdAndUpdate(
+                product.id, product, {
+                    new: true
+                }
+            );
+        } else {
+            let newProduct = new Product({
+                name: req.body.name,
+                description: req.body.description,
+                richDescription: req.body.richDescription,
+                image: `${dirPath}${fileName}`,
+                price: req.body.price,
+                prices: prices,
+                brand: req.body.brand,
+                flavor: req.body.flavor,
+                strain: req.body.strain,
+                unitType: req.body.unitType,
+                category: req.body.category,
+                countInStock: req.body.countReceived,
+                isFeatured: req.body.isFeatured
+            });
+
+            updatedProduct = await newProduct.save();
+
+        }
 
         return res.send(updatedProduct);
     } catch (e) {
+        console.log('checkIn post: ', e)
         return res.status(500).json({
             success: false,
             message: `error in catch: ${e}`

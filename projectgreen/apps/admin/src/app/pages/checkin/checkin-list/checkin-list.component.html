@@ -1,7 +1,15 @@
 <p-toast></p-toast>
 <div class="admin-page">
-  <p-card class="main-card" header="Inventory" subheader="">
-
+  <p-card class="main-card" header="Check Ins" subheader="">
+    <div class="grid">
+      <div class="col-12">
+        <p-toolbar>
+          <div class="p-toolbar-group-left">
+            <p-button styleClass="p-button-success" label="New" icon="pi pi-plus" routerLink="form"></p-button>
+          </div>
+        </p-toolbar>
+      </div>
+    </div>
     <div class="grid">
       <div class="col-12">
         <p-table [paginator]="true" [totalRecords]="totalRecords" [(first)]="first" [rows]="10" [value]="products"

@@ -9,6 +9,15 @@ const cors = require('cors');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
 
+
+const ENV = 'dev';
+
+let DB_CONN = process.env.NJPS_DEV_CONN;
+
+if (ENV === 'prod') {
+    DB_CONN = process.env.NJPS_PRD_CONN;
+}
+
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -24,7 +33,8 @@ app.use(cors({
 
 //middleware
 app.use(bodyParser.json());
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
+app.use(morgan('tiny'));
 app.use(authJwt());
 
 app.use(express.static(__dirname + '/public'));
@@ -54,10 +64,10 @@ app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/orders`, ordersRoutes);
 app.use(`${api}/delivery`, deliveryRoutes);
 app.use(`${api}/faq`, faqRoutes);
-app.use(`${api}/check-in`, checkInRoutes);
+app.use(`${api}/checkin`, checkInRoutes);
 
 //Database
-mongoose.connect(process.env.PG_CONN, {
+mongoose.connect(DB_CONN, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         dbName: 'projectgreen-database'

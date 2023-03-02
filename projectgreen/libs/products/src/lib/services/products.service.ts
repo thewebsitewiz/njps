@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
+
 import { Product } from '../models/product';
 
 @Injectable({
@@ -15,10 +17,14 @@ export class ProductsService {
 
   getProducts(categoriesFilter?: string[]): Observable<Product[]> {
     let params = new HttpParams();
+
+    console.log('categoriesFilter: ', categoriesFilter);
+
     if (categoriesFilter) {
       params = params.append('categories', categoriesFilter.join(','));
     }
-    console.log('products');
+
+    console.log(params);
     return this.http.get<Product[]>(this.apiURLProducts, { params: params });
   }
 
@@ -30,8 +36,8 @@ export class ProductsService {
     return this.http.get<Product>(`${this.apiURLProducts}/${productId}`);
   }
 
-  updateProduct(productData: {}, productid: string): Observable<Product> {
-    return this.http.put<Product>(`${this.apiURLProducts}/${productid}`, productData);
+  updateProduct(productData: {}, productId: string): Observable<Product> {
+    return this.http.put<Product>(`${this.apiURLProducts}/${productId}`, productData);
   }
 
   deleteProduct(productId: string): Observable<any> {

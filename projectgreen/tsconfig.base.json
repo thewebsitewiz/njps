@@ -14,11 +14,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "types": ["node"],
     "paths": {
       "@projectgreen/products": ["libs/products/src/index.ts"],
       "@projectgreen/orders": ["libs/orders/src/index.ts"],
       "@projectgreen/users": ["libs/users/src/index.ts"],
       "@projectgreen/ui": ["libs/ui/src/index.ts"],
+      "@anchor": ["anchor.js"],
       "@env/*": ["environments/*"],
       "rxjs": [
         "node_modules/rxjs"
